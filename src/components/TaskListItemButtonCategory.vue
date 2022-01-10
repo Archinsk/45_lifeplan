@@ -1,5 +1,5 @@
 <template>
-  <ButtonIconSquare :icon="icon" :class="buttonSemantics" />
+  <ButtonIconSquare :icon="icon" :class="buttonSemantics" class="text-light"/>
 </template>
 
 <script>

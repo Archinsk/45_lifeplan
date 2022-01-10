@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="bg-primary">
     <div class="container">
       <img id="logo" src="@/assets/lifeplan_logo.jpg" alt="Life Plan Logo" />
       <div>
@@ -28,10 +28,6 @@ export default {
 </script>
 
 <style scoped>
-header {
-  background-color: RGB(96, 192, 96);
-  color: white;
-}
 
 header div {
   display: flex;

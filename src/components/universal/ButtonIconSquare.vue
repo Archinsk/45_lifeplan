@@ -1,5 +1,5 @@
 <template>
-  <button class="buttonIconSquare" @click="$emit('clickHandler')">
+  <button type="button" class="buttonIconSquare" @click="$emit('clickHandler')">
     <span class="material-icons">{{ icon }}</span>
   </button>
 </template>

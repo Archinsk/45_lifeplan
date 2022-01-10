@@ -1,7 +1,7 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="deleteButton"
+    class="deleteButton btn btn-danger text-secondary"
   />
 </template>
 
@@ -19,7 +19,6 @@ export default {
 
 <style scoped>
 .deleteButton {
-  background-color: transparent;
   border-radius: 0 0.25rem 0.25rem 0;
   position: absolute;
   top: 0;

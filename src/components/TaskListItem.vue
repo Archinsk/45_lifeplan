@@ -1,6 +1,6 @@
 <template>
   <li
-    class="alert alert-secondary alert-dismissible fade show mb-1 task"
+    class="alert alert-info text-secondary border-secondary alert-dismissible fade show mb-1 task"
     :class="{ taskCompleted: taskItem.completed }"
     role="alert"
     @click="$emit('toggleComplete', taskItem.id)"
@@ -29,9 +29,6 @@ export default {
 .task {
   display: flex;
   align-items: center;
-  background-color: RGB(240, 255, 224);
-  color: RGB(80, 80, 80);
-  border-color: RGB(128, 128, 128);
   padding: 0;
 
   &.taskCompleted {

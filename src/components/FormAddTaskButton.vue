@@ -1,7 +1,7 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    :class="buttonSemantics"
+    class="inputGroupButton btn btn-primary"
     @clickHandler="$emit('addNewTask')"
   />
 </template>
@@ -11,11 +11,6 @@ import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
   name: "FormAddTaskButton",
-  data() {
-    return {
-      buttonSemantics: "inputGroupButton",
-    };
-  },
   components: {
     ButtonIconSquare,
   },
@@ -29,10 +24,10 @@ export default {
 </script>
 
 <style scoped>
-.inputGroupButton {
-  background-color: RGB(96, 192, 96);
-  color: white;
-  border: 1px solid RGB(128, 128, 128);
-  border-radius: 0 0.25rem 0.25rem 0;
-}
+/*.inputGroupButton {*/
+/*  background-color: RGB(96, 192, 96);*/
+/*  color: white;*/
+/*  border: 1px solid RGB(128, 128, 128);*/
+/*  border-radius: 0 0.25rem 0.25rem 0;*/
+/*}*/
 </style>
