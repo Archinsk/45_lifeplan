@@ -72,6 +72,9 @@
         </div>
       </div>
     </div>
+
+    <ColorScheme />
+
   </div>
 </template>
 
@@ -79,12 +82,15 @@
 import Header from "../components/Header";
 import FormAddTask from "../components/FormAddTask";
 import TaskList from "../components/TaskList";
+import ColorScheme from "../components/universal/ColorScheme";
+
 export default {
   name: "Home",
   components: {
-    TaskList,
     Header,
     FormAddTask,
+    TaskList,
+    ColorScheme,
   },
   data() {
     return {
