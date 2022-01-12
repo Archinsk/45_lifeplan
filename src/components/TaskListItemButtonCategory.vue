@@ -1,5 +1,5 @@
 <template>
-  <ButtonIconSquare :icon="icon" :class="buttonSemantics" class="text-light"/>
+  <ButtonIconSquare :icon="icon" :class="buttonSemantics" class="category-button btn btn-primary text-light"/>
 </template>
 
 <script>
@@ -20,10 +20,10 @@ export default {
 </script>
 
 <style scoped>
-.categoryButton {
-  margin-right: 0.75rem;
-  border-radius: 0.1875rem;
-  background-color: deepskyblue;
-  color: RGB(240, 255, 224);
-}
+/*.categoryButton {*/
+/*  margin-right: 0.75rem;*/
+/*  border-radius: 0.1875rem;*/
+/*  background-color: deepskyblue;*/
+/*  color: RGB(240, 255, 224);*/
+/*}*/
 </style>

@@ -1,7 +1,7 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="inputGroupButton btn btn-primary"
+    class="inputGroupButton btn btn-primary border-secondary"
     @clickHandler="$emit('addNewTask')"
   />
 </template>

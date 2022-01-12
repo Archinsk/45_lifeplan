@@ -1,19 +1,21 @@
 <template>
-  <div class="input-group my-2">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Введите текст задачи..."
-      aria-label="Введите текст задачи..."
-      aria-describedby="button-addon2"
-      v-model="addTaskInputValue"
-    />
-    <FormAddTaskButton
-      :icon="iconName"
-      :class="buttonSemantics"
-      @addNewTask="addNewTask"
-    />
-  </div>
+  <form action="submit" class="sticky-top bg-light py-2 ">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control border-secondary"
+        placeholder="Введите текст задачи..."
+        aria-label="Введите текст задачи..."
+        aria-describedby="button-addon2"
+        v-model="addTaskInputValue"
+      />
+      <FormAddTaskButton
+        :icon="iconName"
+        :class="buttonSemantics"
+        @addNewTask="addNewTask"
+      />
+    </div>
+  </form>
 </template>
 
 <script>
@@ -42,10 +44,7 @@ export default {
 </script>
 
 <style scoped>
-.form-control {
-  border-color: RGB(128, 128, 128);
-}
-.form-control:focus {
-  box-shadow: none;
-}
+/*.form-control:focus {*/
+/*  box-shadow: none;*/
+/*}*/
 </style>

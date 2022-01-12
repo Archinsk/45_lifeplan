@@ -1,5 +1,6 @@
 <template>
   <ButtonIconSquare
+          class="header-button btn"
           data-bs-toggle="modal"
           data-bs-target="#exampleModalToggle"
     :icon="icon"
@@ -26,10 +27,9 @@ export default {
 </script>
 
 <style scoped>
-.menuButton {
-  margin-left: 0.75rem;
-  border-radius: 0.25rem;
-  background-color: transparent;
-  color: white;
-}
+/*.menuButton {*/
+/*  margin-left: 0.75rem;*/
+/*  border-radius: 0.25rem;*/
+
+/*}*/
 </style>
