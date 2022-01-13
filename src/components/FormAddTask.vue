@@ -1,5 +1,5 @@
 <template>
-  <form action="submit" class="sticky-top bg-light py-2 ">
+  <form @submit.prevent action="submit" class="sticky-top bg-light py-2">
     <div class="input-group">
       <input
         type="text"
@@ -7,6 +7,7 @@
         placeholder="Введите текст задачи..."
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
+        @keyup.enter="addNewTask"
         v-model="addTaskInputValue"
       />
       <FormAddTaskButton

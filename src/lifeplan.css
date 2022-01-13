@@ -1,0 +1,57 @@
+body .header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+@media (min-width: 1200px) {
+  body .header {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+body .header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+body .header .container #logo {
+  height: 2.25rem;
+}
+@media (min-width: 1200px) {
+  body .header .container #logo {
+    height: 3rem;
+  }
+}
+body .header .container .header-button {
+  background-color: transparent;
+  color: white;
+  border: solid 1px black;
+}
+body .taskList {
+  list-style: none;
+  padding-left: 0;
+}
+body .taskList .task {
+  border-radius: 0.3125rem;
+  min-height: 2.5rem;
+}
+body .taskList .task .category-button {
+  float: left;
+  margin-right: 0.5rem;
+}
+body .taskList .task .task-text {
+  padding: 0.4375rem 0.5rem;
+}
+body .taskList .task .delete-button {
+  float: right;
+  margin-left: 0.5rem;
+}
+body .taskList .task.taskCompleted {
+  text-decoration: line-through;
+}
+body .buttonIconSquare {
+  line-height: 0.75;
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+}
+
+/*# sourceMappingURL=lifeplan.css.map */
