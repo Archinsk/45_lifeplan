@@ -3,8 +3,12 @@
     <div class="container">
       <img id="logo" src="@/assets/lifeplan_logo.jpg" alt="Life Plan Logo" />
       <div class="nav">
-        <HeaderButton :icon="menu" />
-        <HeaderButton :icon="logout" />
+        <HeaderButton icon="menu" />
+        <HeaderButton
+          icon="login"
+          data-bs-toggle="modal"
+          data-bs-target="#signInFormModal"
+        />
       </div>
     </div>
   </header>
@@ -15,12 +19,7 @@ import HeaderButton from "@/components/HeaderButton";
 
 export default {
   name: "Header",
-  data() {
-    return {
-      menu: "menu",
-      logout: "logout",
-    };
-  },
+
   components: {
     HeaderButton,
   },

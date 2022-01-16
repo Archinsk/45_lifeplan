@@ -6,75 +6,10 @@
       <TaskList :listItems="items" @toggleComplete="changeCompleted($event)" />
     </div>
 
-    <div
-      class="modal fade"
-      id="exampleModalToggle"
-      aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel"
-      tabindex="-1"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalToggleLabel">Modal 1</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Show a second modal and hide this one with the button below.
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-bs-target="#exampleModalToggle2"
-              data-bs-toggle="modal"
-            >
-              Open second modal
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="modal fade"
-      id="exampleModalToggle2"
-      aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel2"
-      tabindex="-1"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalToggleLabel2">Modal 2</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Hide this modal and show the first with the button below.
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SignInFormModal />
+    <SignUpFormModal />
 
     <ColorScheme />
-
   </div>
 </template>
 
@@ -82,6 +17,8 @@
 import Header from "../components/Header";
 import FormAddTask from "../components/FormAddTask";
 import TaskList from "../components/TaskList";
+import SignInFormModal from "../components/SignInFormModal";
+import SignUpFormModal from "../components/SignUpFormModal";
 import ColorScheme from "../components/universal/ColorScheme";
 
 export default {
@@ -90,6 +27,8 @@ export default {
     Header,
     FormAddTask,
     TaskList,
+    SignInFormModal,
+    SignUpFormModal,
     ColorScheme,
   },
   data() {
@@ -119,6 +58,26 @@ export default {
         return item;
       });
     },
+    // ajaxRequest(service, request, responseTarget, log) {
+    //   const xhr = new XMLHttpRequest();
+    //   const url =
+    //     "https://www.d-skills.ru/45_lifeplan/php/" + service + "?id=" + id;
+    //   xhr.onreadystatechange = () => {
+    //     if (xhr.readyState == 4 && xhr.status == 200) {
+    //       responseTarget = xhr.response;
+    //       console.log(log);
+    //     }
+    //   };
+    //   xhr.open("POST", url, true);
+    //   xhr.setRequestHeader("Content-type", "application/json");
+    //   xhr.send(JSON.stringify(this.footerMenuNewItem));
+    // },
+    // addFooterMenuItem() {
+    //   const request =
+    //     "userLogin=" + this.inputLogin + "&userPassword=" + this.inputPassword;
+    //   log = "Авторизован пользователь " + this.inputLogin;
+    //   this.ajaxRequest("auth.php", request, "this.user", log);
+    // },
   },
 };
 </script>

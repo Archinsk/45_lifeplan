@@ -1,8 +1,6 @@
 <template>
   <ButtonIconSquare
-          class="header-button btn"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModalToggle"
+    class="header-button btn"
     :icon="icon"
     :semantics="buttonSemantics"
     :class="buttonSemantics"
