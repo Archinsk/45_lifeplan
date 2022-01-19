@@ -6,7 +6,7 @@
       <TaskList :listItems="items" @toggleComplete="changeCompleted($event)" />
     </div>
 
-    <SignInFormModal />
+    <SignInFormModal @sign-in="signIn($event)" />
     <SignUpFormModal />
 
     <ColorScheme />
@@ -38,6 +38,7 @@ export default {
         { id: 2, task: "Посадить дерево", completed: true, icon: "favorite" },
         { id: 3, task: "Вырастить сына", completed: false, icon: "home" },
       ],
+      loggedUser: {},
     };
   },
   methods: {
@@ -58,21 +59,34 @@ export default {
         return item;
       });
     },
-    // ajaxRequest(service, request, responseTarget, log) {
-    //   const xhr = new XMLHttpRequest();
-    //   const url =
-    //     "https://www.d-skills.ru/45_lifeplan/php/" + service + "?id=" + id;
-    //   xhr.onreadystatechange = () => {
-    //     if (xhr.readyState == 4 && xhr.status == 200) {
-    //       responseTarget = xhr.response;
-    //       console.log(log);
-    //     }
-    //   };
-    //   xhr.open("POST", url, true);
-    //   xhr.setRequestHeader("Content-type", "application/json");
-    //   xhr.send(JSON.stringify(this.footerMenuNewItem));
-    // },
+
+    signIn(user) {
+      this.postAjaxRequest(
+        "https://www.d-skills.ru/45_lifeplan/php/signin.php",
+        // "php/signin.php",
+        JSON.stringify(user),
+        "loggedUser",
+        "Запрос авторизации"
+      );
+    },
+
+    postAjaxRequest(url, request, responseTarget, logHeader) {
+      const xhr = new XMLHttpRequest();
+      console.log(request);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log(logHeader);
+          console.log(xhr.response);
+          this[responseTarget] = xhr.response;
+        }
+      };
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Content-type", "application/json");
+      xhr.send(request);
+    },
+
     // addFooterMenuItem() {
+    // JSON.stringify(this.user)
     //   const request =
     //     "userLogin=" + this.inputLogin + "&userPassword=" + this.inputPassword;
     //   log = "Авторизован пользователь " + this.inputLogin;

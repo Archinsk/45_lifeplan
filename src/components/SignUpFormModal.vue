@@ -28,8 +28,8 @@
               <label for="signUpPassword">Пароль</label>
             </div>
             <div class="form-floating">
-              <input type="password" class="form-control" id="signUpPassword" placeholder="Пароль ещё раз"/>
-              <label for="signUpPassword">Пароль ещё раз</label>
+              <input type="password" class="form-control" id="signUpPasswordRepeat" placeholder="Пароль ещё раз"/>
+              <label for="signUpPasswordRepeat">Пароль ещё раз</label>
             </div>
           </div>
           <div class="modal-footer">
