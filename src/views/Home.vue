@@ -6,7 +6,7 @@
       <TaskList :listItems="items" @toggleComplete="changeCompleted($event)" />
     </div>
 
-    <SignInFormModal @sign-in="signIn($event)" />
+    <SignInFormModal @sign-in="signIn($event)" :was-validated="wasValidated" :back-end-errors="errors.signIn" />
     <SignUpFormModal />
 
     <ColorScheme />
@@ -38,7 +38,12 @@ export default {
         { id: 2, task: "Посадить дерево", completed: true, icon: "favorite" },
         { id: 3, task: "Вырастить сына", completed: false, icon: "home" },
       ],
+      wasValidated: false,
       loggedUser: {},
+      errors: {
+        signIn: {},
+        signUp: {},
+      },
     };
   },
   methods: {
@@ -60,38 +65,66 @@ export default {
       });
     },
 
-    signIn(user) {
-      this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/signin.php",
-        // "php/signin.php",
-        JSON.stringify(user),
-        "loggedUser",
-        "Запрос авторизации"
-      );
-    },
-
-    postAjaxRequest(url, request, responseTarget, logHeader) {
+    postAjaxRequest(url, request, callback) {
       const xhr = new XMLHttpRequest();
-      console.log(request);
+      // console.log(request);
+      xhr.open("POST", url, true);
+      xhr.responseType = "json";
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
-          console.log(logHeader);
-          console.log(xhr.response);
-          this[responseTarget] = xhr.response;
+          callback(xhr.response);
         }
       };
-      xhr.open("POST", url, true);
       xhr.setRequestHeader("Content-type", "application/json");
       xhr.send(request);
     },
 
-    // addFooterMenuItem() {
-    // JSON.stringify(this.user)
-    //   const request =
-    //     "userLogin=" + this.inputLogin + "&userPassword=" + this.inputPassword;
-    //   log = "Авторизован пользователь " + this.inputLogin;
-    //   this.ajaxRequest("auth.php", request, "this.user", log);
-    // },
+    signIn(user) {
+      this.wasValidated = true;
+      this.postAjaxRequest(
+        "https://www.d-skills.ru/45_lifeplan/php/signin.php",
+        // "php/signin.php",
+        JSON.stringify(user),
+        this.signInResponseParsing
+      );
+    },
+
+    signInResponseParsing(response) {
+      if (response.error) {
+        this.signInErrorRecord(response.error);
+      }
+      if (response.user) {
+        this.authUser(response.user);
+      }
+    },
+
+    signInErrorRecord(error) {
+      if (error.type === "login") {
+        this.errors.signIn.login = error;
+        this.errors.signIn.password = {};
+      }
+      if (error.type === "password") {
+        this.errors.signIn.password = error;
+        this.errors.signIn.login = {};
+      }
+      this.logGroup("Записана ошибка", error);
+    },
+
+    authUser(user) {
+      this.errors = {};
+      this.loggedUser = user;
+      this.logGroup(
+        "Пользователь авторизован",
+        "user.id = " + user.id,
+        "user.name = " + user.name
+      );
+    },
+
+    logGroup(logHeader, ...logs) {
+      console.groupCollapsed(logHeader);
+      for (let log of logs) console.log(log);
+      console.groupEnd(logHeader);
+    },
   },
 };
 </script>
