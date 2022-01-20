@@ -3,13 +3,13 @@
     class="modal fade"
     id="signUpFormModal"
     aria-hidden="true"
-    aria-labelledby="exampleModalToggleLabel2"
+    aria-labelledby="signUpFormModalLabel"
     tabindex="-1"
   >
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="signUpFormModalLabel2">Регистрация</h5>
+          <h5 class="modal-title" id="signUpFormModalLabel">Регистрация</h5>
           <button
             type="button"
             class="btn-close"
@@ -17,18 +17,39 @@
             aria-label="Close"
           ></button>
         </div>
-        <form @submit.prevent>
+        <form @submit.prevent="$emit('sign-up', user)">
           <div class="modal-body">
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="signUpLogin" placeholder="Логин"/>
+              <input
+                type="text"
+                class="form-control"
+                id="signUpLogin"
+                placeholder="Введите логин"
+                v-model="user.login"
+              />
               <label for="signUpLogin">Логин</label>
             </div>
+            <div v-if="backEndSignUpLoginError" class="form-text">
+              {{ backEndSignUpLoginError }}
+            </div>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="signUpPassword" placeholder="Пароль"/>
+              <input
+                type="password"
+                class="form-control"
+                id="signUpPassword"
+                placeholder="Введите пароль"
+                v-model="user.password"
+              />
               <label for="signUpPassword">Пароль</label>
             </div>
             <div class="form-floating">
-              <input type="password" class="form-control" id="signUpPasswordRepeat" placeholder="Пароль ещё раз"/>
+              <input
+                type="password"
+                class="form-control"
+                id="signUpPasswordRepeat"
+                placeholder="Пароль ещё раз"
+                v-model="user.passwordRepeat"
+              />
               <label for="signUpPasswordRepeat">Пароль ещё раз</label>
             </div>
           </div>
@@ -41,7 +62,16 @@
             >
               Отмена
             </button>
-            <button type="submit" class="btn btn-primary">Авторизация</button>
+            <button
+              class="btn btn-outline-primary"
+              data-bs-target="#signInFormModal"
+              data-bs-toggle="modal"
+            >
+              Вход
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Отправить
+            </button>
           </div>
         </form>
       </div>
@@ -52,6 +82,18 @@
 <script>
 export default {
   name: "SignUpFormModal",
+
+  props: ["backEndSignUpLoginError"],
+
+  data() {
+    return {
+      user: {
+        login: "",
+        password: "",
+        passwordRepeat: "",
+      },
+    };
+  },
 };
 </script>
 

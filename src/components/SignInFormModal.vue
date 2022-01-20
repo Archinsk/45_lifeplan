@@ -3,7 +3,7 @@
     class="modal fade"
     id="signInFormModal"
     aria-hidden="true"
-    aria-labelledby="exampleModalToggleLabel"
+    aria-labelledby="signInFormModalLabel"
     tabindex="-1"
   >
     <div class="modal-dialog modal-sm">
@@ -17,10 +17,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <form
-          :class="{ 'was-validated': wasValidated }"
-          @submit.prevent="$emit('sign-in', user)"
-        >
+        <form @submit.prevent="$emit('sign-in', user)">
           <div class="modal-body">
             <div class="form-floating mb-3">
               <input
@@ -31,8 +28,8 @@
                 v-model="user.login"
               />
               <label for="signInLogin">Логин</label>
-              <div v-if="backEndErrors.login" class="form-text">
-                {{ backEndErrors.login.errorText }}
+              <div v-if="backEndSignInLoginError" class="form-text">
+                {{ backEndSignInLoginError }}
               </div>
             </div>
             <div class="form-floating">
@@ -44,8 +41,8 @@
                 v-model="user.password"
               />
               <label for="signInPassword">Пароль</label>
-              <div v-if="backEndErrors.password" class="form-text">
-                {{ backEndErrors.password.errorText }}
+              <div v-if="backEndSignInPasswordError" class="form-text">
+                {{ backEndSignInPasswordError }}
               </div>
             </div>
           </div>
@@ -69,7 +66,7 @@
 export default {
   name: "SignInFormModal",
 
-  props: ["backEndErrors", "wasValidated"],
+  props: ["backEndSignInLoginError", "backEndSignInPasswordError"],
 
   data() {
     return {
@@ -77,44 +74,8 @@ export default {
         login: "",
         password: "",
       },
-      // isInvalidLogin: false,
-      // isInvalidPassword: false,
     };
   },
-
-  // watch: {
-  //   // при каждом изменении `question` эта функция будет запускаться
-  //   backEndErrors: function() {
-  //     console.log("Я слежу")
-  //     if (this.wasValidated) {
-  //       if (this.backEndErrors.login) {
-  //         this.isInvalidLogin = true;
-  //         this.isInvalidPassword = false;
-  //       }
-  //       if (this.backEndErrors.password) {
-  //         this.isInvalidLogin = false;
-  //         this.isInvalidPassword = true;
-  //       }
-  //     }
-  //   },
-  // },
-
-  // computed: {
-  //   isInvalidLogin: function () {
-  //     console.log("Я слежу");
-  //     if (this.wasValidated) {
-  //       return !!this.backEndErrors.login;
-  //     }
-  //     return false;
-  //   },
-  //   isInvalidPassword: function () {
-  //     console.log("Я слежу");
-  //     if (this.wasValidated) {
-  //       return !!this.backEndErrors.password;
-  //     }
-  //     return false;
-  //   },
-  // },
 };
 </script>
 
