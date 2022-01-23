@@ -39,6 +39,28 @@ body {
   //  padding-left: 0;
   //}
 
+  #tasks {
+    display: flex;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+
+    #tasksDone {
+      background-color: orange;
+      width: 100%;
+      position: absolute;
+      left: -100%;
+
+      &.active {
+        left: 0;
+      }
+    }
+
+    #tasksTodo {
+      width: 100%;
+    }
+  }
+
   .taskList {
     list-style: none;
     padding-left: 0;

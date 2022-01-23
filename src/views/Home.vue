@@ -1,9 +1,22 @@
 <template>
   <div>
-    <Header />
+    <Header @lists-toggle="listsToggle" />
     <div class="container">
       <FormAddTask @addNewTask="addNewTask($event)" />
-      <TaskList :listItems="items" @toggleComplete="changeCompleted($event)" />
+      <div id="tasks">
+        <TaskList
+          :list-items="tasksDone"
+          @toggle-task-status="toggleTaskStatus($event)"
+          id="tasksDone"
+          :class="{ active: tasksDoneVisibility }"
+        />
+        <TaskList
+          :list-items="tasksTodo"
+          @toggle-task-status="toggleTaskStatus($event)"
+          @toggle-complete="changeCompleted($event)"
+          id="tasksTodo"
+        />
+      </div>
     </div>
 
     <SignInFormModal
@@ -40,12 +53,10 @@ export default {
   },
   data() {
     return {
-      items: [
-        { id: 1, task: "Построить дом", completed: false, icon: "stars" },
-        { id: 2, task: "Посадить дерево", completed: true, icon: "favorite" },
-        { id: 3, task: "Вырастить сына", completed: false, icon: "home" },
-      ],
-      loggedUser: {},
+      loggedUser: {
+        id: 1,
+        name: "mihail",
+      },
       errors: {
         signIn: {
           login: {
@@ -67,28 +78,62 @@ export default {
           },
         },
       },
+      tasks: [
+        { id: 1, task: "Построить дом", completed: false, icon: "stars" },
+        { id: 2, task: "Посадить дерево", completed: true, icon: "favorite" },
+        { id: 3, task: "Вырастить сына", completed: false, icon: "home" },
+      ],
+      tasksTodo: [],
+      tasksDone: [],
+      tasksDoneVisibility: false,
     };
   },
+
   methods: {
     addNewTask(event) {
-      let newTask = {
-        id: this.items.length + 1,
-        task: event,
-        completed: false,
-        icon: "home",
-      };
-      this.items.push(newTask);
-    },
-    changeCompleted(id) {
-      this.items = this.items.map(function (item) {
-        if (item.id === id) {
-          item.completed = !item.completed;
-        }
-        return item;
-      });
+      let newTask;
+      if (this.loggedUser.id) {
+        newTask = {
+          login: this.loggedUser.name,
+          user_id: this.loggedUser.id,
+          task: event,
+        };
+        this.postAjaxRequest(
+          "https://www.d-skills.ru/45_lifeplan/php/createtask.php",
+          // "php/createtask.php",
+          JSON.stringify(newTask),
+          this.newTaskRecord
+        );
+      } else {
+        newTask = {
+          id: this.items.length + 1,
+          task: event,
+          completed: false,
+          icon: "home",
+        };
+        this.items.unshift(newTask);
+      }
     },
 
-    postAjaxRequest(url, request, callback) {
+    newTaskRecord(response) {
+      this.tasks.unshift(response.task);
+      this.tasksTodo.unshift(response.task);
+    },
+
+    toggleTaskStatus(task) {
+      console.log("Изменение задания");
+      this.postAjaxRequest(
+        "https://www.d-skills.ru/45_lifeplan/php/toggletaskstatus.php",
+        // "php/toggletaskstatus.php",
+        JSON.stringify(task)
+      );
+      console.log("Статус - " + task.done);
+      console.log(typeof task.done);
+      task.done === "1" ? (task.done = "0") : (task.done = "1");
+      console.log("Статус - " + task.done);
+    },
+    doNothing() {},
+    postAjaxRequest(url, request, callback = this.doNothing) {
       const xhr = new XMLHttpRequest();
       // console.log(request);
       xhr.open("POST", url, true);
@@ -223,6 +268,33 @@ export default {
       for (let log of logs) console.log(log);
       console.groupEnd(logHeader);
     },
+
+    getTasks() {
+      this.postAjaxRequest(
+        "https://www.d-skills.ru/45_lifeplan/php/gettasks.php",
+        // "php/gettasks.php",
+        JSON.stringify(this.loggedUser),
+        this.tasksRecord
+      );
+    },
+
+    tasksRecord(response) {
+      this.tasks = response.tasks;
+      this.tasksTodo = response.tasks.filter((task) => !!+task.done === false);
+      this.tasksDone = response.tasks.filter((task) => !!+task.done === true);
+      this.logGroup("Невыполненные", this.tasksTodo);
+      this.logGroup("Выполненные", this.done);
+      this.logGroup("Записи авторизованного пользователя", response);
+    },
+
+    listsToggle() {
+      this.tasksDoneVisibility = !this.tasksDoneVisibility;
+      console.log(this.tasksDoneVisibility);
+    },
+  },
+
+  mounted: function () {
+    this.getTasks();
   },
 };
 </script>

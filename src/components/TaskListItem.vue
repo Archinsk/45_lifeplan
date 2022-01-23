@@ -1,8 +1,8 @@
 <template>
   <li
     class="task bg-info border border-secondary mb-1"
-    :class="{ taskCompleted: taskItem.completed }"
-    @click="$emit('toggleComplete', taskItem.id)"
+    :class="{ taskCompleted: !!+taskItem.done }"
+    @click="$emit('toggle-task-status', taskItem)"
   >
     <TaskListItemButtonCategory :icon="taskItem.icon" />
     <TaskListItemButtonDeleteTask icon="close" />
@@ -22,6 +22,10 @@ export default {
   components: {
     TaskListItemButtonDeleteTask,
     TaskListItemButtonCategory,
+  },
+  mounted: function () {
+    // console.log(this.taskItem.done);
+    // console.log(!!+this.taskItem.done);
   },
 };
 </script>

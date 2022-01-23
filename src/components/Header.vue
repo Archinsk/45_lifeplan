@@ -1,7 +1,12 @@
 <template>
   <header class="header bg-primary">
     <div class="container">
-      <img id="logo" src="@/assets/lifeplan_logo.jpg" alt="Life Plan Logo" />
+      <img
+        id="logo"
+        src="@/assets/lifeplan_logo.jpg"
+        alt="Life Plan Logo"
+        @click="$emit('lists-toggle')"
+      />
       <div class="nav">
         <HeaderButton icon="menu" />
         <HeaderButton

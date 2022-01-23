@@ -4,7 +4,7 @@
       v-for="item of listItems"
       :key="item.id"
       :taskItem="item"
-      @toggleComplete="$emit('toggleComplete', $event)"
+      @toggle-task-status="$emit('toggle-task-status', $event)"
     />
   </ul>
 </template>
