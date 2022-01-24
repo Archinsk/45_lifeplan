@@ -13,7 +13,7 @@
       <FormAddTaskButton
         :icon="iconName"
         :class="buttonSemantics"
-        @addNewTask="addNewTask"
+        @add-new-task="addNewTask"
       />
     </div>
   </form>
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     addNewTask() {
-      this.$emit("addNewTask", this.addTaskInputValue);
+      this.$emit("add-new-task", this.addTaskInputValue);
       this.addTaskInputValue = "";
     },
   },
