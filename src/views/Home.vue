@@ -14,6 +14,8 @@
           :list-items="tasksTodo"
           @toggle-task-status="toggleTaskStatus($event)"
           @toggle-complete="changeCompleted($event)"
+          @filter-task="filterCategory"
+          @delete-task="deleteTask"
           id="tasksTodo"
         />
       </div>
@@ -133,6 +135,8 @@ export default {
       console.log("Статус - " + task.done);
     },
     doNothing() {},
+    filterCategory() {},
+    deleteTask() {},
     postAjaxRequest(url, request, callback = this.doNothing) {
       const xhr = new XMLHttpRequest();
       // console.log(request);

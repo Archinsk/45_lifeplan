@@ -1,5 +1,10 @@
 <template>
-  <ButtonIconSquare :icon="icon" :class="buttonSemantics" class="category-button btn btn-primary text-light"/>
+  <ButtonIconSquare
+    :icon="icon"
+    :class="buttonSemantics"
+    class="category-button btn btn-primary text-light"
+    @click="$emit('filter-category')"
+  />
 </template>
 
 <script>

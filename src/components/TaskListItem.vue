@@ -4,8 +4,8 @@
     :class="{ taskCompleted: !!+taskItem.done }"
     @click="$emit('toggle-task-status', taskItem)"
   >
-    <TaskListItemButtonCategory :icon="taskItem.icon" />
-    <TaskListItemButtonDeleteTask icon="close" />
+    <TaskListItemButtonCategory :icon="taskItem.icon" @filter-task="$emit('filter-category')"/>
+    <TaskListItemButtonDeleteTask icon="close" @delete-task="$emit('delete-task')"/>
     <div class="task-text">
       {{ taskItem.task }}
     </div>

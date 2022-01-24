@@ -1,7 +1,8 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="delete-button btn btn-danger text-secondary"
+    class="delete-button btn btn-outline-primary text-secondary"
+    @click="$emit('delete-task')"
   />
 </template>
 

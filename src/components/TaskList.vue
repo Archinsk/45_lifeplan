@@ -5,6 +5,8 @@
       :key="item.id"
       :taskItem="item"
       @toggle-task-status="$emit('toggle-task-status', $event)"
+      @filter-task="$emit('filter-category')"
+      @delete-task="$emit('delete-task')"
     />
   </ul>
 </template>
