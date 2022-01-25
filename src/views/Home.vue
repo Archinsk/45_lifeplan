@@ -55,6 +55,7 @@ export default {
   },
   data() {
     return {
+      url: "https://www.d-skills.ru/45_lifeplan/php/",
       loggedUser: {
         id: 1,
         name: "mihail",
@@ -101,8 +102,7 @@ export default {
           task: event,
         };
         this.postAjaxRequest(
-          "https://www.d-skills.ru/45_lifeplan/php/createtask.php",
-          // "php/createtask.php",
+          this.url + "createtask.php",
           JSON.stringify(newTask),
           this.newTaskRecord
         );
@@ -125,8 +125,7 @@ export default {
     toggleTaskStatus(task) {
       console.log("Изменение задания");
       this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/toggletaskstatus.php",
-        // "php/toggletaskstatus.php",
+        this.url + "toggletaskstatus.php",
         JSON.stringify(task)
       );
       console.log("Статус - " + task.done);
@@ -153,8 +152,7 @@ export default {
 
     signIn(user) {
       this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/signin.php",
-        // "php/signin.php",
+        this.url + "signin.php",
         JSON.stringify(user),
         this.signInResponseParsing
       );
@@ -214,8 +212,7 @@ export default {
     signUp(user) {
       console.log("в отправке");
       this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/signup.php",
-        // "php/signup.php",
+        this.url + "signup.php",
         JSON.stringify(user),
         this.signUpResponseParsing
       );
@@ -275,8 +272,7 @@ export default {
 
     getTasks() {
       this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/gettasks.php",
-        // "php/gettasks.php",
+        this.url + "gettasks.php",
         JSON.stringify(this.loggedUser),
         this.tasksRecord
       );
