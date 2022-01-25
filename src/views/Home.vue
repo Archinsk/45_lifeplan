@@ -2,20 +2,21 @@
   <div>
     <Header @lists-toggle="listsToggle" />
     <div class="container">
-      <FormAddTask @addNewTask="addNewTask($event)" />
+      <FormAddTask @add-new-task="addNewTask($event)" />
       <div id="tasks">
         <TaskList
           :list-items="tasksDone"
           @toggle-task-status="toggleTaskStatus($event)"
+          @filter-task="filterCategory"
+          @delete-task="deleteTask($event)"
           id="tasksDone"
           :class="{ active: tasksDoneVisibility }"
         />
         <TaskList
           :list-items="tasksTodo"
           @toggle-task-status="toggleTaskStatus($event)"
-          @toggle-complete="changeCompleted($event)"
           @filter-task="filterCategory"
-          @delete-task="deleteTask"
+          @delete-task="deleteTask($event)"
           id="tasksTodo"
         />
       </div>
@@ -86,8 +87,6 @@ export default {
         { id: 2, task: "Посадить дерево", completed: true, icon: "favorite" },
         { id: 3, task: "Вырастить сына", completed: false, icon: "home" },
       ],
-      tasksTodo: [],
-      tasksDone: [],
       tasksDoneVisibility: false,
     };
   },
@@ -135,7 +134,15 @@ export default {
     },
     doNothing() {},
     filterCategory() {},
-    deleteTask() {},
+    deleteTask(index) {
+      console.log("Удаляю задание" + index);
+      this.postAjaxRequest(
+        "https://www.d-skills.ru/45_lifeplan/php/deletetask.php",
+        // "php/deletetask.php",
+        JSON.stringify(this.tasks[index]),
+      );
+      this.tasks.splice(index, 1);
+    },
     postAjaxRequest(url, request, callback = this.doNothing) {
       const xhr = new XMLHttpRequest();
       // console.log(request);
@@ -280,16 +287,33 @@ export default {
 
     tasksRecord(response) {
       this.tasks = response.tasks;
-      this.tasksTodo = response.tasks.filter((task) => !!+task.done === false);
-      this.tasksDone = response.tasks.filter((task) => !!+task.done === true);
-      this.logGroup("Невыполненные", this.tasksTodo);
-      this.logGroup("Выполненные", this.done);
       this.logGroup("Записи авторизованного пользователя", response);
     },
 
     listsToggle() {
       this.tasksDoneVisibility = !this.tasksDoneVisibility;
       console.log(this.tasksDoneVisibility);
+    },
+  },
+
+  computed: {
+    tasksTodo: function () {
+      let tasksWithIndexes = this.tasks.map(function (item, index) {
+        item.index = index;
+        return item;
+      });
+      let todo = tasksWithIndexes.filter((task) => !!+task.done === false);
+      this.logGroup("Невыполненные", todo);
+      return todo;
+    },
+    tasksDone: function () {
+      let tasksWithIndexes = this.tasks.map(function (item, index) {
+        item.index = index;
+        return item;
+      });
+      let done = tasksWithIndexes.filter((task) => !!+task.done === true);
+      this.logGroup("Выполненные", done);
+      return done;
     },
   },
 

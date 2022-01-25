@@ -3,7 +3,7 @@
     <div class="container">
       <img
         id="logo"
-        src="@/assets/lifeplan_logo.jpg"
+        src="@/assets/lifeplan_logo.svg"
         alt="Life Plan Logo"
         @click="$emit('lists-toggle')"
       />

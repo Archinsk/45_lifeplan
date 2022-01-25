@@ -26,6 +26,24 @@ body .header .container .header-button {
   color: white;
   border: solid 1px black;
 }
+body #tasks {
+  display: flex;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+body #tasks #tasksDone {
+  background-color: orange;
+  width: 100%;
+  position: absolute;
+  left: -100%;
+}
+body #tasks #tasksDone.active {
+  left: 0;
+}
+body #tasks #tasksTodo {
+  width: 100%;
+}
 body .taskList {
   list-style: none;
   padding-left: 0;

@@ -1,12 +1,12 @@
 <template>
   <ul class="taskList">
     <TaskListItem
-      v-for="item of listItems"
+      v-for="(item) of listItems"
       :key="item.id"
       :taskItem="item"
       @toggle-task-status="$emit('toggle-task-status', $event)"
       @filter-task="$emit('filter-category')"
-      @delete-task="$emit('delete-task')"
+      @delete-task="$emit('delete-task', $event)"
     />
   </ul>
 </template>

@@ -2,7 +2,7 @@
   <ButtonIconSquare
     :icon="icon"
     class="inputGroupButton btn btn-primary border-secondary"
-    @clickHandler="$emit('addNewTask')"
+    @click-handler="$emit('add-new-task')"
   />
 </template>
 

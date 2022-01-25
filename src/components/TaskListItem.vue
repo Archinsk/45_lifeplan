@@ -4,8 +4,14 @@
     :class="{ taskCompleted: !!+taskItem.done }"
     @click="$emit('toggle-task-status', taskItem)"
   >
-    <TaskListItemButtonCategory :icon="taskItem.icon" @filter-task="$emit('filter-category')"/>
-    <TaskListItemButtonDeleteTask icon="close" @delete-task="$emit('delete-task')"/>
+    <TaskListItemButtonCategory
+      :icon="taskItem.icon"
+      @filter-task="$emit('filter-category')"
+    />
+    <TaskListItemButtonDeleteTask
+      icon="close"
+      @delete-task="$emit('delete-task', taskItem.index)"
+    />
     <div class="task-text">
       {{ taskItem.task }}
     </div>
@@ -22,6 +28,11 @@ export default {
   components: {
     TaskListItemButtonDeleteTask,
     TaskListItemButtonCategory,
+  },
+  data() {
+    return {
+      deleteIndex: this.index,
+    };
   },
   mounted: function () {
     // console.log(this.taskItem.done);
