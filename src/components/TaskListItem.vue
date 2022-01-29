@@ -5,13 +5,15 @@
     @click="$emit('toggle-task-status', taskItem)"
   >
     <TaskListItemButtonCategory
-      v-if="this.taskItem.category && this.taskItem.category.icon"
-      :icon="category.icon"
-      :style="{ backgroundColor: category.color }"
-      @filter-task="$emit('filter-category')"
+      v-if="taskItem.category && taskItem.category.icon"
+      :icon="taskItem.category.icon"
+      :style="{ backgroundColor: taskItem.category.color }"
+      @filter-category="$emit('filter-category')"
     />
-    <!--    @delete-task="$emit('delete-task', taskItem.index)"-->
-    <TaskListItemButtonDeleteTask icon="close" />
+    <TaskListItemButtonDeleteTask
+      icon="close"
+      @delete-task="$emit('delete-task')"
+    />
     <div class="task-text">
       {{ taskItem.task }}
     </div>

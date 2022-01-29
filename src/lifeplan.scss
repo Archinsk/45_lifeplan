@@ -8,23 +8,37 @@ body {
       padding-bottom: 0.75rem;
     }
 
-    .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .navbar {
+      padding-top: 0;
+      padding-bottom: 0;
 
-      #logo {
-        height: 2.25rem;
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-        @media (min-width: 1200px) {
-          height: 3rem;
+        #logo {
+          height: 2.25rem;
+
+          @media (min-width: 1200px) {
+            height: 3rem;
+          }
         }
-      }
 
-      .header-button {
-        background-color: transparent;
-        color: white;
-        border: solid 1px black;
+        .navbar-nav {
+          flex-direction: row;
+
+          .nav-link {
+            padding-right: 0.5rem;
+            padding-left: 0.5rem;
+          }
+        }
+
+        .header-button {
+          background-color: transparent;
+          color: white;
+          border: solid 1px black;
+        }
       }
     }
   }

@@ -2,11 +2,15 @@
   <ul class="taskList">
     <TaskListItem
       v-for="item of listItems"
-      :key="item.category && item.category.id ? item.id + '-' + item.category.id : item.id"
+      :key="
+        item.category && item.category.id
+          ? item.id + '-' + item.category.id
+          : item.id
+      "
       :task-item="item"
       @toggle-task-status="$emit('toggle-task-status', $event)"
-      @filter-task="$emit('filter-category')"
-      @delete-task="$emit('delete-task', $event)"
+      @filter-category="$emit('filter-category', item.category.id)"
+      @delete-task="$emit('delete-task', item.id)"
     />
   </ul>
 </template>
@@ -22,7 +26,7 @@ export default {
   },
   updated() {
     console.log("Список обновлен");
-    console.log("Лист при обловлении компонента");
+    console.log("Лист при обновлении компонента");
     console.log(this.listItems);
   },
   mounted() {

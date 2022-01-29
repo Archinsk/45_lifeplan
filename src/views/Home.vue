@@ -6,38 +6,24 @@
       <div id="tasks">
         <TaskList
           :list-items="tasksDone"
-          :categories="categories"
           @toggle-task-status="toggleTaskStatus($event)"
-          @filter-task="filterCategory"
+          @filter-category="filterCategory($event)"
           @delete-task="deleteTask($event)"
           id="tasksDone"
           :class="{ active: tasksDoneVisibility }"
         />
         <TaskList
           :list-items="tasksTodo"
-          :categories="categories"
           @toggle-task-status="toggleTaskStatus($event)"
-          @filter-task="filterCategory"
+          @filter-category="filterCategory($event)"
           @delete-task="deleteTask($event)"
           id="tasksTodo"
         />
       </div>
-      <button @click="this.databaseAction" class="btn btn-danger">
+      <button @click="this.writeCategoriesToTasks" class="btn btn-danger">
         action
       </button>
     </div>
-
-    <SignInFormModal
-      @sign-in="signIn($event)"
-      :back-end-sign-in-login-error="errors.signIn.login.errorText"
-      :back-end-sign-in-password-error="errors.signIn.password.errorText"
-    />
-    <SignUpFormModal
-      @sign-up="signUp($event)"
-      :back-end-sign-up-login-error="errors.signIn.login.errorText"
-    />
-
-    <ColorScheme />
   </div>
 </template>
 
@@ -45,9 +31,6 @@
 import Header from "../components/Header";
 import FormAddTask from "../components/FormAddTask";
 import TaskList from "../components/TaskList";
-import SignInFormModal from "../components/SignInFormModal";
-import SignUpFormModal from "../components/SignUpFormModal";
-import ColorScheme from "../components/universal/ColorScheme";
 
 export default {
   name: "Home",
@@ -55,9 +38,6 @@ export default {
     Header,
     FormAddTask,
     TaskList,
-    SignInFormModal,
-    SignUpFormModal,
-    ColorScheme,
   },
   data() {
     return {
@@ -65,27 +45,6 @@ export default {
       loggedUser: {
         id: 1,
         name: "mihail",
-      },
-      errors: {
-        signIn: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-          password: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-        signUp: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
       },
       tasks: [
         {
@@ -107,6 +66,7 @@ export default {
           category: { color: "yellow", icon: "verified" },
         },
       ],
+      filteredTasks: [],
       categories: [
         {
           color: "",
@@ -209,6 +169,28 @@ export default {
   },
 
   methods: {
+    async postAjaxRequest(url, request, callback = this.doNothing) {
+      const xhr = new XMLHttpRequest();
+      // console.log(request);
+      xhr.open("POST", url, true);
+      xhr.responseType = "json";
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          callback(xhr.response);
+        }
+      };
+      xhr.setRequestHeader("Content-type", "application/json");
+      xhr.send(request);
+    },
+
+    logGroup(logHeader, ...logs) {
+      console.groupCollapsed(logHeader);
+      for (let log of logs) console.log(log);
+      console.groupEnd(logHeader);
+    },
+
+    doNothing() {},
+
     addNewTask(event) {
       let newTask;
       if (this.loggedUser.id) {
@@ -229,13 +211,12 @@ export default {
           completed: false,
           icon: "home",
         };
-        this.items.unshift(newTask);
       }
     },
 
     newTaskRecord(response) {
       this.tasks.unshift(response.task);
-      this.tasksTodo.unshift(response.task);
+      // this.tasksTodo.unshift(response.task);
     },
 
     toggleTaskStatus(task) {
@@ -249,151 +230,44 @@ export default {
       task.done === "1" ? (task.done = "0") : (task.done = "1");
       console.log("Статус - " + task.done);
     },
-    doNothing() {},
-    filterCategory() {},
-    deleteTask(index) {
-      console.log("Удаляю задание" + index);
-      this.postAjaxRequest(
-        "https://www.d-skills.ru/45_lifeplan/php/deletetask.php",
-        // "php/deletetask.php",
-        JSON.stringify(this.tasks[index])
-      );
-      this.tasks.splice(index, 1);
+
+
+
+    filterCategory(categoryId) {
+      console.log("Фильтрация по категоии с id=", categoryId);
+      if (this.filteredTasks.length === 0) {
+        console.log("Добавление в массив фильтрации");
+        this.filteredTasks = this.tasks.filter(
+          (task) => task.category && task.category.id === categoryId
+        );
+        console.log(this.filteredTasks);
+      } else {
+        console.log("Очищаю массив фильтрации");
+        this.filteredTasks = [];
+      }
     },
 
-    async postAjaxRequest(url, request, callback = this.doNothing) {
-      const xhr = new XMLHttpRequest();
-      // console.log(request);
-      xhr.open("POST", url, true);
-      xhr.responseType = "json";
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(xhr.response);
+    deleteTask(taskId) {
+      console.log("Удаление задание c id=" + taskId);
+      const task = { id: taskId };
+      this.postAjaxRequest(
+        this.url + "deletetask.php",
+        JSON.stringify(task),
+        this.removeTaskFromList(taskId)
+      );
+      // this.tasks.splice(index, 1);
+    },
+
+    removeTaskFromList(id) {
+      let tasks = this.tasks;
+      this.tasks.forEach(function (task, index) {
+        if (task.id === id) {
+          tasks.splice(index, 1);
         }
-      };
-      xhr.setRequestHeader("Content-type", "application/json");
-      xhr.send(request);
+      });
     },
 
-    signIn(user) {
-      this.postAjaxRequest(
-        this.url + "signin.php",
-        JSON.stringify(user),
-        this.signInResponseParsing
-      );
-    },
 
-    signInResponseParsing(response) {
-      if (response.error) {
-        this.signInErrorRecord(response.error);
-      }
-      if (response.user) {
-        this.authUser(response.user);
-      }
-    },
-
-    signInErrorRecord(error) {
-      if (error.type === "login") {
-        this.errors.signIn.login = error;
-        this.errors.signIn.password = {};
-      }
-      if (error.type === "password") {
-        this.errors.signIn.password = error;
-        this.errors.signIn.login = {};
-      }
-      this.logGroup("Записана ошибка", error);
-    },
-
-    authUser(user) {
-      this.errors = {
-        signIn: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-          password: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-        signUp: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-      };
-      this.loggedUser = user;
-      this.logGroup(
-        "Пользователь авторизован",
-        "user.id = " + user.id,
-        "user.name = " + user.name
-      );
-    },
-
-    signUp(user) {
-      console.log("в отправке");
-      this.postAjaxRequest(
-        this.url + "signup.php",
-        JSON.stringify(user),
-        this.signUpResponseParsing
-      );
-    },
-
-    signUpResponseParsing(response) {
-      if (response.error) {
-        this.signUpErrorRecord(response.error);
-      }
-      if (response.user) {
-        this.registerUser(response.user);
-      }
-    },
-
-    signUpErrorRecord(error) {
-      if (error.type === "login") {
-        this.errors.signUp.login = error;
-      }
-      this.logGroup("Записана ошибка", error);
-    },
-
-    registerUser(user) {
-      this.errors = {
-        signIn: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-          password: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-        signUp: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-      };
-      this.loggedUser = user;
-      this.logGroup(
-        "Пользователь зарегистрирован и авторизован",
-        "user.id = " + user.id,
-        "user.name = " + user.name
-      );
-    },
-
-    logGroup(logHeader, ...logs) {
-      console.groupCollapsed(logHeader);
-      for (let log of logs) console.log(log);
-      console.groupEnd(logHeader);
-    },
 
     getTasks() {
       this.postAjaxRequest(
@@ -438,6 +312,14 @@ export default {
     //     this.logGroup("Записываю иконки", this.newColors)
     //   );
     // },
+
+    writeCategoriesToTasks() {
+      this.postAjaxRequest(
+        this.url + "assigncategoriestotasks.php",
+        JSON.stringify({}),
+        this.logGroup("Присвоение категорий существующим заданиям", this.tasks)
+      );
+    },
 
     databaseAction() {
       this.postAjaxRequest(
@@ -493,6 +375,7 @@ export default {
     },
 
     assignIconsToCategories() {
+      this.logGroup("Категории до присвоения иконок", this.categories);
       let categories = this.categories;
       let icons = this.icons;
       categories.forEach(function (category) {
@@ -503,9 +386,11 @@ export default {
         });
       });
       console.log("5.1");
+      this.logGroup("Категории после присвоения иконок", this.categories);
     },
 
     assignColorsToCategories() {
+      this.logGroup("Категории до присвоения цветов", this.categories);
       let categories = this.categories;
       let colors = this.colors;
       categories.forEach(function (category) {
@@ -516,6 +401,7 @@ export default {
         });
       });
       console.log("6.1");
+      this.logGroup("Категории после присвоения цветов", this.categories);
     },
 
     assignCategoriesToTasks() {
@@ -530,6 +416,7 @@ export default {
       });
       console.log("7.1");
     },
+
     delay1() {
       return new Promise((resolve) =>
         setTimeout(() => {
@@ -537,7 +424,7 @@ export default {
           this.assignColorsToCategories();
           console.log("Промис 1 выполнен");
           resolve();
-        }, 1000)
+        }, 2000)
       );
     },
 
@@ -555,7 +442,9 @@ export default {
 
   computed: {
     tasksTodo: function () {
-      let tasksWithIndexes = this.tasks.map(function (item, index) {
+      const tasks =
+        this.filteredTasks.length > 0 ? this.filteredTasks : this.tasks;
+      let tasksWithIndexes = tasks.map(function (item, index) {
         item.index = index;
         return item;
       });
@@ -564,7 +453,9 @@ export default {
       return todo;
     },
     tasksDone: function () {
-      let tasksWithIndexes = this.tasks.map(function (item, index) {
+      const tasks =
+        this.filteredTasks.length > 0 ? this.filteredTasks : this.tasks;
+      let tasksWithIndexes = tasks.map(function (item, index) {
         item.index = index;
         return item;
       });

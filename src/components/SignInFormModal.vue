@@ -25,11 +25,13 @@
                 class="form-control"
                 id="signInLogin"
                 placeholder="Введите логин"
-                v-model="user.login"
+                v-model.trim="user.login"
+                @blur="$emit('sign-in-login-validation', user.login)"
+                @input="$emit('sign-in-login-oninput', user.login)"
               />
               <label for="signInLogin">Логин</label>
-              <div v-if="backEndSignInLoginError" class="form-text">
-                {{ backEndSignInLoginError }}
+              <div v-if="signInLoginError" class="form-text">
+                {{ signInLoginError }}
               </div>
             </div>
             <div class="form-floating">
@@ -38,11 +40,13 @@
                 class="form-control"
                 id="signInPassword"
                 placeholder="Введите пароль"
-                v-model="user.password"
+                v-model.trim="user.password"
+                @blur="$emit('sign-in-password-validation', user.password)"
+                @input="$emit('sign-in-password-oninput', user.password)"
               />
               <label for="signInPassword">Пароль</label>
-              <div v-if="backEndSignInPasswordError" class="form-text">
-                {{ backEndSignInPasswordError }}
+              <div v-if="signInPasswordError" class="form-text">
+                {{ signInPasswordError }}
               </div>
             </div>
           </div>
@@ -66,7 +70,7 @@
 export default {
   name: "SignInFormModal",
 
-  props: ["backEndSignInLoginError", "backEndSignInPasswordError"],
+  props: ["signInLoginError", "signInPasswordError"],
 
   data() {
     return {

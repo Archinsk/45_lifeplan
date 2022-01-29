@@ -3,7 +3,7 @@
     :icon="icon"
     :class="buttonSemantics"
     class="category-button btn btn-primary text-light"
-    @click="$emit('filter-category')"
+    @click-handler="$emit('filter-category')"
   />
 </template>
 
