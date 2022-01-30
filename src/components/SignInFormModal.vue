@@ -26,8 +26,8 @@
                 id="signInLogin"
                 placeholder="Введите логин"
                 v-model.trim="user.login"
-                @blur="$emit('sign-in-login-validation', user.login)"
-                @input="$emit('sign-in-login-oninput', user.login)"
+                @blur="$emit('sign-in-login-validation', user.login, user.password)"
+                @input="$emit('sign-in-login-validation', user.login, user.password)"
               />
               <label for="signInLogin">Логин</label>
               <div v-if="signInLoginError" class="form-text">
@@ -41,8 +41,20 @@
                 id="signInPassword"
                 placeholder="Введите пароль"
                 v-model.trim="user.password"
-                @blur="$emit('sign-in-password-validation', user.password)"
-                @input="$emit('sign-in-password-oninput', user.password)"
+                @blur="
+                  $emit(
+                    'sign-in-password-validation',
+                    user.login,
+                    user.password
+                  )
+                "
+                @input="
+                  $emit(
+                    'sign-in-password-validation',
+                    user.login,
+                    user.password
+                  )
+                "
               />
               <label for="signInPassword">Пароль</label>
               <div v-if="signInPasswordError" class="form-text">
@@ -52,13 +64,20 @@
           </div>
           <div class="modal-footer">
             <button
+              type="button"
               class="btn btn-outline-primary"
               data-bs-target="#signUpFormModal"
               data-bs-toggle="modal"
             >
               Регистрация
             </button>
-            <button type="submit" class="btn btn-primary">Войти</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              :class="{ disabled: !isValidForm }"
+            >
+              Войти
+            </button>
           </div>
         </form>
       </div>
@@ -79,6 +98,17 @@ export default {
         password: "",
       },
     };
+  },
+
+  computed: {
+    isValidForm() {
+      return (
+        !this.signInLoginError &&
+        this.user.login &&
+        !this.signInPasswordError &&
+        this.user.password
+      );
+    },
   },
 };
 </script>

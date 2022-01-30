@@ -27,7 +27,7 @@
                 placeholder="Введите логин"
                 v-model.trim="user.login"
                 @blur="$emit('sign-up-login-validation', user.login)"
-                @input="$emit('sign-up-login-oninput', user.login)"
+                @input="$emit('sign-up-login-validation', user.login)"
               />
               <label for="signUpLogin">Логин</label>
               <div v-if="signUpLoginError" class="form-text">
@@ -41,8 +41,20 @@
                 id="signUpPassword"
                 placeholder="Введите пароль"
                 v-model.trim="user.password"
-                @blur="$emit('sign-up-password-validation', user.password)"
-                @input="$emit('sign-up-password-oninput', user.password)"
+                @blur="
+                  $emit(
+                    'sign-up-password-validation',
+                    user.password,
+                    user.passwordRepeat
+                  )
+                "
+                @input="
+                  $emit(
+                    'sign-up-password-validation',
+                    user.password,
+                    user.passwordRepeat
+                  )
+                "
               />
               <label for="signUpPassword">Пароль</label>
               <div v-if="signUpPasswordError" class="form-text">
@@ -56,8 +68,20 @@
                 id="signUpPasswordRepeat"
                 placeholder="Пароль ещё раз"
                 v-model.trim="user.passwordRepeat"
-                @blur="$emit('sign-up-password-repeat-validation', user.passwordRepeat)"
-                @input="$emit('sign-up-password-repeat-oninput', user.passwordRepeat)"
+                @blur="
+                  $emit(
+                    'sign-up-password-repeat-validation',
+                    user.password,
+                    user.passwordRepeat
+                  )
+                "
+                @input="
+                  $emit(
+                    'sign-up-password-repeat-validation',
+                    user.password,
+                    user.passwordRepeat
+                  )
+                "
               />
               <label for="signUpPasswordRepeat">Пароль ещё раз</label>
               <div v-if="signUpPasswordRepeatError" class="form-text">
@@ -75,13 +99,20 @@
               Отмена
             </button>
             <button
+              type="button"
               class="btn btn-outline-primary"
               data-bs-target="#signInFormModal"
               data-bs-toggle="modal"
             >
               Вход
             </button>
-            <button type="submit" class="btn btn-primary">Отправить</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              :class="{ disabled: !isValidForm }"
+            >
+              Зарегистрироваться
+            </button>
           </div>
         </form>
       </div>
@@ -93,7 +124,11 @@
 export default {
   name: "SignUpFormModal",
 
-  props: ["signUpLoginError", "signUpPasswordError", "signUpPasswordRepeatError"],
+  props: [
+    "signUpLoginError",
+    "signUpPasswordError",
+    "signUpPasswordRepeatError",
+  ],
 
   data() {
     return {
@@ -103,6 +138,19 @@ export default {
         passwordRepeat: "",
       },
     };
+  },
+
+  computed: {
+    isValidForm() {
+      return (
+        !this.signUpLoginError &&
+        this.user.login &&
+        !this.signUpPasswordError &&
+        this.user.password &&
+        !this.signUpPasswordRepeatError &&
+        this.user.passwordRepeat
+      );
+    },
   },
 };
 </script>

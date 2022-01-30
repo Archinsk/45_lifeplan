@@ -14,10 +14,8 @@
       <SignInFormModal
         :sign-in-login-error="errors.signIn.login.errorText"
         :sign-in-password-error="errors.signIn.password.errorText"
-        @sign-in-login-validation="signInLoginValidation($event)"
-        @sign-in-login-oninput="signInLoginOninput($event)"
-        @sign-in-password-validation="signInPasswordValidation($event)"
-        @sign-in-password-oninput="signInPasswordOninput($event)"
+        @sign-in-login-validation="signInLoginValidation(arguments)"
+        @sign-in-password-validation="signInPasswordValidation(arguments)"
         @sign-in="signIn($event)"
       />
       <SignUpFormModal
@@ -25,13 +23,10 @@
         :sign-up-password-error="errors.signUp.password.errorText"
         :sign-up-password-repeat-error="errors.signUp.passwordRepeat.errorText"
         @sign-up-login-validation="signUpLoginValidation($event)"
-        @sign-up-login-oninput="signUpLoginOninput($event)"
-        @sign-up-password-validation="signUpPasswordValidation($event)"
-        @sign-up-password-oninput="signUpPasswordOninput($event)"
+        @sign-up-password-validation="signUpPasswordValidation(arguments)"
         @sign-up-password-repeat-validation="
-          signUpPasswordRepeatValidation($event)
+          signUpPasswordRepeatValidation(arguments)
         "
-        @sign-up-password-repeat-oninput="signUpPasswordRepeatOninput($event)"
         @sign-up="signUp($event)"
       />
     </div>
@@ -90,6 +85,15 @@ export default {
           },
         },
       },
+      serverErrors: {
+        signIn: {
+          login: [],
+          password: [],
+        },
+        signUp: {
+          login: [],
+        },
+      },
     };
   },
 
@@ -115,43 +119,76 @@ export default {
 
     doNothing() {},
 
-    signInLoginValidation(login) {
+    signInLoginValidation([login, password]) {
       if (!login) {
         this.errors.signIn.login = {
           id: "4",
           type: "login",
           errorText: "Введите логин",
         };
+      } else {
+        if (this.serverErrors.signIn.login.length > 0) {
+          if (this.serverErrors.signIn.login.indexOf(login) >= 0) {
+            console.log("Совпадение найдено");
+            this.errors.signIn.login = {
+              id: "1",
+              type: "login",
+              errorText: "Пользователь не зарегистрирован!",
+            };
+          } else {
+            this.errors.signIn.login = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signIn.login.errorText) {
+          this.errors.signIn.login = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+        if (this.errors.signIn.password.errorText || password) {
+          this.signInPasswordValidation([login, password]);
+        }
       }
     },
 
-    signInLoginOninput(login) {
-      if (login && this.errors.signIn.login.errorText) {
-        this.errors.signIn.login = {
-          id: "",
-          type: "",
-          errorText: "",
-        };
-      }
-    },
-
-    signInPasswordValidation(password) {
+    signInPasswordValidation([login, password]) {
       if (!password) {
         this.errors.signIn.password = {
           id: "5",
           type: "password",
           errorText: "Введите пароль",
         };
-      }
-    },
-
-    signInPasswordOninput(password) {
-      if (password && this.errors.signIn.password.errorText) {
-        this.errors.signIn.password = {
-          id: "",
-          type: "",
-          errorText: "",
-        };
+      } else {
+        if (this.serverErrors.signIn.password.length > 0) {
+          if (
+            this.serverErrors.signIn.password.find(
+              (user) => user.login === login && user.password === password
+            )
+          ) {
+            console.log("Совпадение найдено");
+            this.errors.signIn.password = {
+              id: "2",
+              type: "password",
+              errorText: "Неверно введен пароль!",
+            };
+          } else {
+            this.errors.signIn.password = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signIn.password.errorText) {
+          this.errors.signIn.password = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
       }
     },
 
@@ -162,84 +199,116 @@ export default {
           type: "login",
           errorText: "Введите логин",
         };
+      } else {
+        if (this.serverErrors.signUp.login.length > 0) {
+          if (this.serverErrors.signUp.login.indexOf(login) >= 0) {
+            console.log("Совпадение найдено");
+            this.errors.signUp.login = {
+              id: "3",
+              type: "login",
+              errorText: "Логин уже занят",
+            };
+          } else {
+            this.errors.signUp.login = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signUp.login.errorText) {
+          this.errors.signUp.login = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
       }
     },
 
-    signUpLoginOninput(login) {
-      if (login && this.errors.signUp.login.errorText) {
-        this.errors.signUp.login = {
-          id: "",
-          type: "",
-          errorText: "",
-        };
-      }
-    },
-
-    signUpPasswordValidation(password) {
+    signUpPasswordValidation([password, passwordRepeat]) {
       if (!password) {
         this.errors.signUp.password = {
           id: "7",
           type: "password",
           errorText: "Введите пароль",
         };
+      } else {
+        if (this.errors.signUp.password.errorText) {
+          this.errors.signUp.password = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+        if (this.errors.signUp.passwordRepeat.errorText || passwordRepeat) {
+          this.signUpPasswordRepeatValidation([password, passwordRepeat]);
+        }
       }
     },
 
-    signUpPasswordOninput(password) {
-      if (password && this.errors.signUp.password.errorText) {
-        this.errors.signUp.password = {
-          id: "",
-          type: "",
-          errorText: "",
-        };
-      }
-    },
-
-    signUpPasswordRepeatValidation(passwordRepeat) {
+    signUpPasswordRepeatValidation([password, passwordRepeat]) {
       if (!passwordRepeat) {
         this.errors.signUp.passwordRepeat = {
           id: "8",
-          type: "login",
+          type: "passwordRepeat",
           errorText: "Введите пароль ещё раз",
         };
-      }
-    },
-
-    signUpPasswordRepeatOninput(passwordRepeat) {
-      if (passwordRepeat && this.errors.signUp.passwordRepeat.errorText) {
-        this.errors.signUp.passwordRepeat = {
-          id: "",
-          type: "",
-          errorText: "",
-        };
+      } else {
+        if (!password) {
+          this.signUpPasswordValidation([password, passwordRepeat]);
+        } else {
+          if (passwordRepeat !== password) {
+            this.errors.signUp.passwordRepeat = {
+              id: "9",
+              type: "passwordRepeat",
+              errorText: "Повтор не совпадает с паролем",
+            };
+          } else if (this.errors.signUp.passwordRepeat.errorText) {
+            this.errors.signUp.passwordRepeat = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        }
       }
     },
 
     signIn(user) {
+      const parser = this.signInResponseParsing;
+      const callback = function (response) {
+        return parser(response, user);
+      };
       this.postAjaxRequest(
         this.url + "signin.php",
         JSON.stringify(user),
-        this.signInResponseParsing
+        callback
       );
     },
 
-    signInResponseParsing(response) {
+    signInResponseParsing(response, user) {
       if (response.error) {
-        this.signInErrorRecord(response.error);
+        this.signInErrorRecord(response.error, user);
       }
       if (response.user) {
         this.authUser(response.user);
       }
     },
 
-    signInErrorRecord(error) {
+    signInErrorRecord(error, user) {
       if (error.type === "login") {
         this.errors.signIn.login = error;
         this.errors.signIn.password = {};
+        this.serverErrors.signIn.login.push(user.login);
       }
       if (error.type === "password") {
         this.errors.signIn.password = error;
         this.errors.signIn.login = {};
+        let errorPasswordUser = {
+          login: user.login,
+          password: user.password,
+        };
+        this.serverErrors.signIn.password.push(errorPasswordUser);
       }
       this.logGroup("Записана ошибка", error);
     },
@@ -275,17 +344,21 @@ export default {
     },
 
     signUp(user) {
-      console.log("в отправке");
+      const parser = this.signUpResponseParsing;
+      const callback = function (response) {
+        return parser(response, user);
+      };
       this.postAjaxRequest(
         this.url + "signup.php",
         JSON.stringify(user),
-        this.signUpResponseParsing
+        callback
       );
     },
 
-    signUpResponseParsing(response) {
+    signUpResponseParsing(response, user) {
       if (response.error) {
         this.signUpErrorRecord(response.error);
+        this.serverErrors.signUp.login.push(user.login);
       }
       if (response.user) {
         this.registerUser(response.user);
