@@ -231,8 +231,6 @@ export default {
       console.log("Статус - " + task.done);
     },
 
-
-
     filterCategory(categoryId) {
       console.log("Фильтрация по категоии с id=", categoryId);
       if (this.filteredTasks.length === 0) {
@@ -266,8 +264,6 @@ export default {
         }
       });
     },
-
-
 
     getTasks() {
       this.postAjaxRequest(

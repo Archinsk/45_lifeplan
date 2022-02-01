@@ -7,7 +7,7 @@
     <TaskListItemButtonCategory
       v-if="taskItem.category && taskItem.category.icon"
       :icon="taskItem.category.icon"
-      :style="{ backgroundColor: taskItem.category.color }"
+      :style="categoryButtonStyles"
       @filter-category="$emit('filter-category')"
     />
     <TaskListItemButtonDeleteTask
@@ -33,7 +33,6 @@ export default {
   },
   data() {
     return {
-      // deleteIndex: this.index,
       category: {
         color:
           this.taskItem.category && this.taskItem.category.color
@@ -44,6 +43,10 @@ export default {
             ? this.taskItem.category.icon
             : "home",
       },
+      categoryButtonStyles: {
+        backgroundColor: this.taskItem.category.color,
+        borderColor: this.taskItem.category.color
+      }
     };
   },
   // watch: {

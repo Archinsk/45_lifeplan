@@ -8,20 +8,31 @@ body .header {
     padding-bottom: 0.75rem;
   }
 }
-body .header .container {
+body .header .navbar {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+body .header .navbar .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-body .header .container #logo {
+body .header .navbar .container #logo {
   height: 2.25rem;
 }
 @media (min-width: 1200px) {
-  body .header .container #logo {
+  body .header .navbar .container #logo {
     height: 3rem;
   }
 }
-body .header .container .header-button {
+body .header .navbar .container .navbar-nav {
+  flex-direction: row;
+}
+body .header .navbar .container .navbar-nav .nav-link {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+body .header .navbar .container .header-button {
   background-color: transparent;
   color: white;
   border: solid 1px black;
@@ -33,7 +44,6 @@ body #tasks {
   overflow: hidden;
 }
 body #tasks #tasksDone {
-  background-color: orange;
   width: 100%;
   position: absolute;
   left: -100%;
@@ -52,19 +62,25 @@ body .taskList .task {
   border-radius: 0.3125rem;
   min-height: 2.5rem;
 }
-body .taskList .task .category-button {
+body .taskList .task.taskCompleted {
+  text-decoration: line-through;
+}
+body li {
+  display: block;
+  border-radius: 0.3125rem;
+  min-height: 2.5rem;
+}
+body .category-button {
   float: left;
   margin-right: 0.5rem;
 }
-body .taskList .task .task-text {
+body .task-text {
   padding: 0.4375rem 0.5rem;
 }
-body .taskList .task .delete-button {
+body .delete-button,
+body .context-menu-button {
   float: right;
   margin-left: 0.5rem;
-}
-body .taskList .task.taskCompleted {
-  text-decoration: line-through;
 }
 body .buttonIconSquare {
   line-height: 0.75;

@@ -1,6 +1,6 @@
 <template>
-  <ul class="taskList bg-light">
-    <TaskListItem
+  <ul class="taskList">
+    <CategoriesListItem
       v-for="item of listItems"
       :key="
         item.category && item.category.id
@@ -8,21 +8,20 @@
           : item.id
       "
       :task-item="item"
-      @toggle-task-status="$emit('toggle-task-status', $event)"
-      @filter-category="$emit('filter-category', item.category.id)"
-      @delete-task="$emit('delete-task', item.id)"
+      @open-modal-edit-category="$emit('open-modal-edit-category', item)"
+      @open-modal-delete-category="$emit('open-modal-delete-category', item)"
     />
   </ul>
 </template>
 
 <script>
-import TaskListItem from "@/components/TaskListItem";
+import CategoriesListItem from "@/components/CategoriesListItem";
 
 export default {
-  name: "TaskList",
+  name: "CategoriesList",
   props: ["listItems"],
   components: {
-    TaskListItem,
+    CategoriesListItem,
   },
   updated() {
     console.log("Список обновлен");

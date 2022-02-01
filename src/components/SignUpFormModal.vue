@@ -34,9 +34,9 @@
                 {{ signUpLoginError }}
               </div>
             </div>
-            <div class="form-floating mb-3">
+            <div class="form-floating input-group">
               <input
-                type="password"
+                :type="passwordHidden ? 'password' : 'text'"
                 class="form-control"
                 id="signUpPassword"
                 placeholder="Введите пароль"
@@ -57,13 +57,22 @@
                 "
               />
               <label for="signUpPassword">Пароль</label>
-              <div v-if="signUpPasswordError" class="form-text">
-                {{ signUpPasswordError }}
-              </div>
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                @click="togglePasswordVisibility"
+              >
+                <span class="material-icons">
+                  {{ passwordHidden ? "visibility_off" : "visibility" }}
+                </span>
+              </button>
             </div>
-            <div class="form-floating">
+            <div v-if="signUpPasswordError" class="form-text">
+              {{ signUpPasswordError }}
+            </div>
+            <div class="form-floating input-group mt-3">
               <input
-                type="password"
+                :type="passwordRepeatHidden ? 'password' : 'text'"
                 class="form-control"
                 id="signUpPasswordRepeat"
                 placeholder="Пароль ещё раз"
@@ -84,9 +93,18 @@
                 "
               />
               <label for="signUpPasswordRepeat">Пароль ещё раз</label>
-              <div v-if="signUpPasswordRepeatError" class="form-text">
-                {{ signUpPasswordRepeatError }}
-              </div>
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                @click="togglePasswordRepeatVisibility"
+              >
+                <span class="material-icons">
+                  {{ passwordRepeatHidden ? "visibility_off" : "visibility" }}
+                </span>
+              </button>
+            </div>
+            <div v-if="signUpPasswordRepeatError" class="form-text">
+              {{ signUpPasswordRepeatError }}
             </div>
           </div>
           <div class="modal-footer">
@@ -137,7 +155,18 @@ export default {
         password: "",
         passwordRepeat: "",
       },
+      passwordHidden: true,
+      passwordRepeatHidden: true,
     };
+  },
+
+  methods: {
+    togglePasswordVisibility() {
+      this.passwordHidden = !this.passwordHidden;
+    },
+    togglePasswordRepeatVisibility() {
+      this.passwordRepeatHidden = !this.passwordRepeatHidden;
+    },
   },
 
   computed: {

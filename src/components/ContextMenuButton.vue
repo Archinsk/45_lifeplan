@@ -1,8 +1,8 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="delete-button btn text-secondary"
-    @click-handler="$emit('delete-task')"
+    class="context-menu-button btn text-secondary"
+    @click-handler="$emit('toggle-context-menu')"
   />
 </template>
 
@@ -10,7 +10,7 @@
 import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
-  name: "TaskListItemButtonDeleteTask",
+  name: "ContextMenuButton",
   components: {
     ButtonIconSquare,
   },

@@ -26,17 +26,21 @@
                 id="signInLogin"
                 placeholder="Введите логин"
                 v-model.trim="user.login"
-                @blur="$emit('sign-in-login-validation', user.login, user.password)"
-                @input="$emit('sign-in-login-validation', user.login, user.password)"
+                @blur="
+                  $emit('sign-in-login-validation', user.login, user.password)
+                "
+                @input="
+                  $emit('sign-in-login-validation', user.login, user.password)
+                "
               />
               <label for="signInLogin">Логин</label>
               <div v-if="signInLoginError" class="form-text">
                 {{ signInLoginError }}
               </div>
             </div>
-            <div class="form-floating">
+            <div class="form-floating input-group">
               <input
-                type="password"
+                :type="passwordHidden ? 'password' : 'text'"
                 class="form-control"
                 id="signInPassword"
                 placeholder="Введите пароль"
@@ -57,9 +61,18 @@
                 "
               />
               <label for="signInPassword">Пароль</label>
-              <div v-if="signInPasswordError" class="form-text">
-                {{ signInPasswordError }}
-              </div>
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                @click="togglePasswordVisibility"
+              >
+                <span class="material-icons">
+                  {{ passwordHidden ? "visibility_off" : "visibility" }}
+                </span>
+              </button>
+            </div>
+            <div v-if="signInPasswordError" class="form-text">
+              {{ signInPasswordError }}
             </div>
           </div>
           <div class="modal-footer">
@@ -97,7 +110,14 @@ export default {
         login: "",
         password: "",
       },
+      passwordHidden: true,
     };
+  },
+
+  methods: {
+    togglePasswordVisibility() {
+      this.passwordHidden = !this.passwordHidden;
+    },
   },
 
   computed: {
