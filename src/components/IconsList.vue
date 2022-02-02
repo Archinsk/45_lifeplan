@@ -2,12 +2,12 @@
   <ul class="taskList">
     <IconsListItem
       v-for="item of listItems"
-      :key="
-        item.category && item.category.id
-          ? item.id + '-' + item.category.id
-          : item.id
+      :key="item.id"
+      :icon="item"
+      :selected-category-color="selectedCategoryColor"
+      @change-icon-selected-category="
+        $emit('change-icon-selected-category', item)
       "
-      :task-item="item"
     />
   </ul>
 </template>
@@ -17,9 +17,9 @@ import IconsListItem from "./IconsListItem";
 
 export default {
   name: "IconsList",
-  props: ["listItems"],
+  props: ["listItems", "selectedCategoryColor"],
   components: {
-    IconsListItem
+    IconsListItem,
   },
 };
 </script>

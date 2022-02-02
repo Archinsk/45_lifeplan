@@ -28,7 +28,7 @@
           >
             Отмена
           </button>
-          <button type="button" class="btn btn-primary">Войти</button>
+          <button type="button" class="btn btn-primary" :class="{disabled: okDisabled}" @click="$emit('ok-action')">{{ okButtonTitle }}</button>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
 export default {
   name: "CategoriesModal",
 
-  props: ["id", "title"],
+  props: ["id", "title", "okButtonTitle", "okDisabled"],
 
   data() {
     return {

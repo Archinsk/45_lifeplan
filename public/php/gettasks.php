@@ -27,6 +27,7 @@ foreach( $tasksDB as $taskitem) {
 	  'done' => $taskitem->done,
 	  'creationDate' => $taskitem->creation_date,
 	  'completionDate' => $taskitem->completion_date,
+	  'categoryId' => $taskitem->category_id,
 	);
 	array_push($tasks, $task);
 };

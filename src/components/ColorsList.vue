@@ -1,14 +1,15 @@
 <template>
-  <ul class="taskList">
+  <ul v-if="listItems[0].id" class="taskList">
     <ColorsListItem
       v-for="item of listItems"
-      :key="
-        item.category && item.category.id
-          ? item.id + '-' + item.category.id
-          : item.id
-      "
-      :task-item="item"
-      :style="categoryButtonStyles"
+      :key="item.id"
+      :color="item"
+      :selected-category-icon="selectedCategoryIcon"
+      :style="{
+        backgroundColor: item.hex_color,
+        borderColor: item.hex_color,
+      }"
+      @change-color-selected-category="$emit('change-color-selected-category', item)"
     />
   </ul>
 </template>
@@ -18,17 +19,9 @@ import ColorsListItem from "./ColorsListItem";
 
 export default {
   name: "ColorsList",
-  props: ["listItems"],
+  props: ["listItems", "selectedCategoryIcon"],
   components: {
-    ColorsListItem
+    ColorsListItem,
   },
-  data() {
-    return {
-      categoryButtonStyles: {
-        backgroundColor: this.taskItem.category.color,
-        borderColor: this.taskItem.category.color
-      }
-    }
-  }
 };
 </script>

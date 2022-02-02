@@ -1,9 +1,9 @@
 <template>
   <li class="task bg-info border border-secondary mb-1">
     <TaskListItemButtonCategory
-      v-if="taskItem.icon"
-      :icon="taskItem.icon"
-      :style="{backgroundColor: taskItem.color, borderColor: taskItem.color}"
+      v-if="category.icon"
+      :icon="category.icon"
+      :style="{ backgroundColor: category.color, borderColor: category.color }"
     />
     <ContextMenuButton
       icon="more_horiz"
@@ -24,7 +24,7 @@
       data-bs-target="#edit-category"
     />
     <div class="task-text">
-      {{ taskItem.name }}
+      {{ category.name }}
     </div>
   </li>
 </template>
@@ -35,7 +35,7 @@ import ContextMenuButton from "./ContextMenuButton";
 
 export default {
   name: "CategoriesListItem",
-  props: ["taskItem"],
+  props: ["category"],
   components: {
     TaskListItemButtonCategory,
     ContextMenuButton,

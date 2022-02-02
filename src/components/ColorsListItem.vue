@@ -1,13 +1,13 @@
 <template>
-  <li class="task bg-info border border-secondary mb-1">
-    <TaskListItemButtonCategory
-      icon="stars"
-      :style="{backgroundColor: taskItem.hex_color, borderColor: taskItem.hex_color}"
-    />
-    <div class="task-text">
-      {{ taskItem.id + " - " + taskItem.name + " - " + taskItem.hex_color }}
-    </div>
-  </li>
+  <TaskListItemButtonCategory
+    class="mb-2"
+    :icon="selectedCategoryIcon"
+    :style="{
+      backgroundColor: color.hex_color,
+      borderColor: color.hex_color,
+    }"
+    @filter-category="$emit('change-color-selected-category')"
+  />
 </template>
 
 <script>
@@ -15,7 +15,7 @@ import TaskListItemButtonCategory from "@/components/TaskListItemButtonCategory"
 
 export default {
   name: "ColorsListItem",
-  props: ["taskItem"],
+  props: ["color", "selectedCategoryIcon"],
   components: {
     TaskListItemButtonCategory,
   },
