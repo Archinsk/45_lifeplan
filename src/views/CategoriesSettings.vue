@@ -26,11 +26,11 @@
         Пример
         <CategoriesListItem :category="newCategory" />
         <div class="mb-3">
-          <label for="newCategoryName" class="form-label">Название</label>
+          <label for="selectedCategoryName" class="form-label">Название</label>
           <input
             type="text"
             class="form-control"
-            id="newCategoryName"
+            id="selectedCategoryName"
             placeholder="Введите название категории"
             v-model.trim="newCategory.name"
           />
@@ -99,9 +99,21 @@
         id="edit-category"
         title="Редактирование категории"
         ok-button-title="Изменить"
+        :ok-disabled="!isValidEditableCategory"
+        @ok-action="editCategory"
       >
         <p>Пример</p>
         <CategoriesListItem :category="selectedCategory" />
+        <div class="mb-3">
+          <label for="newCategoryName" class="form-label">Название</label>
+          <input
+            type="text"
+            class="form-control"
+            id="newCategoryName"
+            placeholder="Введите название категории"
+            v-model.trim="selectedCategory.name"
+          />
+        </div>
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
           <li class="nav-item" role="presentation">
@@ -166,12 +178,15 @@
           </div>
         </div>
       </CategoriesModal>
+
       <CategoriesModal
         id="delete-category"
         title="Удаление категории"
         ok-button-title="Удалить"
+        @ok-action="deleteCategory"
       >
-        <CategoriesListItem :task-item="selectedCategory" />
+        <p>{{ 'Вы действительно хотите удалить категорию "' + selectedCategory.name + '" ?'}}</p>
+        <CategoriesListItem :category="selectedCategory" />
       </CategoriesModal>
     </div>
   </div>
@@ -407,6 +422,40 @@ export default {
       this.logGroup("Новая категория", response);
     },
 
+    editCategory() {
+      const selectedCategory = Object.assign({}, this.selectedCategory);
+      selectedCategory.userid = this.loggedUser.id;
+      selectedCategory.user_name = this.loggedUser.name;
+      console.log(selectedCategory);
+      this.postAjaxRequest(
+        this.url + "editcategory.php",
+        JSON.stringify(selectedCategory),
+        this.editCategoryRecord
+      );
+    },
+
+    editCategoryRecord(response) {
+      this.delectedCategory = response.category;
+      this.logGroup("Измененная категория", response);
+    },
+
+    deleteCategory() {
+      const selectedCategory = Object.assign({}, this.selectedCategory);
+      selectedCategory.userid = this.loggedUser.id;
+      selectedCategory.user_name = this.loggedUser.name;
+      console.log(selectedCategory);
+      this.postAjaxRequest(
+        this.url + "deletecategory.php",
+        JSON.stringify(selectedCategory),
+        this.deleteCategoryItem
+      );
+    },
+
+    deleteCategoryItem(response) {
+      // this.delectedCategory = response.category;
+      this.logGroup("Измененная категория", response);
+    },
+
     assignIconsToCategories() {
       this.logGroup("Категории до присвоения иконок", this.categories);
       let categories = this.categories;
@@ -414,6 +463,9 @@ export default {
       categories.forEach(function (category) {
         icons.forEach(function (icon) {
           if (category.icon_id === icon.id) {
+            // const categoryWithIcon = Object.assign({}, category);
+            // categoryWithIcon.icon = icon.icon;
+            // category = categoryWithIcon;
             category.icon = icon.icon;
           }
         });
@@ -429,6 +481,9 @@ export default {
       categories.forEach(function (category) {
         colors.forEach(function (color) {
           if (category.color_id === color.id) {
+            // const categoryWithColor = Object.assign({}, category);
+            // categoryWithColor.color = color.hex_color;
+            // category = categoryWithColor;
             category.color = color.hex_color;
           }
         });
@@ -449,22 +504,22 @@ export default {
     },
 
     openModalEditCategory(category) {
-      this.selectedCategory = category;
+      this.selectedCategory = Object.assign({}, category);
     },
 
     openModalDeleteCategory(category) {
-      this.selectedCategory = category;
+      this.selectedCategory = Object.assign({}, category);
     },
 
     changeIconSelectedCategory(icon) {
       this.selectedCategory.icon = icon.icon;
-      this.selectedCategory.icon_id = icon.id;
+      this.selectedCategory.iconid = icon.id;
       console.log(icon);
     },
 
     changeColorSelectedCategory(color) {
       this.selectedCategory.color = color.hex_color;
-      this.selectedCategory.color_id = color.id;
+      this.selectedCategory.colorid = color.id;
       console.log(color);
     },
 
@@ -482,12 +537,33 @@ export default {
   },
 
   computed: {
+    selectedCategoryBeforeChange: function () {
+      const selectedCategory = this.selectedCategory;
+      return this.categories.find(
+        (category) => category.id === selectedCategory.id
+      );
+    },
+
     isValidNewCategory: function () {
       return (
         this.newCategory.name &&
         this.newCategory.iconid &&
         this.newCategory.colorid
       );
+    },
+
+    isValidEditableCategory: function () {
+      if (this.selectedCategory.id) {
+        return (
+          this.selectedCategory.name !==
+            this.selectedCategoryBeforeChange.name ||
+          this.selectedCategory.iconid !==
+            this.selectedCategoryBeforeChange.iconid ||
+          this.selectedCategory.colorid !==
+            this.selectedCategoryBeforeChange.colorid
+        );
+      }
+      return false;
     },
   },
 
