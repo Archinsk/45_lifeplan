@@ -20,9 +20,7 @@ $request = json_decode(file_get_contents('php://input'), true);
 // echo '--------------------------';
 
 if ( isset($request) ) {
-  $category = R::dispense('categories');
-    $category->userid = $request['userid'];
-    $category->login = $request['user_name'];
+  $category = R::load('categories', $request['id']);
     $category->name = $request['name'];  
     $category->iconid = $request['iconid'];
     $category->icon = $request['icon'];

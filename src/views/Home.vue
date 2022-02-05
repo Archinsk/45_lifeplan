@@ -70,9 +70,9 @@ export default {
       categories: [
         {
           color: "",
-          color_id: "",
+          colorid: "",
           icon: "",
-          icon_id: "",
+          iconid: "",
           id: "",
           name: "",
         },
@@ -94,77 +94,6 @@ export default {
         },
       ],
       tasksDoneVisibility: false,
-      // newIcons: [
-      //   {
-      //     name: "Home",
-      //     icon: "home",
-      //     type: "material-icons",
-      //     rating: 5,
-      //   },
-      //   {
-      //     name: "Settings",
-      //     icon: "settings",
-      //     type: "material-icons",
-      //     rating: 1,
-      //   },
-      // ],
-      // newColors: [
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C090",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C0C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#6090C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#6060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#9060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C06090",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C06060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C09060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C0C060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#90C060",
-      //   },
-      // ],
-      // newCategory: {
-      //   name: "Test Category",
-      //   user_id: "666",
-      //   icon_id: "",
-      //   color_id: "13",
-      //   rating: 2,
-      // },
     };
   },
 
@@ -196,7 +125,7 @@ export default {
       if (this.loggedUser.id) {
         newTask = {
           login: this.loggedUser.name,
-          user_id: this.loggedUser.id,
+          userid: this.loggedUser.id,
           task: event,
         };
         this.postAjaxRequest(
@@ -216,7 +145,6 @@ export default {
 
     newTaskRecord(response) {
       this.tasks.unshift(response.task);
-      // this.tasksTodo.unshift(response.task);
     },
 
     toggleTaskStatus(task) {
@@ -253,7 +181,6 @@ export default {
         JSON.stringify(task),
         this.removeTaskFromList(taskId)
       );
-      // this.tasks.splice(index, 1);
     },
 
     removeTaskFromList(id) {
@@ -292,14 +219,6 @@ export default {
     //     this.logGroup("Записываю иконки", this.icons)
     //   );
     // },
-
-    createCategory() {
-      this.postAjaxRequest(
-        this.url + "createcategory.php",
-        JSON.stringify(this.newCategory),
-        this.logGroup("Записываю категорию", this.newCategory)
-      );
-    },
 
     // createNewColors() {
     //   this.postAjaxRequest(
@@ -376,7 +295,7 @@ export default {
       let icons = this.icons;
       categories.forEach(function (category) {
         icons.forEach(function (icon) {
-          if (category.icon_id === icon.id) {
+          if (category.iconid === icon.id) {
             category.icon = icon.icon;
           }
         });
@@ -391,7 +310,7 @@ export default {
       let colors = this.colors;
       categories.forEach(function (category) {
         colors.forEach(function (color) {
-          if (category.color_id === color.id) {
+          if (category.colorid === color.id) {
             category.color = color.hex_color;
           }
         });
@@ -405,7 +324,7 @@ export default {
       let categories = this.categories;
       tasks.forEach(function (task) {
         categories.forEach(function (category) {
-          if (task.categoryId === category.id) {
+          if (task.categoryid === category.id) {
             task.category = category;
           }
         });

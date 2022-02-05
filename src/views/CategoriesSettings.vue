@@ -5,8 +5,8 @@
       <h4>Категории</h4>
       <CategoriesList
         :list-items="categories"
-        @open-modal-edit-category="openModalEditCategory"
-        @open-modal-delete-category="openModalDeleteCategory"
+        @open-modal-edit-category="openModalEditCategory($event)"
+        @open-modal-delete-category="openModalDeleteCategory($event)"
       />
       <button
         class="btn btn-primary"
@@ -185,7 +185,13 @@
         ok-button-title="Удалить"
         @ok-action="deleteCategory"
       >
-        <p>{{ 'Вы действительно хотите удалить категорию "' + selectedCategory.name + '" ?'}}</p>
+        <p>
+          {{
+            'Вы действительно хотите удалить категорию "' +
+            selectedCategory.name +
+            '" ?'
+          }}
+        </p>
         <CategoriesListItem :category="selectedCategory" />
       </CategoriesModal>
     </div>
@@ -229,6 +235,14 @@ export default {
           name: "",
         },
       ],
+      defaultCategory: {
+        color: "grey",
+        colorid: "",
+        icon: "help",
+        iconid: "",
+        id: "",
+        name: "",
+      },
       newCategory: {
         color: "grey",
         colorid: "",
@@ -325,13 +339,6 @@ export default {
       //     hex_color: "#90C060",
       //   },
       // ],
-      // newCategory: {
-      //   name: "Test Category",
-      //   user_id: "666",
-      //   icon_id: "",
-      //   color_id: "13",
-      //   rating: 2,
-      // },
       modalEditCategoryVisibilities: true,
       modalDeleteCategoryVisibilities: true,
     };
@@ -435,7 +442,12 @@ export default {
     },
 
     editCategoryRecord(response) {
-      this.delectedCategory = response.category;
+      console.log(response);
+      let editableCategoryIndex = this.categories.findIndex(
+        (category) => category.id === response.category.id.toString()
+      );
+      console.log(editableCategoryIndex);
+      this.categories[editableCategoryIndex] = response.category;
       this.logGroup("Измененная категория", response);
     },
 
@@ -452,8 +464,12 @@ export default {
     },
 
     deleteCategoryItem(response) {
-      // this.delectedCategory = response.category;
-      this.logGroup("Измененная категория", response);
+      const deletedCategoryIndex = this.categories.findIndex(
+        (category) => category.id === response.category.id
+      );
+      this.categories.splice(deletedCategoryIndex, 1);
+      this.selectedCategory=Object.assign({}, this.defaultCategory);
+      this.logGroup("Удаленная категория", response);
     },
 
     assignIconsToCategories() {

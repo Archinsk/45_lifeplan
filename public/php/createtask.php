@@ -26,24 +26,22 @@ $creation_date = time();
 if ( isset($request) ) {
 	
   //Поиск совпадения начала задания с именем одной из существующих категорий пользователя
-  $categories = R::find('categories', 'user_id = ?', array($request['user_id']));
-  $category_id = null;
+  $categories = R::find('categories', 'userid = ?', array($request['userid']));
+  $categoryid = null;
   foreach( $categories as $category ) {
-    // echo 'Категория - ' . $category->name . '---';
     $hasCategory = strpos($request['task'], $category->name);
     if ($hasCategory === 0) {
-	  $category_id = $category->id;
-	  // echo 'Совпала категория - ' . $category->id . '---';
+	  $categoryid = $category->id;
     }
   }
 
   $task = R::dispense('tasks');
     $task->login = $request['login'];
-    $task->user_id = $request['user_id'];
+    $task->userid = $request['userid'];
     $task->task = $request['task'];
     $task->done = false;
     $task->creation_date = $creation_date;
-    $task->category_id = $category_id;
+    $task->categoryid = $categoryid;
   $id = R::store($task);
 }
 
@@ -54,7 +52,7 @@ $taskRespose = array(
   'done' => "0",
   'creationDate' => $creation_date,
   'completionDate' => null,
-  'categoryId' => 55
+  'categoryid' => $categoryid
 );
 $response = array(
   'task' => $taskRespose

@@ -16,7 +16,7 @@ require 'db.php';
 $request = json_decode(file_get_contents('php://input'), true);
 
 //Чтение записей
-$categoriesDB = R::find('categories', 'user_id = ? ORDER BY id ASC', array($request['id']));
+$categoriesDB = R::find('categories', 'userid = ? ORDER BY id ASC', array($request['id']));
 
 //Сборка массива заданий
 $categories = array();
@@ -24,9 +24,9 @@ foreach( $categoriesDB as $categoryitem) {
   $category = array(
 	  'id' => $categoryitem->id,
 	  'name' => $categoryitem->name,
-	  'icon_id' => $categoryitem->icon_id,
+	  'iconid' => $categoryitem->iconid,
 	  'icon' => $categoryitem->icon,
-	  'color_id' => $categoryitem->color_id,
+	  'colorid' => $categoryitem->colorid,
 	  'color' => $categoryitem->color,
 	);
 	array_push($categories, $category);

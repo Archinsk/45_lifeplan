@@ -20,19 +20,14 @@ $request = json_decode(file_get_contents('php://input'), true);
 // echo '--------------------------';
 
 if ( isset($request) ) {
-  $category = R::dispense('categories');
-    $category->userid = $request['userid'];
-    $category->login = $request['user_name'];
-    $category->name = $request['name'];  
-    $category->iconid = $request['iconid'];
-    $category->icon = $request['icon'];
-    $category->colorid = $request['colorid'];
-    $category->color = $request['color'];
-  $categoryId = R::store($category);
+  $category = R::load('categories', $request['id']);
+
+  // Удаление сроки задания из БД
+  R::trash( $category );
   
   //Формирование ответа
   $categoryResponse = array(
-    'id' => $categoryId,
+    'id' => $request['id'],
     'name' => $request['name'],
     'iconid' => $request['iconid'],
     'icon' => $request['icon'],

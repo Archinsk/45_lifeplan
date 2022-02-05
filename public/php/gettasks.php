@@ -16,7 +16,7 @@ require 'db.php';
 $request = json_decode(file_get_contents('php://input'), true);
 
 //Чтение записей
-$tasksDB = R::find('tasks', 'user_id = ? ORDER BY creation_date DESC', array($request['id']));
+$tasksDB = R::find('tasks', 'userid = ? ORDER BY creation_date DESC', array($request['id']));
 
 //Сборка массива заданий
 $tasks = array();
@@ -27,7 +27,7 @@ foreach( $tasksDB as $taskitem) {
 	  'done' => $taskitem->done,
 	  'creationDate' => $taskitem->creation_date,
 	  'completionDate' => $taskitem->completion_date,
-	  'categoryId' => $taskitem->category_id,
+	  'categoryid' => $taskitem->categoryid,
 	);
 	array_push($tasks, $task);
 };

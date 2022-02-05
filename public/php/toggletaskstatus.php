@@ -31,9 +31,12 @@ if ( isset($request) ) {
   R::store($task); 
 };
 
-// echo '<pre>';
-// var_dump($task);
-// echo '</pre>';
-echo 'toggle task status comleted';
+//Формирование ответа
+$response = array(
+  'task' => $task
+);
+
+//Отправка JSON-ответа
+echo json_encode($response, JSON_UNESCAPED_UNICODE);
 
 ?>
