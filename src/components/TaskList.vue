@@ -30,9 +30,7 @@ export default {
     console.log(this.listItems);
   },
   mounted() {
-    console.log("Смонтирован список");
-    console.log("Лист при монтировании компонента");
-    console.log(this.listItems);
+    console.log("Компонент TaskList смонтирован");
   },
 };
 </script>

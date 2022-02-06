@@ -19,15 +19,8 @@ export default {
   components: {
     CategoriesListItem,
   },
-  updated() {
-    console.log("Список обновлен");
-    console.log("Лист при обновлении компонента");
-    console.log(this.listItems);
-  },
   mounted() {
-    console.log("Смонтирован список");
-    console.log("Лист при монтировании компонента");
-    console.log(this.listItems);
+    console.log("Компонент CategoriesList смонтирован");
   },
 };
 </script>

@@ -44,9 +44,15 @@ export default {
             : "home",
       },
       categoryButtonStyles: {
-        backgroundColor: this.taskItem.category.color,
-        borderColor: this.taskItem.category.color
-      }
+        backgroundColor:
+          this.taskItem.category && this.taskItem.category.color
+            ? this.taskItem.category.color
+            : "",
+        borderColor:
+          this.taskItem.category && this.taskItem.category.color
+            ? this.taskItem.category.color
+            : "",
+      },
     };
   },
   // watch: {
@@ -58,8 +64,7 @@ export default {
   //   },
   // },
   mounted: function () {
-    // console.log(this.taskItem.done);
-    // console.log(!!+this.taskItem.done);
+    // console.log("Компонент TaskListItem смонтирован");
   },
 };
 </script>

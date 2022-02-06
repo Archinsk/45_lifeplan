@@ -23,5 +23,8 @@ export default {
   components: {
     ColorsListItem,
   },
+  mounted() {
+    console.log("Компонент ColorsList смонтирован");
+  },
 };
 </script>

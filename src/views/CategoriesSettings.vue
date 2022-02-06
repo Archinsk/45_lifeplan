@@ -3,202 +3,221 @@
     <Header />
     <div class="container">
       <h4>Категории</h4>
-      <CategoriesList
-        :list-items="categories"
-        @open-modal-edit-category="openModalEditCategory($event)"
-        @open-modal-delete-category="openModalDeleteCategory($event)"
-      />
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#create-category"
+      <div
+        v-if="!isAppLoaded"
+        class="spinner-border text-primary"
+        role="status"
       >
-        Создать категорию
-      </button>
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <template v-else>
+        <CategoriesList
+          :list-items="categoriesDb"
+          @open-modal-edit-category="openModalEditCategory($event)"
+          @open-modal-delete-category="openModalDeleteCategory($event)"
+        />
+        <button
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#create-category"
+        >
+          Создать категорию
+        </button>
 
-      <CategoriesModal
-        id="create-category"
-        title="Создание категории"
-        ok-button-title="Создать"
-        :ok-disabled="!isValidNewCategory"
-        @ok-action="createCategory"
-      >
-        Пример
-        <CategoriesListItem :category="newCategory" />
-        <div class="mb-3">
-          <label for="selectedCategoryName" class="form-label">Название</label>
-          <input
-            type="text"
-            class="form-control"
-            id="selectedCategoryName"
-            placeholder="Введите название категории"
-            v-model.trim="newCategory.name"
+        <CategoriesModal
+          id="create-category"
+          title="Создание категории"
+          ok-button-title="Создать"
+          :ok-disabled="!isValidNewCategory"
+          @ok-action="$emit('create-category', newCategory)"
+        >
+          Пример
+          <CategoriesListItem :category="newCategory" />
+          <div class="mb-3">
+            <label for="selectedCategoryName" class="form-label"
+              >Название</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="selectedCategoryName"
+              placeholder="Введите название категории"
+              v-model.trim="newCategory.name"
+            />
+          </div>
+          <ul
+            class="nav nav-pills mb-3"
+            id="create-category-tab"
+            role="tablist"
+          >
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="pills-home-tab-2"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-create-category-icons"
+                type="button"
+                role="tab"
+                aria-controls="pills-home"
+                aria-selected="true"
+              >
+                Иконка
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="pills-profile-tab-2"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-create-category-colors"
+                type="button"
+                role="tab"
+                aria-controls="pills-profile"
+                aria-selected="false"
+              >
+                Цвет
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent-2">
+            <div
+              class="tab-pane fade show active"
+              id="pills-create-category-icons"
+              role="tabpanel"
+              aria-labelledby="pills-create-category-icons-tab"
+            >
+              <h4>Иконки</h4>
+              <IconsList
+                :list-items="iconsDb"
+                :selected-category-color="newCategory.color"
+                @change-icon-selected-category="changeIconNewCategory($event)"
+              />
+            </div>
+            <div
+              class="tab-pane fade"
+              id="pills-create-category-colors"
+              role="tabpanel"
+              aria-labelledby="pills-create-category-colors-tab"
+            >
+              <h4>Цвета</h4>
+              <ColorsList
+                :list-items="colorsDb"
+                :selected-category-icon="newCategory.icon"
+                @change-color-selected-category="changeColorNewCategory($event)"
+              />
+            </div>
+          </div>
+        </CategoriesModal>
+
+        <CategoriesModal
+          id="edit-category"
+          title="Редактирование категории"
+          ok-button-title="Изменить"
+          :ok-disabled="!isValidEditableCategory"
+          @ok-action="$emit('edit-category', selectedCategory)"
+        >
+          <p>Пример</p>
+          <CategoriesListItem
+            :category="selectedCategory"
+            :key="selectedCategory.id ? selectedCategory.id : 'default'"
           />
-        </div>
-        <ul class="nav nav-pills mb-3" id="create-category-tab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="pills-home-tab-2"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-create-category-icons"
-              type="button"
-              role="tab"
-              aria-controls="pills-home"
-              aria-selected="true"
-            >
-              Иконка
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-profile-tab-2"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-create-category-colors"
-              type="button"
-              role="tab"
-              aria-controls="pills-profile"
-              aria-selected="false"
-            >
-              Цвет
-            </button>
-          </li>
-        </ul>
-        <div class="tab-content" id="pills-tabContent-2">
-          <div
-            class="tab-pane fade show active"
-            id="pills-create-category-icons"
-            role="tabpanel"
-            aria-labelledby="pills-create-category-icons-tab"
-          >
-            <h4>Иконки</h4>
-            <IconsList
-              :list-items="icons"
-              :selected-category-color="newCategory.color"
-              @change-icon-selected-category="changeIconNewCategory($event)"
+          <div class="mb-3">
+            <label for="newCategoryName" class="form-label">Название</label>
+            <input
+              type="text"
+              class="form-control"
+              id="newCategoryName"
+              placeholder="Введите название категории"
+              v-model.trim="selectedCategory.name"
             />
           </div>
-          <div
-            class="tab-pane fade"
-            id="pills-create-category-colors"
-            role="tabpanel"
-            aria-labelledby="pills-create-category-colors-tab"
-          >
-            <h4>Цвета</h4>
-            <ColorsList
-              :list-items="colors"
-              :selected-category-icon="newCategory.icon"
-              @change-color-selected-category="changeColorNewCategory($event)"
-            />
-          </div>
-        </div>
-      </CategoriesModal>
 
-      <CategoriesModal
-        id="edit-category"
-        title="Редактирование категории"
-        ok-button-title="Изменить"
-        :ok-disabled="!isValidEditableCategory"
-        @ok-action="editCategory"
-      >
-        <p>Пример</p>
-        <CategoriesListItem :category="selectedCategory" />
-        <div class="mb-3">
-          <label for="newCategoryName" class="form-label">Название</label>
-          <input
-            type="text"
-            class="form-control"
-            id="newCategoryName"
-            placeholder="Введите название категории"
-            v-model.trim="selectedCategory.name"
-          />
-        </div>
-
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="pills-home-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-home"
-              type="button"
-              role="tab"
-              aria-controls="pills-home"
-              aria-selected="true"
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="pills-home-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-home"
+                type="button"
+                role="tab"
+                aria-controls="pills-home"
+                aria-selected="true"
+              >
+                Иконка
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="pills-profile-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-profile"
+                type="button"
+                role="tab"
+                aria-controls="pills-profile"
+                aria-selected="false"
+              >
+                Цвет
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="pills-home"
+              role="tabpanel"
+              aria-labelledby="pills-home-tab"
             >
-              Иконка
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-profile-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-profile"
-              type="button"
-              role="tab"
-              aria-controls="pills-profile"
-              aria-selected="false"
+              <h4>Иконки</h4>
+              <IconsList
+                :list-items="iconsDb"
+                :selected-category-color="selectedCategory.color"
+                @change-icon-selected-category="
+                  changeIconSelectedCategory($event)
+                "
+              />
+            </div>
+            <div
+              class="tab-pane fade"
+              id="pills-profile"
+              role="tabpanel"
+              aria-labelledby="pills-profile-tab"
             >
-              Цвет
-            </button>
-          </li>
-        </ul>
-        <div class="tab-content" id="pills-tabContent">
-          <div
-            class="tab-pane fade show active"
-            id="pills-home"
-            role="tabpanel"
-            aria-labelledby="pills-home-tab"
-          >
-            <h4>Иконки</h4>
-            <IconsList
-              :list-items="icons"
-              :selected-category-color="selectedCategory.color"
-              @change-icon-selected-category="
-                changeIconSelectedCategory($event)
-              "
-            />
+              <h4>Цвета</h4>
+              <ColorsList
+                :list-items="colorsDb"
+                :selected-category-icon="selectedCategory.icon"
+                @change-color-selected-category="
+                  changeColorSelectedCategory($event)
+                "
+              />
+            </div>
           </div>
-          <div
-            class="tab-pane fade"
-            id="pills-profile"
-            role="tabpanel"
-            aria-labelledby="pills-profile-tab"
-          >
-            <h4>Цвета</h4>
-            <ColorsList
-              :list-items="colors"
-              :selected-category-icon="selectedCategory.icon"
-              @change-color-selected-category="
-                changeColorSelectedCategory($event)
-              "
-            />
-          </div>
-        </div>
-      </CategoriesModal>
+        </CategoriesModal>
 
-      <CategoriesModal
-        id="delete-category"
-        title="Удаление категории"
-        ok-button-title="Удалить"
-        @ok-action="deleteCategory"
-      >
-        <p>
-          {{
-            'Вы действительно хотите удалить категорию "' +
-            selectedCategory.name +
-            '" ?'
-          }}
-        </p>
-        <CategoriesListItem :category="selectedCategory" />
-      </CategoriesModal>
+        <CategoriesModal
+          id="delete-category"
+          title="Удаление категории"
+          ok-button-title="Удалить"
+          @ok-action="$emit('delete-category', selectedCategory)"
+        >
+          <p>
+            {{
+              'Вы действительно хотите удалить категорию "' +
+              selectedCategory.name +
+              '" ?'
+            }}
+          </p>
+          <CategoriesListItem :category="selectedCategory" />
+        </CategoriesModal>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+// import axios from "axios";
 import Header from "../components/Header";
 import CategoriesList from "../components/CategoriesList";
 import ColorsList from "../components/ColorsList";
@@ -218,23 +237,10 @@ export default {
     CategoriesModal,
   },
 
+  props: ["isAppLoaded", "categoriesDb", "iconsDb", "colorsDb"],
+
   data() {
     return {
-      url: "https://www.d-skills.ru/45_lifeplan/php/",
-      loggedUser: {
-        id: 42,
-        name: "test",
-      },
-      categories: [
-        {
-          color: "",
-          colorid: "",
-          icon: "",
-          iconid: "",
-          id: "",
-          name: "",
-        },
-      ],
       defaultCategory: {
         color: "grey",
         colorid: "",
@@ -254,271 +260,17 @@ export default {
       selectedCategory: {
         color: "",
         colorid: "",
-        icon: "",
+        icon: "home",
         iconid: "",
         id: "",
         name: "",
       },
-      icons: [
-        {
-          icon: "",
-          id: "",
-          name: "",
-          rating: "",
-          type: "",
-        },
-      ],
-      colors: [
-        {
-          hex_color: "",
-          id: "",
-          name: "",
-        },
-      ],
-      // newIcons: [
-      //   {
-      //     name: "Home",
-      //     icon: "home",
-      //     type: "material-icons",
-      //     rating: 5,
-      //   },
-      //   {
-      //     name: "Settings",
-      //     icon: "settings",
-      //     type: "material-icons",
-      //     rating: 1,
-      //   },
-      // ],
-      // newColors: [
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C090",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#60C0C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#6090C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#6060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#9060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C060C0",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C06090",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C06060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C09060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#C0C060",
-      //   },
-      //   {
-      //     name: "Anything",
-      //     hex_color: "#90C060",
-      //   },
-      // ],
       modalEditCategoryVisibilities: true,
       modalDeleteCategoryVisibilities: true,
     };
   },
 
   methods: {
-    async postAjaxRequest(url, request, callback = this.doNothing) {
-      const xhr = new XMLHttpRequest();
-      // console.log(request);
-      xhr.open("POST", url, true);
-      xhr.responseType = "json";
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(xhr.response);
-        }
-      };
-      xhr.setRequestHeader("Content-type", "application/json");
-      xhr.send(request);
-    },
-
-    logGroup(logHeader, ...logs) {
-      console.groupCollapsed(logHeader);
-      for (let log of logs) console.log(log);
-      console.groupEnd(logHeader);
-    },
-
-    doNothing() {},
-
-    getCategories() {
-      this.postAjaxRequest(
-        this.url + "getcategories.php",
-        JSON.stringify(this.loggedUser),
-        this.categoriesRecord
-      );
-      console.log("2.1");
-    },
-
-    categoriesRecord(response) {
-      this.categories = response.categories;
-      this.logGroup("Список категорий", response);
-      console.log("2.2");
-    },
-
-    getIcons() {
-      this.postAjaxRequest(
-        this.url + "geticons.php",
-        JSON.stringify({}),
-        this.iconsRecord
-      );
-      console.log("3.1");
-    },
-
-    iconsRecord(response) {
-      this.icons = response.icons;
-      this.logGroup("Список иконок", response);
-      console.log("3.2");
-    },
-
-    getColors() {
-      this.postAjaxRequest(
-        this.url + "getcolors.php",
-        JSON.stringify({}),
-        this.colorsRecord
-      );
-      console.log("4.1");
-    },
-
-    colorsRecord(response) {
-      this.colors = response.colors;
-      this.logGroup("Список цветов", response);
-      console.log("4.2");
-    },
-
-    createCategory() {
-      const newCategory = Object.assign({}, this.newCategory);
-      newCategory.userid = this.loggedUser.id;
-      newCategory.user_name = this.loggedUser.name;
-      console.log(newCategory);
-      this.postAjaxRequest(
-        this.url + "createcategory.php",
-        JSON.stringify(newCategory),
-        this.newCategoryRecord
-      );
-    },
-
-    newCategoryRecord(response) {
-      this.categories.push(response.category);
-      this.logGroup("Новая категория", response);
-    },
-
-    editCategory() {
-      const selectedCategory = Object.assign({}, this.selectedCategory);
-      selectedCategory.userid = this.loggedUser.id;
-      selectedCategory.user_name = this.loggedUser.name;
-      console.log(selectedCategory);
-      this.postAjaxRequest(
-        this.url + "editcategory.php",
-        JSON.stringify(selectedCategory),
-        this.editCategoryRecord
-      );
-    },
-
-    editCategoryRecord(response) {
-      console.log(response);
-      let editableCategoryIndex = this.categories.findIndex(
-        (category) => category.id === response.category.id.toString()
-      );
-      console.log(editableCategoryIndex);
-      this.categories[editableCategoryIndex] = response.category;
-      this.logGroup("Измененная категория", response);
-    },
-
-    deleteCategory() {
-      const selectedCategory = Object.assign({}, this.selectedCategory);
-      selectedCategory.userid = this.loggedUser.id;
-      selectedCategory.user_name = this.loggedUser.name;
-      console.log(selectedCategory);
-      this.postAjaxRequest(
-        this.url + "deletecategory.php",
-        JSON.stringify(selectedCategory),
-        this.deleteCategoryItem
-      );
-    },
-
-    deleteCategoryItem(response) {
-      const deletedCategoryIndex = this.categories.findIndex(
-        (category) => category.id === response.category.id
-      );
-      this.categories.splice(deletedCategoryIndex, 1);
-      this.selectedCategory=Object.assign({}, this.defaultCategory);
-      this.logGroup("Удаленная категория", response);
-    },
-
-    assignIconsToCategories() {
-      this.logGroup("Категории до присвоения иконок", this.categories);
-      let categories = this.categories;
-      let icons = this.icons;
-      categories.forEach(function (category) {
-        icons.forEach(function (icon) {
-          if (category.icon_id === icon.id) {
-            // const categoryWithIcon = Object.assign({}, category);
-            // categoryWithIcon.icon = icon.icon;
-            // category = categoryWithIcon;
-            category.icon = icon.icon;
-          }
-        });
-      });
-      console.log("5.1");
-      this.logGroup("Категории после присвоения иконок", this.categories);
-    },
-
-    assignColorsToCategories() {
-      this.logGroup("Категории до присвоения цветов", this.categories);
-      let categories = this.categories;
-      let colors = this.colors;
-      categories.forEach(function (category) {
-        colors.forEach(function (color) {
-          if (category.color_id === color.id) {
-            // const categoryWithColor = Object.assign({}, category);
-            // categoryWithColor.color = color.hex_color;
-            // category = categoryWithColor;
-            category.color = color.hex_color;
-          }
-        });
-      });
-      console.log("6.1");
-      this.logGroup("Категории после присвоения цветов", this.categories);
-    },
-
-    delay1() {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          this.assignIconsToCategories();
-          this.assignColorsToCategories();
-          console.log("Промис 1 выполнен");
-          resolve();
-        }, 2000)
-      );
-    },
-
     openModalEditCategory(category) {
       this.selectedCategory = Object.assign({}, category);
     },
@@ -555,7 +307,7 @@ export default {
   computed: {
     selectedCategoryBeforeChange: function () {
       const selectedCategory = this.selectedCategory;
-      return this.categories.find(
+      return this.categoriesDb.find(
         (category) => category.id === selectedCategory.id
       );
     },
@@ -583,14 +335,8 @@ export default {
     },
   },
 
-  mounted: async function () {
-    console.log("Начало монтажа страницы CategoriesSettings");
-    this.getCategories();
-    this.getIcons();
-    this.getColors();
-    await this.delay1();
-    console.log("Окончание монтажа страницы CategoriesSettings");
-    this.logGroup("Категории при монтировании страницы", this.categories);
+  mounted() {
+    console.log("Компонент CategoriesSetting смонтирован");
   },
 };
 </script>
