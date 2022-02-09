@@ -2,6 +2,7 @@
   <div
     class="modal fade"
     id="signUpFormModal"
+    ref="signUpFormModal"
     aria-hidden="true"
     aria-labelledby="signUpFormModalLabel"
     tabindex="-1"
@@ -106,6 +107,16 @@
             <div v-if="signUpPasswordRepeatError" class="form-text">
               {{ signUpPasswordRepeatError }}
             </div>
+            <p>
+              Уже зарегистрированы?
+              <a
+                role="button"
+                data-bs-target="#signInFormModal"
+                data-bs-toggle="modal"
+              >
+                Войти
+              </a>
+            </p>
           </div>
           <div class="modal-footer">
             <button
@@ -115,14 +126,6 @@
               aria-label="Close"
             >
               Отмена
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-bs-target="#signInFormModal"
-              data-bs-toggle="modal"
-            >
-              Вход
             </button>
             <button
               type="submit"
@@ -146,6 +149,7 @@ export default {
     "signUpLoginError",
     "signUpPasswordError",
     "signUpPasswordRepeatError",
+    "isAuthUser",
   ],
 
   data() {
@@ -179,6 +183,18 @@ export default {
         !this.signUpPasswordRepeatError &&
         this.user.passwordRepeat
       );
+    },
+  },
+
+  watch: {
+    isAuthUser() {
+      if (this.isAuthUser) {
+        this.user = {
+          login: "",
+          password: "",
+          passwordRepeat: "",
+        };
+      }
     },
   },
 };

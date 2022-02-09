@@ -14,6 +14,7 @@
       <SignInFormModal
         :sign-in-login-error="errors.signIn.login.errorText"
         :sign-in-password-error="errors.signIn.password.errorText"
+        :is-auth-user="isAuthUser"
         @sign-in-login-validation="signInLoginValidation(arguments)"
         @sign-in-password-validation="signInPasswordValidation(arguments)"
         @sign-in="signIn($event)"
@@ -22,6 +23,7 @@
         :sign-up-login-error="errors.signUp.login.errorText"
         :sign-up-password-error="errors.signUp.password.errorText"
         :sign-up-password-repeat-error="errors.signUp.passwordRepeat.errorText"
+        :is-auth-user="isAuthUser"
         @sign-up-login-validation="signUpLoginValidation($event)"
         @sign-up-password-validation="signUpPasswordValidation(arguments)"
         @sign-up-password-repeat-validation="
@@ -37,6 +39,8 @@
 import Header from "../components/Header";
 import SignInFormModal from "../components/SignInFormModal";
 import SignUpFormModal from "../components/SignUpFormModal";
+import axios from "axios";
+import { Modal } from "bootstrap";
 
 export default {
   name: "Settings",
@@ -51,8 +55,8 @@ export default {
     return {
       url: "https://www.d-skills.ru/45_lifeplan/php/",
       loggedUser: {
-        id: 1,
-        name: "mihail",
+        id: null,
+        name: "",
       },
       errors: {
         signIn: {
@@ -94,23 +98,17 @@ export default {
           login: [],
         },
       },
+      emptyError: {
+        id: "",
+        type: "",
+        errorText: "",
+      },
+      signInModal: null,
+      signUpModal: null,
     };
   },
 
   methods: {
-    async postAjaxRequest(url, request, callback = this.doNothing) {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      xhr.responseType = "json";
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(xhr.response);
-        }
-      };
-      xhr.setRequestHeader("Content-type", "application/json");
-      xhr.send(request);
-    },
-
     logGroup(logHeader, ...logs) {
       console.groupCollapsed(logHeader);
       for (let log of logs) console.log(log);
@@ -275,15 +273,11 @@ export default {
     },
 
     signIn(user) {
-      const parser = this.signInResponseParsing;
-      const callback = function (response) {
-        return parser(response, user);
-      };
-      this.postAjaxRequest(
-        this.url + "signin.php",
-        JSON.stringify(user),
-        callback
-      );
+      axios
+        .post(this.url + "signin.php", JSON.stringify(user))
+        .then((response) => {
+          this.signInResponseParsing(response.data, user);
+        });
     },
 
     signInResponseParsing(response, user) {
@@ -314,45 +308,23 @@ export default {
     },
 
     authUser(user) {
-      this.errors = {
-        signIn: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-          password: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-        signUp: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-      };
+      this.errorsReset();
       this.loggedUser = user;
       this.logGroup(
         "Пользователь авторизован",
         "user.id = " + user.id,
         "user.name = " + user.name
       );
+      this.signInModal.hide();
+      this.signUpModal.hide();
     },
 
     signUp(user) {
-      const parser = this.signUpResponseParsing;
-      const callback = function (response) {
-        return parser(response, user);
-      };
-      this.postAjaxRequest(
-        this.url + "signup.php",
-        JSON.stringify(user),
-        callback
-      );
+      axios
+        .post(this.url + "signup.php", JSON.stringify(user))
+        .then((response) => {
+          this.signUpResponseParsing(response.data, user);
+        });
     },
 
     signUpResponseParsing(response, user) {
@@ -361,7 +333,7 @@ export default {
         this.serverErrors.signUp.login.push(user.login);
       }
       if (response.user) {
-        this.registerUser(response.user);
+        this.authUser(response.user);
       }
     },
 
@@ -372,35 +344,27 @@ export default {
       this.logGroup("Записана ошибка", error);
     },
 
-    registerUser(user) {
-      this.errors = {
-        signIn: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-          password: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-        signUp: {
-          login: {
-            id: "",
-            type: "",
-            errorText: "",
-          },
-        },
-      };
-      this.loggedUser = user;
-      this.logGroup(
-        "Пользователь зарегистрирован и авторизован",
-        "user.id = " + user.id,
-        "user.name = " + user.name
-      );
+    errorsReset() {
+      this.errors.signIn.login = this.emptyError;
+      this.errors.signIn.password = this.emptyError;
+      this.errors.signUp.login = this.emptyError;
+      this.errors.signUp.password = this.emptyError;
+      this.errors.signUp.passwordRepeat = this.emptyError;
+      this.serverErrors.signIn.login = [];
+      this.serverErrors.signIn.password = [];
+      this.serverErrors.signUp.login = [];
     },
+  },
+
+  computed: {
+    isAuthUser: function () {
+      return !!this.loggedUser.id;
+    },
+  },
+
+  mounted() {
+    this.signInModal = new Modal(this.$children[1].$refs.signInFormModal);
+    this.signUpModal = new Modal(this.$children[2].$refs.signUpFormModal);
   },
 };
 </script>

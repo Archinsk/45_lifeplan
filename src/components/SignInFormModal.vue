@@ -2,6 +2,7 @@
   <div
     class="modal fade"
     id="signInFormModal"
+    ref="signInFormModal"
     aria-hidden="true"
     aria-labelledby="signInFormModalLabel"
     tabindex="-1"
@@ -74,15 +75,25 @@
             <div v-if="signInPasswordError" class="form-text">
               {{ signInPasswordError }}
             </div>
+            <p>
+              Ещё нет учетной записи?
+              <a
+                role="button"
+                data-bs-target="#signUpFormModal"
+                data-bs-toggle="modal"
+              >
+                Зарегистрироваться
+              </a>
+            </p>
           </div>
           <div class="modal-footer">
             <button
               type="button"
               class="btn btn-outline-primary"
-              data-bs-target="#signUpFormModal"
-              data-bs-toggle="modal"
+              data-bs-dismiss="modal"
+              aria-label="Close"
             >
-              Регистрация
+              Отмена
             </button>
             <button
               type="submit"
@@ -102,7 +113,7 @@
 export default {
   name: "SignInFormModal",
 
-  props: ["signInLoginError", "signInPasswordError"],
+  props: ["signInLoginError", "signInPasswordError", "isAuthUser"],
 
   data() {
     return {
@@ -128,6 +139,17 @@ export default {
         !this.signInPasswordError &&
         this.user.password
       );
+    },
+  },
+
+  watch: {
+    isAuthUser() {
+      if (this.isAuthUser) {
+        this.user = {
+          login: "",
+          password: "",
+        };
+      }
     },
   },
 };
