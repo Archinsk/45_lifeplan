@@ -15,7 +15,9 @@
       @delete-task="$emit('delete-task')"
     />
     <div class="task-text">
-      {{ taskItem.task }}
+      {{ taskItem.task }} - {{ startDate | date("datetime") }} -
+      {{ startOfDayLocal }} - {{ endOfDayLocal }} -
+      {{ endOfDayLocal - startDate }}
     </div>
   </li>
 </template>
@@ -55,6 +57,24 @@ export default {
       },
     };
   },
+
+  computed: {
+    startDate: function () {
+      return new Date(this.taskItem.creationDate * 1000);
+    },
+    startOfDayGMT: function () {
+      return +this.startDate - (this.startDate % 86400000);
+    },
+    startOfDayLocal: function () {
+      return new Date(
+        this.startOfDayGMT + this.startDate.getTimezoneOffset() * 60000
+      );
+    },
+    endOfDayLocal: function () {
+      return new Date(+this.startOfDayLocal + 86400000);
+    },
+  },
+
   // watch: {
   //   taskItem() {
   //     console.log("Наблюдаю")
