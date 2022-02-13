@@ -14,14 +14,14 @@
       icon="close"
       @toggle-context-menu="$emit('open-modal-delete-category')"
       data-bs-toggle="modal"
-      data-bs-target="#delete-category"
+      data-bs-target="#deleteCategoryModal"
     />
     <ContextMenuButton
       v-show="contextMenuVisibility"
       icon="mode"
       @toggle-context-menu="$emit('open-modal-edit-category')"
       data-bs-toggle="modal"
-      data-bs-target="#edit-category"
+      data-bs-target="#editCategoryModal"
     />
     <div class="task-text">
       {{ category.name }}

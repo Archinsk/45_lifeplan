@@ -37,7 +37,6 @@ body {
         .header-button {
           background-color: transparent;
           color: white;
-          border: solid 1px black;
         }
       }
     }
@@ -82,6 +81,13 @@ body {
       border-radius: 0.3125rem;
       min-height: 2.5rem;
 
+      border: 1px solid #808080;
+      color: #505050;
+
+      .delete-button {
+        color: #808080;
+      }
+
       //  display: flex;
       //  align-items: center;
       //  padding: 0;
@@ -91,6 +97,13 @@ body {
         //    color: RGB(160, 160, 160);
         //    border-color: RGB(192, 192, 192);
         text-decoration: line-through;
+
+        border: 1px solid #c0c0c0;
+        color: #a0a0a0;
+
+        .delete-button {
+          color: #c0c0c0;
+        }
       }
       //}
       //

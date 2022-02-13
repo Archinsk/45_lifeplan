@@ -12,7 +12,7 @@
       </div>
       <div v-else id="tasks">
         <TaskList
-          :list-items="tasksDone"
+          :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
           @toggle-task-status="$emit('toggle-task-status', $event)"
           @delete-task="$emit('delete-task', $event)"
           @filter-category="filterCategory($event)"
@@ -20,14 +20,13 @@
           :class="{ active: tasksDoneVisibility }"
         />
         <TaskList
-          :list-items="tasksTodo"
+          :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
           @toggle-task-status="$emit('toggle-task-status', $event)"
           @delete-task="$emit('delete-task', $event)"
           @filter-category="filterCategory($event)"
           id="tasksTodo"
         />
       </div>
-      <button class="btn btn-danger">action</button>
     </div>
   </div>
 </template>
@@ -47,24 +46,21 @@ export default {
   props: ["isAppLoaded", "tasksDb", "categoriesDb"],
   data() {
     return {
-      filteredTasks: [],
+      isFiltered: false,
+      filteredCategoryId: "",
       tasksDoneVisibility: false,
+      timeStamp: +new Date(),
     };
   },
 
   methods: {
     filterCategory(categoryId) {
-      console.log("Фильтрация по категоии с id=", categoryId);
-      if (this.filteredTasks.length === 0) {
-        console.log("Добавление в массив фильтрации");
-        this.filteredTasks = this.tasksDb.filter(
-          (task) => task.category && task.category.id === categoryId
-        );
-        console.log(this.filteredTasks);
+      if (!this.isFiltered) {
+        this.filteredCategoryId = categoryId;
       } else {
-        console.log("Очищаю массив фильтрации");
-        this.filteredTasks = [];
+        this.filteredCategoryId = "";
       }
+      this.isFiltered = !this.isFiltered;
     },
 
     listsToggle() {
@@ -74,25 +70,77 @@ export default {
   },
 
   computed: {
+    timeStampWithTimezoneOffset: function () {
+      return (
+        this.timeStamp - new Date(this.timeStamp).getTimezoneOffset() * 60000
+      );
+    },
+
+    startOfDayGMTinMs: function () {
+      return (
+        this.timeStampWithTimezoneOffset -
+        (this.timeStampWithTimezoneOffset % 86400000)
+      );
+    },
+
+    startOfDayLocalinMs: function () {
+      return (
+        this.startOfDayGMTinMs +
+        new Date(this.timeStamp).getTimezoneOffset() * 60000
+      );
+    },
+
     tasksTodo: function () {
-      const tasks =
-        this.filteredTasks.length > 0 ? this.filteredTasks : this.tasksDb;
-      let tasksWithIndexes = tasks.map(function (item, index) {
-        item.index = index;
-        return item;
+      const startOfDayLocalinMs = this.startOfDayLocalinMs;
+      let todo = this.tasksDb.filter(function (task) {
+        if (!+task.done) {
+          return true;
+        } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
+          return true;
+        }
       });
-      let todo = tasksWithIndexes.filter((task) => !!+task.done === false);
       return todo;
     },
+
     tasksDone: function () {
-      const tasks =
-        this.filteredTasks.length > 0 ? this.filteredTasks : this.tasksDb;
-      let tasksWithIndexes = tasks.map(function (item, index) {
-        item.index = index;
-        return item;
+      const startOfDayLocalinMs = this.startOfDayLocalinMs;
+      let done = this.tasksDb.filter(function (task) {
+        if (!!+task.done && task.completionDate * 1000 <= startOfDayLocalinMs) {
+          return true;
+        }
       });
-      let done = tasksWithIndexes.filter((task) => !!+task.done === true);
+      done = done.sort(function (a, b) {
+        if (a.completionDate > b.completionDate) {
+          return -1;
+        }
+        if (a.completionDate === b.completionDate) {
+          return 0;
+        }
+        if (a.completionDate < b.completionDate) {
+          return 1;
+        }
+      });
       return done;
+    },
+
+    tasksTodoFiltered: function () {
+      if (this.isFiltered) {
+        let todoFiltered = this.tasksTodo.filter(
+          (task) => task.category && task.category.id === this.filteredCategoryId
+        );
+        return todoFiltered;
+      }
+      return false;
+    },
+
+    tasksDoneFiltered: function () {
+      if (this.isFiltered) {
+        let doneFiltered = this.tasksDone.filter(
+          (task) => task.category && task.category.id === this.filteredCategoryId
+        );
+        return doneFiltered;
+      }
+      return false;
     },
   },
 };

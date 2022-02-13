@@ -365,6 +365,8 @@ export default {
   mounted() {
     this.signInModal = new Modal(this.$children[1].$refs.signInFormModal);
     this.signUpModal = new Modal(this.$children[2].$refs.signUpFormModal);
+    console.log(this);
+    console.log(this.$children[2].$refs.signUpFormModal);
   },
 };
 </script>

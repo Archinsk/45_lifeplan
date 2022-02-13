@@ -2,6 +2,7 @@
   <div
     class="modal fade"
     :id="id"
+    :ref="refModal"
     aria-hidden="true"
     aria-labelledby="signInFormModalLabel"
     tabindex="-1"
@@ -39,7 +40,7 @@
 export default {
   name: "CategoriesModal",
 
-  props: ["id", "title", "okButtonTitle", "okDisabled"],
+  props: ["id", "title", "okButtonTitle", "okDisabled", "refModal"],
 
   data() {
     return {

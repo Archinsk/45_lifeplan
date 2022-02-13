@@ -19,17 +19,18 @@
         <button
           class="btn btn-primary"
           data-bs-toggle="modal"
-          data-bs-target="#create-category"
+          data-bs-target="#createCategoryModal"
         >
           Создать категорию
         </button>
 
         <CategoriesModal
-          id="create-category"
+          id="createCategoryModal"
+          refModal="createCategoryModal"
           title="Создание категории"
           ok-button-title="Создать"
           :ok-disabled="!isValidNewCategory"
-          @ok-action="$emit('create-category', newCategory)"
+          @ok-action="createCategory"
         >
           Пример
           <CategoriesListItem :category="newCategory" />
@@ -110,11 +111,12 @@
         </CategoriesModal>
 
         <CategoriesModal
-          id="edit-category"
+          id="editCategoryModal"
+          refModal="editCategoryModal"
           title="Редактирование категории"
           ok-button-title="Изменить"
           :ok-disabled="!isValidEditableCategory"
-          @ok-action="$emit('edit-category', selectedCategory)"
+          @ok-action="editCategory"
         >
           <p>Пример</p>
           <CategoriesListItem
@@ -197,10 +199,11 @@
         </CategoriesModal>
 
         <CategoriesModal
-          id="delete-category"
+          id="deleteCategoryModal"
+          refModal="deleteCategoryModal"
           title="Удаление категории"
           ok-button-title="Удалить"
-          @ok-action="$emit('delete-category', selectedCategory)"
+          @ok-action="deleteCategory"
         >
           <p>
             {{
@@ -224,6 +227,7 @@ import ColorsList from "../components/ColorsList";
 import CategoriesModal from "../components/CategoriesModal";
 import IconsList from "../components/IconsList";
 import CategoriesListItem from "../components/CategoriesListItem";
+import { Modal } from "bootstrap";
 
 export default {
   name: "CategoriesSettings",
@@ -265,6 +269,9 @@ export default {
         id: "",
         name: "",
       },
+      createCategoryModal: null,
+      editCategoryModal: null,
+      deleteCategoryModal: null,
       modalEditCategoryVisibilities: true,
       modalDeleteCategoryVisibilities: true,
     };
@@ -302,6 +309,30 @@ export default {
       this.newCategory.colorid = color.id;
       console.log(color);
     },
+
+    createCategory() {
+      this.createCategoryModal.hide();
+      this.$emit("create-category", this.newCategory);
+      this.newCategory = {
+        color: "grey",
+        colorid: "",
+        icon: "help",
+        iconid: "",
+        id: "",
+        name: "",
+      };
+    },
+
+    editCategory() {
+      this.editCategoryModal.hide();
+      this.$emit('edit-category', this.selectedCategory)
+    },
+
+    deleteCategory() {
+      this.deleteCategoryModal.hide();
+      this.$emit("delete-category", this.selectedCategory);
+    },
+    resetNewCategory() {},
   },
 
   computed: {
@@ -321,6 +352,9 @@ export default {
     },
 
     isValidEditableCategory: function () {
+      if (!this.selectedCategoryBeforeChange) {
+        return false;
+      }
       if (this.selectedCategory.id) {
         return (
           this.selectedCategory.name !==
@@ -335,9 +369,25 @@ export default {
     },
   },
 
-  mounted() {
-    console.log("Компонент CategoriesSetting смонтирован");
+  updated() {
+    if (!this.createCategoryModal) {
+      this.createCategoryModal = new Modal(
+        this.$children[2].$refs.createCategoryModal
+      );
+    }
+    if (!this.editCategoryModal) {
+      this.editCategoryModal = new Modal(
+        this.$children[3].$refs.editCategoryModal
+      );
+    }
+    if (!this.deleteCategoryModal) {
+      this.deleteCategoryModal = new Modal(
+        this.$children[4].$refs.deleteCategoryModal
+      );
+    }
   },
+
+  mounted() {},
 };
 </script>
 

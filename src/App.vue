@@ -190,75 +190,39 @@ export default {
       });
     },
 
-    postAjaxRequest(url, request, callback = this.doNothing) {
-      const xhr = new XMLHttpRequest();
-      // console.log(request);
-      xhr.open("POST", url, true);
-      xhr.responseType = "json";
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(xhr.response);
-        }
-      };
-      xhr.setRequestHeader("Content-type", "application/json");
-      xhr.send(request);
-    },
-
     addNewTask(createdTask) {
-      let newTask;
-      if (this.loggedUser.id) {
-        newTask = {
-          login: this.loggedUser.name,
-          userid: this.loggedUser.id,
-          task: createdTask,
-        };
-        this.postAjaxRequest(
-          this.url + "createtask.php",
-          JSON.stringify(newTask),
-          this.newTaskRecord
-        );
-      } else {
-        newTask = {
-          id: this.items.length + 1,
-          task: createdTask,
-          completed: false,
-          icon: "home",
-        };
-      }
+      const newTask = {
+        login: this.loggedUser.name,
+        userid: this.loggedUser.id,
+        task: createdTask,
+      };
+      axios.post(this.url + "createtask.php", newTask).then((response) => {
+        let task = response.data.task;
+        if (task.categoryid) {
+          task.category = this.categories.find(
+            (category) => category.id === task.categoryid
+          );
+        }
+        this.tasks.unshift(task);
+      });
     },
 
-    newTaskRecord(response) {
-      this.tasks.unshift(response.task);
-    },
-
-    toggleTaskStatus(task) {
-      console.log("Изменение задания");
-      this.postAjaxRequest(
-        this.url + "toggletaskstatus.php",
-        JSON.stringify(task)
-      );
-      console.log("Статус - " + task.done);
-      console.log(typeof task.done);
-      task.done === "1" ? (task.done = "0") : (task.done = "1");
-      console.log("Статус - " + task.done);
+    toggleTaskStatus(updatedTask) {
+      axios
+        .post(this.url + "toggletaskstatus.php", updatedTask)
+        .then((response) => {
+          const task = this.tasks.find(
+            (task) => task.id === response.data.task.id
+          );
+          task.done = task.done === "1" ? "0" : "1";
+        });
     },
 
     deleteTask(taskId) {
-      console.log("Удаление задание c id=" + taskId);
       const task = { id: taskId };
-      this.postAjaxRequest(
-        this.url + "deletetask.php",
-        JSON.stringify(task),
-        this.removeTaskFromList(taskId)
-      );
-    },
-
-    removeTaskFromList(id) {
-      let tasks = this.tasks;
-      this.tasks.forEach(function (task, index) {
-        if (task.id === id) {
-          tasks.splice(index, 1);
-        }
+      axios.post(this.url + "deletetask.php", task).then(() => {
+        let taskIndex = this.tasks.findIndex((task) => task.id === taskId);
+        this.tasks.splice(taskIndex, 1);
       });
     },
 
@@ -266,64 +230,51 @@ export default {
       const newCategory = Object.assign({}, createdCategory);
       newCategory.userid = this.loggedUser.id;
       newCategory.user_name = this.loggedUser.name;
-      console.log(newCategory);
-      this.postAjaxRequest(
-        this.url + "createcategory.php",
-        JSON.stringify(newCategory),
-        this.newCategoryRecord
-      );
-    },
-
-    newCategoryRecord(response) {
-      this.categories.push(response.category);
-      this.logGroup("Новая категория", response);
+      axios
+        .post(this.url + "createcategory.php", newCategory)
+        .then((response) => {
+          this.categories.push(response.data.category);
+          this.logGroup("Новая категория", response.data);
+        });
     },
 
     editCategory(updatedCategory) {
       updatedCategory.userid = this.loggedUser.id;
       updatedCategory.user_name = this.loggedUser.name;
-      this.postAjaxRequest(
-        this.url + "editcategory.php",
-        JSON.stringify(updatedCategory),
-        this.editCategoryRecord
-      );
-    },
-
-    editCategoryRecord(response) {
-      console.log(response);
-      let editableCategoryIndex = this.categories.findIndex(
-        (category) => category.id === response.category.id.toString()
-      );
-      console.log(editableCategoryIndex);
-      console.log(this.categories[editableCategoryIndex]);
-      // При присвоении объекта категории не срабатывает реактивность
-      // this.categories[editableCategoryIndex] = response.category;
-      this.categories[editableCategoryIndex].name = response.category.name;
-      this.categories[editableCategoryIndex].iconid = response.category.iconid;
-      this.categories[editableCategoryIndex].icon = response.category.icon;
-      this.categories[editableCategoryIndex].colorid =
-        response.category.colorid;
-      this.categories[editableCategoryIndex].color = response.category.color;
-      this.logGroup("Измененная категория", response.category);
+      axios
+        .post(this.url + "editcategory.php", updatedCategory)
+        .then((response) => {
+          let editableCategoryIndex = this.categories.findIndex(
+            (category) => category.id === response.data.category.id.toString()
+          );
+          // При присвоении объекта категории не срабатывает реактивность
+          // this.categories[editableCategoryIndex] = response.category;
+          this.categories[editableCategoryIndex].name =
+            response.data.category.name;
+          this.categories[editableCategoryIndex].iconid =
+            response.data.category.iconid;
+          this.categories[editableCategoryIndex].icon =
+            response.data.category.icon;
+          this.categories[editableCategoryIndex].colorid =
+            response.data.category.colorid;
+          this.categories[editableCategoryIndex].color =
+            response.data.category.color;
+          this.logGroup("Измененная категория", response.data);
+        });
     },
 
     deleteCategory(deletedCategory) {
       deletedCategory.userid = this.loggedUser.id;
       deletedCategory.user_name = this.loggedUser.name;
-      console.log(deletedCategory);
-      this.postAjaxRequest(
-        this.url + "deletecategory.php",
-        JSON.stringify(deletedCategory),
-        this.deleteCategoryItem
-      );
-    },
-
-    deleteCategoryItem(response) {
-      const deletedCategoryIndex = this.categories.findIndex(
-        (category) => category.id === response.category.id
-      );
-      this.categories.splice(deletedCategoryIndex, 1);
-      this.logGroup("Удаленная категория", response);
+      axios
+        .post(this.url + "deletecategory.php", deletedCategory)
+        .then((response) => {
+          const deletedCategoryIndex = this.categories.findIndex(
+            (category) => category.id === response.data.category.id
+          );
+          this.categories.splice(deletedCategoryIndex, 1);
+          this.logGroup("Удаленная категория", response.data);
+        });
     },
 
     logGroup(logHeader, ...logs) {

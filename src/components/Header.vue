@@ -34,37 +34,37 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1">
               <li class="nav-item">
-                <router-link to="/" class="nav-link">
+                <router-link to="/" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> check_circle </span>
                   Задания
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/categories_settings" class="nav-link">
+                <router-link to="/categories_settings" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> category </span>
                   Категории
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/themes_settings" class="nav-link">
+                <router-link to="/themes_settings" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> brush </span>
                   Темы
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/statistics" class="nav-link">
+                <router-link to="/statistics" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> leaderboard </span>
                   Статистика
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/settings" class="nav-link">
+                <router-link to="/settings" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> settings </span>
                   Настройки
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/help" class="nav-link">
+                <router-link to="/help" class="nav-link d-flex align-items-center">
                   <span class="material-icons"> help </span>
                   Помощь
                 </router-link>

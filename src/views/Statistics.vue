@@ -2,7 +2,7 @@
   <div>
     <Header />
     <div class="container">
-      <h4>Помощь</h4>
+      <h4>Статистика</h4>
     </div>
   </div>
 </template>

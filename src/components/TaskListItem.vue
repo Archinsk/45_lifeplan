@@ -1,9 +1,5 @@
 <template>
-  <li
-    class="task bg-info border border-secondary mb-1"
-    :class="{ taskCompleted: !!+taskItem.done }"
-    @click="$emit('toggle-task-status', taskItem)"
-  >
+  <li :class="taskClass" @click="$emit('toggle-task-status', taskItem)">
     <TaskListItemButtonCategory
       v-if="taskItem.category && taskItem.category.icon"
       :icon="taskItem.category.icon"
@@ -15,9 +11,9 @@
       @delete-task="$emit('delete-task')"
     />
     <div class="task-text">
-      {{ taskItem.task }} - {{ startDate | date("datetime") }} -
-      {{ startOfDayLocal }} - {{ endOfDayLocal }} -
-      {{ endOfDayLocal - startDate }}
+      {{ taskItem.task }}. Создана -
+      {{ (taskItem.creationDate * 1000) | date("datetime") }}. Выполнена -
+      {{ (taskItem.completionDate * 1000) | date("datetime") }}
     </div>
   </li>
 </template>
@@ -47,31 +43,26 @@ export default {
       },
       categoryButtonStyles: {
         backgroundColor:
-          this.taskItem.category && this.taskItem.category.color
+          this.taskItem.category && this.taskItem.category.color && !+this.taskItem.done
             ? this.taskItem.category.color
-            : "",
+            : "#c0c0c0",
         borderColor:
-          this.taskItem.category && this.taskItem.category.color
+          this.taskItem.category && this.taskItem.category.color && !+this.taskItem.done
             ? this.taskItem.category.color
-            : "",
+            : "#c0c0c0",
       },
     };
   },
 
   computed: {
-    startDate: function () {
-      return new Date(this.taskItem.creationDate * 1000);
-    },
-    startOfDayGMT: function () {
-      return +this.startDate - (this.startDate % 86400000);
-    },
-    startOfDayLocal: function () {
-      return new Date(
-        this.startOfDayGMT + this.startDate.getTimezoneOffset() * 60000
-      );
-    },
-    endOfDayLocal: function () {
-      return new Date(+this.startOfDayLocal + 86400000);
+    taskClass: function () {
+      let taskClass = "task mb-1";
+      if (+this.taskItem.done) {
+        taskClass += " taskCompleted bg-light";
+      } else {
+        taskClass += " bg-info";
+      }
+      return taskClass;
     },
   },
 

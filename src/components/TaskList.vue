@@ -1,17 +1,42 @@
 <template>
-  <ul class="taskList bg-light">
-    <TaskListItem
-      v-for="item of listItems"
-      :key="
-        item.category && item.category.id
-          ? item.id + '-' + item.category.id
-          : item.id
-      "
-      :task-item="item"
-      @toggle-task-status="$emit('toggle-task-status', $event)"
-      @filter-category="$emit('filter-category', item.category.id)"
-      @delete-task="$emit('delete-task', item.id)"
-    />
+  <ul :id="id" class="taskList bg-light">
+    <template v-for="(item, index) of listItems">
+      <div
+        v-if="
+          id === 'tasksTodo' &&
+          (index === 0 ||
+            startOfDayLocalinMs(item.creationDate * 1000) !==
+              startOfDayLocalinMs(listItems[index - 1].creationDate * 1000))
+        "
+        :key="item.id + '-todo'"
+        class="badge bg-secondary"
+      >
+        {{ (item.creationDate * 1000) | date("date") }}
+      </div>
+      <div
+        v-if="
+          id === 'tasksDone' &&
+          (index === 0 ||
+            startOfDayLocalinMs(item.completionDate * 1000) !==
+              startOfDayLocalinMs(listItems[index - 1].completionDate * 1000))
+        "
+        :key="item.id + '-done'"
+        class="badge bg-secondary"
+      >
+        {{ (item.completionDate * 1000) | date("date") }}
+      </div>
+      <TaskListItem
+        :key="
+          item.category && item.category.id
+            ? item.id + '-' + item.category.id
+            : item.id
+        "
+        :task-item="item"
+        @toggle-task-status="$emit('toggle-task-status', $event)"
+        @filter-category="$emit('filter-category', item.category.id)"
+        @delete-task="$emit('delete-task', item.id)"
+      />
+    </template>
   </ul>
 </template>
 
@@ -20,15 +45,28 @@ import TaskListItem from "@/components/TaskListItem";
 
 export default {
   name: "TaskList",
-  props: ["listItems"],
+  props: ["listItems", "id"],
   components: {
     TaskListItem,
   },
-  updated() {
-    console.log("Список обновлен");
-    console.log("Лист при обновлении компонента");
-    console.log(this.listItems);
+  methods: {
+    timeStampWithTimezoneOffset(timeStampDb) {
+      return timeStampDb - new Date().getTimezoneOffset() * 60000;
+    },
+    startOfDayGMTinMs(timeStampDb) {
+      return (
+        this.timeStampWithTimezoneOffset(timeStampDb) -
+        (this.timeStampWithTimezoneOffset(timeStampDb) % 86400000)
+      );
+    },
+    startOfDayLocalinMs(timeStampDb) {
+      return (
+        this.startOfDayGMTinMs(timeStampDb) +
+        new Date().getTimezoneOffset() * 60000
+      );
+    },
   },
+
   mounted() {
     console.log("Компонент TaskList смонтирован");
   },
