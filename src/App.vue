@@ -214,7 +214,11 @@ export default {
           const task = this.tasks.find(
             (task) => task.id === response.data.task.id
           );
-          task.done = task.done === "1" ? "0" : "1";
+          task.done = task.done === "0" ? "1" : "0";
+          task.completionDate =
+            task.completionDate === null
+              ? response.data.task.completion_date
+              : null;
         });
     },
 

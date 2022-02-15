@@ -1,7 +1,7 @@
 <template>
   <li :class="taskClass" @click="$emit('toggle-task-status', taskItem)">
     <TaskListItemButtonCategory
-      v-if="taskItem.category && taskItem.category.icon"
+      v-if="taskItem.category && taskItem.category.id"
       :icon="taskItem.category.icon"
       :style="categoryButtonStyles"
       @filter-category="$emit('filter-category')"
@@ -11,9 +11,7 @@
       @delete-task="$emit('delete-task')"
     />
     <div class="task-text">
-      {{ taskItem.task }}. Создана -
-      {{ (taskItem.creationDate * 1000) | date("datetime") }}. Выполнена -
-      {{ (taskItem.completionDate * 1000) | date("datetime") }}
+      {{ taskItem.task }}
     </div>
   </li>
 </template>
@@ -41,16 +39,6 @@ export default {
             ? this.taskItem.category.icon
             : "home",
       },
-      categoryButtonStyles: {
-        backgroundColor:
-          this.taskItem.category && this.taskItem.category.color && !+this.taskItem.done
-            ? this.taskItem.category.color
-            : "#c0c0c0",
-        borderColor:
-          this.taskItem.category && this.taskItem.category.color && !+this.taskItem.done
-            ? this.taskItem.category.color
-            : "#c0c0c0",
-      },
     };
   },
 
@@ -63,6 +51,16 @@ export default {
         taskClass += " bg-info";
       }
       return taskClass;
+    },
+
+    categoryButtonStyles: function () {
+      const color =
+        this.taskItem.category &&
+        this.taskItem.category.color &&
+        !+this.taskItem.done
+          ? this.taskItem.category.color
+          : "#c0c0c0";
+      return { backgroundColor: color, borderColor: color };
     },
   },
 

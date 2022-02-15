@@ -12,19 +12,20 @@
       </div>
       <div v-else id="tasks">
         <TaskList
-          :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
-          @toggle-task-status="$emit('toggle-task-status', $event)"
-          @delete-task="$emit('delete-task', $event)"
-          @filter-category="filterCategory($event)"
-          id="tasksDone"
-          :class="{ active: tasksDoneVisibility }"
-        />
-        <TaskList
           :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
           @toggle-task-status="$emit('toggle-task-status', $event)"
           @delete-task="$emit('delete-task', $event)"
           @filter-category="filterCategory($event)"
           id="tasksTodo"
+          :class="todoListClass"
+        />
+        <TaskList
+          :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
+          @toggle-task-status="$emit('toggle-task-status', $event)"
+          @delete-task="$emit('delete-task', $event)"
+          @filter-category="filterCategory($event)"
+          id="tasksDone"
+          :class="doneListClass"
         />
       </div>
     </div>
@@ -48,7 +49,9 @@ export default {
     return {
       isFiltered: false,
       filteredCategoryId: "",
-      tasksDoneVisibility: false,
+      doneListVisibility: false,
+      todoListClass: "position-relative",
+      doneListClass: "position-absolute",
       timeStamp: +new Date(),
     };
   },
@@ -64,8 +67,23 @@ export default {
     },
 
     listsToggle() {
-      this.tasksDoneVisibility = !this.tasksDoneVisibility;
-      console.log(this.tasksDoneVisibility);
+      let delay = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+      if (!this.doneListVisibility) {
+        this.todoListClass = "position-absolute";
+        this.doneListClass = "position-relative active";
+        this.doneListVisibility = true;
+      } else {
+        this.doneListClass = "position-relative";
+        delay.then(() => {
+          this.todoListClass = "position-relative";
+          this.doneListClass = "position-absolute";
+          this.doneListVisibility = false;
+        });
+      }
     },
   },
 
@@ -126,7 +144,8 @@ export default {
     tasksTodoFiltered: function () {
       if (this.isFiltered) {
         let todoFiltered = this.tasksTodo.filter(
-          (task) => task.category && task.category.id === this.filteredCategoryId
+          (task) =>
+            task.category && task.category.id === this.filteredCategoryId
         );
         return todoFiltered;
       }
@@ -136,7 +155,8 @@ export default {
     tasksDoneFiltered: function () {
       if (this.isFiltered) {
         let doneFiltered = this.tasksDone.filter(
-          (task) => task.category && task.category.id === this.filteredCategoryId
+          (task) =>
+            task.category && task.category.id === this.filteredCategoryId
         );
         return doneFiltered;
       }

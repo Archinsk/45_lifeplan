@@ -32,21 +32,20 @@ body .header .navbar .container .navbar-nav .nav-link {
 body .header .navbar .container .header-button {
   background-color: transparent;
   color: white;
-  border: solid 1px black;
 }
 body #tasks {
-  display: flex;
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 body #tasks #tasksDone {
   width: 100%;
-  position: absolute;
   left: -100%;
+  transition: left 0.5s ease-out;
 }
 body #tasks #tasksDone.active {
   left: 0;
+  transition: left 0.5s ease-out;
 }
 body #tasks #tasksTodo {
   width: 100%;
@@ -58,9 +57,19 @@ body .taskList {
 body .taskList .task {
   border-radius: 0.3125rem;
   min-height: 2.5rem;
+  border: 1px solid #808080;
+  color: #505050;
+}
+body .taskList .task .delete-button {
+  color: #808080;
 }
 body .taskList .task.taskCompleted {
   text-decoration: line-through;
+  border: 1px solid #c0c0c0;
+  color: #a0a0a0;
+}
+body .taskList .task.taskCompleted .delete-button {
+  color: #c0c0c0;
 }
 body li {
   display: block;
