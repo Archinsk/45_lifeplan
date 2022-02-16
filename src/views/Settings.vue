@@ -317,6 +317,7 @@ export default {
       );
       this.signInModal.hide();
       this.signUpModal.hide();
+      this.$emit("auth-user", user);
     },
 
     signUp(user) {

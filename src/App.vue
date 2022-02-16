@@ -13,6 +13,7 @@
       @create-category="createCategory($event)"
       @edit-category="editCategory($event)"
       @delete-category="deleteCategory($event)"
+      @auth-user="authUser($event)"
     />
   </div>
 </template>
@@ -25,8 +26,8 @@ export default {
     return {
       url: "https://www.d-skills.ru/45_lifeplan/php/",
       loggedUser: {
-        id: 1,
-        name: "mihail",
+        id: null,
+        name: "",
       },
       tasks: [],
       categories: [],
@@ -279,6 +280,11 @@ export default {
           this.categories.splice(deletedCategoryIndex, 1);
           this.logGroup("Удаленная категория", response.data);
         });
+    },
+
+    authUser(user) {
+      this.loggedUser = user;
+      this.initApp();
     },
 
     logGroup(logHeader, ...logs) {

@@ -12,6 +12,9 @@ header('Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, A
 //Подключение RedBeanPHP и БД
 require 'db.php';
 
+//Запуск сессии
+session_start();
+
 //Парсинг входящего JSON'а
 $request = json_decode(file_get_contents('php://input'), true);
 
@@ -44,6 +47,7 @@ if ( isset($request) ) {
 	      'user' => $user
         ); 
       };
+	  $_SESSION['auth_user'] = $userDB->id;
     };
   };
 

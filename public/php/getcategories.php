@@ -15,6 +15,7 @@ require 'db.php';
 //Парсинг входящего JSON'а
 $request = json_decode(file_get_contents('php://input'), true);
 
+if ( isset($request) ) {
 //Чтение записей
 $categoriesDB = R::find('categories', 'userid = ? ORDER BY id ASC', array($request['id']));
 
@@ -42,5 +43,6 @@ echo json_encode($response, JSON_UNESCAPED_UNICODE);
 // echo '<pre>';
 // var_dump($response);
 // echo '</pre>';
+}
 
 ?>
