@@ -1,0 +1,17 @@
+$primary: #60c060;
+$secondary: #808080;
+$info: #f0ffe0;
+$light: #e4f4e0;
+$body-color: #505050;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.btn-primary {
+  color: white;
+}
