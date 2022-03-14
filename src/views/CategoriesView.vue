@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Категории</h4>
       <div
@@ -13,11 +13,12 @@
       <template v-else>
         <CategoriesList
           :list-items="categoriesDb"
+          :theme="theme"
           @open-modal-edit-category="openModalEditCategory($event)"
           @open-modal-delete-category="openModalDeleteCategory($event)"
         />
         <button
-          class="btn btn-primary"
+          :class="'btn btn-' + theme.primary"
           data-bs-toggle="modal"
           data-bs-target="#createCategoryModal"
         >
@@ -30,6 +31,7 @@
           title="Создание категории"
           ok-button-title="Создать"
           :ok-disabled="!isValidNewCategory"
+          :theme="theme"
           @ok-action="createCategory"
         >
           Пример
@@ -129,6 +131,7 @@
           title="Редактирование категории"
           ok-button-title="Изменить"
           :ok-disabled="!isValidEditableCategory"
+          :theme="theme"
           @ok-action="editCategory"
         >
           <p>Пример</p>
@@ -216,6 +219,7 @@
           refModal="deleteCategoryModal"
           title="Удаление категории"
           ok-button-title="Удалить"
+          :theme="theme"
           @ok-action="deleteCategory"
         >
           <p>
@@ -234,7 +238,7 @@
 
 <script>
 // import axios from "axios";
-import Header from "../components/TheHeader";
+import TheHeader from "../components/TheHeader";
 import CategoriesList from "../components/CategoriesList";
 import ColorsList from "../components/ColorsList";
 import CategoriesModal from "../components/CategoriesModal";
@@ -250,11 +254,11 @@ export default {
     IconsList,
     CategoriesList,
     ColorsList,
-    Header,
+    TheHeader,
     CategoriesModal,
   },
 
-  props: ["isAppLoaded", "categoriesDb", "iconsDb", "colorsDb"],
+  props: ["isAppLoaded", "theme", "categoriesDb", "iconsDb", "colorsDb"],
 
   data() {
     return {

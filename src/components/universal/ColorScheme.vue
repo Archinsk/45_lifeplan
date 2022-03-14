@@ -2,15 +2,15 @@
   <div class="container">
     <h6>Цветовая схема</h6>
     <div class="row row-cols-4 g-0">
-      <div class="bg-primary text-white border border-secondary p-2">
+      <div :class="'border border-secondary p-2 bg-' + theme.primary">
         Хедер, основные кнопки - rgb(96, 192, 96) hex#60c060 hsl(120, 43%, 56%)
         hwb(120, 38%, 25%) - $primary
       </div>
-      <div class="bg-light border border-secondary p-2">
+      <div :class="'border border-secondary p-2 bg-' + theme.secondary">
         Фон списков, фон выполненных заданий - rgb(228, 244, 224) hex#e4f4e0
         hsl(108, 48%, 92%) hwb(108, 88%, 4%) - $light
       </div>
-      <div class="bg-info border border-secondary p-2">
+      <div :class="'border border-secondary p-2 bg-' + theme.info">
         Фон невыполненных заданий - rgb(240, 255, 224) hex#f0ffe0 hsl(89, 100%,
         94%) hwb(89, 88%, 0%) - $info
       </div>
@@ -53,5 +53,6 @@
 <script>
 export default {
   name: "ColorScheme",
+  props: ["theme"],
 };
 </script>

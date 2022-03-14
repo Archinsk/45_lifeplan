@@ -3,6 +3,7 @@
     <router-view
       :url="url"
       :is-app-loaded="isAppLoaded"
+      :theme="theme"
       :tasks-db="tasks"
       :categories-db="categories"
       :icons-db="icons"
@@ -244,6 +245,11 @@ export default {
       icons: [],
       colors: [],
       isAppLoaded: false,
+      theme: {
+        primary: "green-primary",
+        secondary: "green-secondary",
+        info: "green-info",
+      },
     };
   },
 
@@ -579,6 +585,7 @@ export default {
 
   mounted() {
     this.initApp();
+    document.body.className = "bg-" + this.theme.secondary;
     console.log("Компонент App смонтирован");
   },
 };

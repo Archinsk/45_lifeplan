@@ -1,0 +1,116 @@
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../node_modules/bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+//$primary: #60c060;
+//$secondary: #808080;
+//$info: #f0ffe0;
+//$light: #e4f4e0;
+//$body-color: #505050;
+
+//Основная карта цветов
+$primary-hue: 210;
+$primary-saturation: 43%;
+$primary-lightness: 56%;
+
+$custom-themes: (
+  "green-primary": hsl($primary-hue, $primary-saturation, $primary-lightness),
+  "green-secondary": hsl(subtract($primary-hue, 12), add($primary-saturation, 5%), add($primary-lightness, 36%) ),
+  "green-info": hsl(subtract($primary-hue, 31), add($primary-saturation, 57%), add($primary-lightness, 38%) ),
+);
+
+//@function add-green($map) {
+//  $result: ();
+//  @each $key, $value in $map {
+//    $result: map-merge($result, ("green-" + $key: $value));
+//  }
+//  @return $result;
+//}
+//
+//$basic-theme: (
+//  "primary": hsl($primary-hue, $primary-saturation, $primary-lightness),
+//  "secondary": hsl(subtract($primary-hue, 12), add($primary-saturation, 5%), add($primary-lightness, 36%) ),
+//  "info": hsl(subtract($primary-hue, 31), add($primary-saturation, 57%), add($primary-lightness, 38%) ),
+//);
+//
+//$custom-themes: map-loop($basic-theme, to-rgb, "$value")
+
+//$custom-themes: map-loop($basic-theme, add-green, "$value");
+//$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value") !default;
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../node_modules/bootstrap/scss/variables";
+// 3.1. Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-themes);
+$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
+$utilities-colors: $theme-colors-rgb;
+
+$utilities-text: map-merge(
+  $utilities-colors,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-color),
+  )
+);
+$utilities-text-colors: map-loop($utilities-text, rgba-css-var, "$key", "text");
+$utilities-bg: map-merge(
+  $utilities-colors,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-bg),
+  )
+);
+$utilities-bg-colors: map-loop($utilities-bg, rgba-css-var, "$key", "bg");
+
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+
+// 4. Include any optional Bootstrap CSS as needed
+@import "../node_modules/bootstrap/scss/utilities";
+@import "../node_modules/bootstrap/scss/reboot";
+//@import "../node_modules/bootstrap/scss/type";
+//@import "../node_modules/bootstrap/scss/images";
+@import "../node_modules/bootstrap/scss/containers";
+//@import "../node_modules/bootstrap/scss/grid";
+//@import "../node_modules/bootstrap/scss/tables";
+@import "../node_modules/bootstrap/scss/forms";
+@import "../node_modules/bootstrap/scss/buttons";
+//@import "../node_modules/bootstrap/scss/transitions";
+//@import "../node_modules/bootstrap/scss/dropdown";
+//@import "../node_modules/bootstrap/scss/button-group";
+@import "../node_modules/bootstrap/scss/nav";
+@import "../node_modules/bootstrap/scss/navbar";
+//@import "../node_modules/bootstrap/scss/card";
+//@import "../node_modules/bootstrap/scss/accordion";
+//@import "../node_modules/bootstrap/scss/breadcrumb";
+//@import "../node_modules/bootstrap/scss/pagination";
+@import "../node_modules/bootstrap/scss/badge";
+//@import "../node_modules/bootstrap/scss/alert";
+//@import "../node_modules/bootstrap/scss/progress";
+//@import "../node_modules/bootstrap/scss/list-group";
+@import "../node_modules/bootstrap/scss/close";
+//@import "../node_modules/bootstrap/scss/toasts";
+@import "../node_modules/bootstrap/scss/modal";
+//@import "../node_modules/bootstrap/scss/tooltip";
+//@import "../node_modules/bootstrap/scss/popover";
+//@import "../node_modules/bootstrap/scss/carousel";
+@import "../node_modules/bootstrap/scss/spinners";
+@import "../node_modules/bootstrap/scss/offcanvas";
+//@import "../node_modules/bootstrap/scss/placeholders";
+@import "../node_modules/bootstrap/scss/helpers";
+
+// 5. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import "../node_modules/bootstrap/scss/utilities/api";
+
+// 6. Add additional custom code here
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+//.btn-primary {
+//  color: white;
+//}

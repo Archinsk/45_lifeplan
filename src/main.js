@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import "./custom.scss";
 import "./lifeplan.scss";
 import "bootstrap";
 import dateFilter from "./filters/date.filter";

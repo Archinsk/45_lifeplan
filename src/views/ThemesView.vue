@@ -1,23 +1,24 @@
 <template>
   <div>
-    <Header />
+    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Темы</h4>
-      <ColorScheme />
+      <ColorScheme :theme="theme" />
     </div>
   </div>
 </template>
 
 <script>
-import Header from "../components/TheHeader";
+import TheHeader from "../components/TheHeader";
 import ColorScheme from "../components/universal/ColorScheme";
 
 export default {
   name: "ThemesView",
   components: {
-    Header,
+    TheHeader,
     ColorScheme,
   },
+  props: ["theme"],
 };
 </script>
 

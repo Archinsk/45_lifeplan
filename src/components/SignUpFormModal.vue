@@ -121,17 +121,14 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-outline-primary"
+              :class="'btn btn-outline-' + theme.primary"
               data-bs-dismiss="modal"
               aria-label="Close"
             >
               Отмена
             </button>
-            <button
-              type="submit"
-              class="btn btn-primary"
-              :class="{ disabled: !isValidForm }"
-            >
+            <button type="submit" :class="'btn btn-' + theme.primary">
+              <!--              :class="{ disabled: !isValidForm }"-->
               Зарегистрироваться
             </button>
           </div>
@@ -150,6 +147,7 @@ export default {
     "signUpPasswordError",
     "signUpPasswordRepeatError",
     "isAuthUser",
+    "theme",
   ],
 
   data() {

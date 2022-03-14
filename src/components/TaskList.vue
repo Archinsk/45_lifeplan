@@ -1,5 +1,5 @@
 <template>
-  <ul :id="id" class="taskList bg-light">
+  <ul :id="id" class="taskList">
     <template v-for="(item, index) of listItems">
       <div
         v-if="
@@ -9,7 +9,7 @@
               startOfDayLocalinMs(listItems[index - 1].creationDate * 1000))
         "
         :key="item.id + '-todo'"
-        class="badge bg-secondary"
+        class="badge bg-warning"
       >
         {{ (item.creationDate * 1000) | date("date") }}
       </div>
@@ -21,7 +21,7 @@
               startOfDayLocalinMs(listItems[index - 1].completionDate * 1000))
         "
         :key="item.id + '-done'"
-        class="badge bg-secondary"
+        class="badge bg-warning"
       >
         {{ (item.completionDate * 1000) | date("date") }}
       </div>
@@ -32,6 +32,7 @@
             : item.id
         "
         :task-item="item"
+        :theme="theme"
         @toggle-task-status="$emit('toggle-task-status', $event)"
         @filter-category="$emit('filter-category', item.category.id)"
         @delete-task="$emit('delete-task', item.id)"
@@ -45,7 +46,7 @@ import TaskListItem from "@/components/TaskListItem";
 
 export default {
   name: "TaskList",
-  props: ["listItems", "id"],
+  props: ["listItems", "id", "theme"],
   components: {
     TaskListItem,
   },

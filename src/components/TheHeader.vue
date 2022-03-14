@@ -1,5 +1,5 @@
 <template>
-  <header class="header bg-primary">
+  <header :class="'header bg-' + theme.primary">
     <nav class="navbar navbar-expand-xl navbar-dark">
       <div class="container">
         <img
@@ -9,7 +9,7 @@
           alt="Life Plan Logo"
           @click="$emit('lists-toggle')"
         />
-        <HeaderButton
+        <TheHeaderButton
           icon="menu"
           class="d-xl-none"
           data-bs-toggle="offcanvas"
@@ -17,7 +17,7 @@
           aria-controls="offcanvasNavbar"
         />
         <div
-          class="offcanvas offcanvas-end bg-primary"
+          :class="'offcanvas offcanvas-end bg-' + theme.primary"
           tabindex="-1"
           id="offcanvasNavbar"
           ref="offcanvas"
@@ -42,7 +42,7 @@
               </li>
               <li class="nav-item" @click="offcanvasHide">
                 <router-link
-                  to="/categories_settings"
+                  to="/categories"
                   class="nav-link d-flex align-items-center"
                 >
                   <span class="material-icons"> category </span>
@@ -51,7 +51,7 @@
               </li>
               <li class="nav-item" @click="offcanvasHide">
                 <router-link
-                  to="/themes_settings"
+                  to="/themes"
                   class="nav-link d-flex align-items-center"
                 >
                   <span class="material-icons"> brush </span>
@@ -94,15 +94,17 @@
 </template>
 
 <script>
-import HeaderButton from "@/components/HeaderButton";
+import TheHeaderButton from "@/components/TheHeaderButton";
 import { Offcanvas } from "bootstrap";
 
 export default {
   name: "TheHeader",
 
   components: {
-    HeaderButton,
+    TheHeaderButton,
   },
+
+  props: ["theme"],
 
   data() {
     return {

@@ -1,5 +1,5 @@
 <template>
-  <li class="task bg-info border border-secondary mb-1">
+  <li :class="'task border mb-1 border-secondary bg-' + theme.info">
     <TaskListItemButtonCategory
       v-if="category.icon"
       :icon="category.icon"
@@ -35,7 +35,7 @@ import ContextMenuButton from "./ContextMenuButton";
 
 export default {
   name: "CategoriesListItem",
-  props: ["category"],
+  props: ["category", "theme"],
   components: {
     TaskListItemButtonCategory,
     ContextMenuButton,

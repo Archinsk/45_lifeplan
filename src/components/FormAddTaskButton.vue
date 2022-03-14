@@ -1,7 +1,7 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="inputGroupButton btn btn-primary border-secondary"
+    :class="'inputGroupButton btn btn-' + theme.primary"
     @click-handler="$emit('add-new-task')"
   />
 </template>
@@ -14,7 +14,7 @@ export default {
   components: {
     ButtonIconSquare,
   },
-  props: ["icon"],
+  props: ["icon", "theme"],
   methods: {
     formHandler() {
       this.$emit("add-task-form");
@@ -22,12 +22,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/*.inputGroupButton {*/
-/*  background-color: RGB(96, 192, 96);*/
-/*  color: white;*/
-/*  border: 1px solid RGB(128, 128, 128);*/
-/*  border-radius: 0 0.25rem 0.25rem 0;*/
-/*}*/
-</style>

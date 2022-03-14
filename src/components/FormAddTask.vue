@@ -1,9 +1,13 @@
 <template>
-  <form @submit.prevent action="submit" class="sticky-top bg-light py-2">
+  <form
+    @submit.prevent
+    action="submit"
+    :class="'sticky-top py-2 bg-' + theme.secondary"
+  >
     <div class="input-group">
       <input
         type="text"
-        class="form-control border-secondary"
+        class="form-control"
         placeholder="Введите текст задачи..."
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
@@ -13,6 +17,7 @@
       <FormAddTaskButton
         :icon="iconName"
         :class="buttonSemantics"
+        :theme="theme"
         @add-new-task="addNewTask"
       />
     </div>
@@ -31,7 +36,7 @@ export default {
       addTaskInputValue: "",
     };
   },
-  props: [],
+  props: ["theme"],
   components: {
     FormAddTaskButton,
   },
@@ -43,9 +48,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/*.form-control:focus {*/
-/*  box-shadow: none;*/
-/*}*/
-</style>

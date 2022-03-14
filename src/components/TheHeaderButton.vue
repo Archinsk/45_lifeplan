@@ -11,7 +11,7 @@
 import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
-  name: "MenuButton",
+  name: "TheHeaderButton",
   data() {
     return {
       buttonSemantics: "menuButton",
@@ -23,11 +23,3 @@ export default {
   props: ["icon"],
 };
 </script>
-
-<style scoped>
-/*.menuButton {*/
-/*  margin-left: 0.75rem;*/
-/*  border-radius: 0.25rem;*/
-
-/*}*/
-</style>

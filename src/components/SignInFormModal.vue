@@ -89,7 +89,7 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-outline-primary"
+              :class="'btn btn-outline-' + theme.primary"
               data-bs-dismiss="modal"
               aria-label="Close"
             >
@@ -97,9 +97,11 @@
             </button>
             <button
               type="submit"
-              class="btn btn-primary"
-              :class="{ disabled: !isValidForm }"
+              :class="
+                'btn btn-' + theme.primary + ' ' + { disabled: !isValidForm }
+              "
             >
+              <!--              :class="{ disabled: !isValidForm }"-->
               Войти
             </button>
           </div>
@@ -113,7 +115,7 @@
 export default {
   name: "SignInFormModal",
 
-  props: ["signInLoginError", "signInPasswordError", "isAuthUser"],
+  props: ["signInLoginError", "signInPasswordError", "isAuthUser", "theme"],
 
   data() {
     return {

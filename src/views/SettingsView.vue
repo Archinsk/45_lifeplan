@@ -1,17 +1,21 @@
 <template>
   <div>
-    <Header />
+    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Настройки</h4>
       <button
         v-if="!isAuthUser"
-        class="btn btn-primary"
+        :class="'btn btn-' + theme.primary"
         data-bs-toggle="modal"
         data-bs-target="#signInFormModal"
       >
         Войти
       </button>
-      <button v-else class="btn btn-primary" @click="$emit('sign-out')">
+      <button
+        v-else
+        :class="'btn btn-' + theme.primary"
+        @click="$emit('sign-out')"
+      >
         Выйти
       </button>
 
@@ -19,6 +23,7 @@
         :sign-in-login-error="errors.signIn.login.errorText"
         :sign-in-password-error="errors.signIn.password.errorText"
         :is-auth-user="isAuthUser"
+        :theme="theme"
         @sign-in-login-validation="signInLoginValidation(arguments)"
         @sign-in-password-validation="signInPasswordValidation(arguments)"
         @sign-in="signIn($event)"
@@ -28,6 +33,7 @@
         :sign-up-password-error="errors.signUp.password.errorText"
         :sign-up-password-repeat-error="errors.signUp.passwordRepeat.errorText"
         :is-auth-user="isAuthUser"
+        :theme="theme"
         @sign-up-login-validation="signUpLoginValidation($event)"
         @sign-up-password-validation="signUpPasswordValidation(arguments)"
         @sign-up-password-repeat-validation="
@@ -40,7 +46,7 @@
 </template>
 
 <script>
-import Header from "../components/TheHeader";
+import TheHeader from "../components/TheHeader";
 import SignInFormModal from "../components/SignInFormModal";
 import SignUpFormModal from "../components/SignUpFormModal";
 import axios from "axios";
@@ -50,12 +56,12 @@ export default {
   name: "SettingsView",
 
   components: {
-    Header,
+    TheHeader,
     SignInFormModal,
     SignUpFormModal,
   },
 
-  props: ["isAuthUser"],
+  props: ["isAuthUser", "theme"],
 
   data() {
     return {
