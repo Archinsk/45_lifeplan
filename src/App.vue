@@ -246,9 +246,9 @@ export default {
       colors: [],
       isAppLoaded: false,
       theme: {
-        primary: "green-primary",
-        secondary: "green-secondary",
-        info: "green-info",
+        primary: "light-steel-primary",
+        secondary: "light-steel-secondary",
+        info: "light-steel-info",
       },
     };
   },
