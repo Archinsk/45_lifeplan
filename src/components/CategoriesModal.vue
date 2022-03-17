@@ -24,12 +24,18 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-outline-primary"
+            :class="'btn btn-outline-' + theme.primary"
             data-bs-toggle="modal"
           >
             Отмена
           </button>
-          <button type="button" class="btn btn-primary" :class="{disabled: okDisabled}" @click="$emit('ok-action')">{{ okButtonTitle }}</button>
+          <button
+            type="button"
+            :class="'btn btn-' + theme.primary + ' ' + { disabled: okDisabled }"
+            @click="$emit('ok-action')"
+          >
+            {{ okButtonTitle }}
+          </button>
         </div>
       </div>
     </div>
@@ -40,7 +46,7 @@
 export default {
   name: "CategoriesModal",
 
-  props: ["id", "title", "okButtonTitle", "okDisabled", "refModal"],
+  props: ["id", "theme", "title", "okButtonTitle", "okDisabled", "refModal"],
 
   data() {
     return {

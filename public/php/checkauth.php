@@ -1,4 +1,4 @@
-<?php //Авторизация пользователя
+<?php //Проверка авторизации пользователя в сессии
 
 //Сначала разрешим принимать и отправлять запросы на сервер А
 header('Access-Control-Allow-Origin: *');
@@ -15,44 +15,34 @@ require 'db.php';
 //Запуск сессии
 session_start();
 
-//Парсинг входящего JSON'а
-$request = json_decode(file_get_contents('php://input'), true);
+// echo '--------------------------';
+// var_dump($_SESSION);
+// echo '--------------------------';
 
-if ( isset($request) ) {
-  //Проверка наличия пользователя в базе и соответствия пароля
-  $userDB = R::findOne('users', 'login = ?', array($request['login']) );
+if ( isset($_SESSION['auth_user_id']) ) {
+  //Чтение идентификатора зарегистрированного пользователя
+  $userDB = R::findOne('users', 'id = 1', array($_SESSION['auth_user_id']) );
   if ( $userDB ) {
-    if ( password_verify($request['password'], $userDB->password) ) {
-	  $user = array(
+      $user = array(
 	    'id' => $userDB->id,
 	    'name' => $userDB->login,
-	  );
-	  $response = array(
+	  );    
+      $response = array(
 	    'user' => $user
-	  );
-	  $_SESSION['auth_user_id'] = $userDB->id;
-    } else {
-	  $error = array(
-	    'id' => '2',
-	    'type' => 'password',
-	    'errorText' => 'Неверно введен пароль!'
-	  );
-	  $response = array(
-	    'error' => $error
-	  );
-    };
+      ); 
+	  $_SESSION['auth_user_name'] = $userDB->login;
   } else {
     $error = array(
-	    'id' => '1',
-	    'type' => 'login',
-	    'errorText' => 'Пользователь не зарегистрирован!'
-	  );
-    $response = array(
+	  'id' => '8',
+	  'type' => 'auth',
+	  'errorText' => 'Пользователь не авторизован'
+	);
+	$response = array(
 	  'error' => $error
-    );
+	);
   };
-
+  
   //Отправка JSON-ответа
   echo json_encode($response, JSON_UNESCAPED_UNICODE);
-}
+};
 ?>

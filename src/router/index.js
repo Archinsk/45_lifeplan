@@ -1,45 +1,43 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import HomeView from "../views/HomeView.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "HomeView",
+    component: HomeView,
   },
   {
-    path: "/categories_settings",
-    name: "CategoriesSettings",
-    component: () => import("../views/CategoriesSettings"),
+    path: "/categories",
+    name: "CategoriesView",
+    component: () => import("../views/CategoriesView"),
   },
   {
-    path: "/themes_settings",
-    name: "ThemesSettings",
-    component: () => import("../views/ThemesSettings"),
+    path: "/themes",
+    name: "ThemesView",
+    component: () => import("../views/ThemesView"),
   },
   {
     path: "/statistics",
-    name: "Statistics",
-    component: () => import("../views/Statistics"),
+    name: "StatisticsView",
+    component: () => import("../views/StatisticsView"),
   },
   {
     path: "/settings",
-    name: "Settings",
-    component: () => import("../views/Settings"),
+    name: "SettingsView",
+    component: () => import("../views/SettingsView"),
   },
   {
     path: "/help",
-    name: "Help",
-    component: () => import("../views/Help"),
+    name: "HelpView",
+    component: () => import("../views/HelpView"),
   },
 ];
 
 const router = new VueRouter({
-  // mode: "history",
-  base: process.env.BASE_URL,
   routes,
 });
 

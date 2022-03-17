@@ -1,5 +1,5 @@
 <template>
-  <ul class="taskList">
+  <ul class="iconsList">
     <IconsListItem
       v-for="item of listItems"
       :key="item.id"

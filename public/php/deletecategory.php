@@ -25,6 +25,15 @@ if ( isset($request) ) {
   // Удаление сроки задания из БД
   R::trash( $category );
   
+  // Удаление категории из заданий пользователя
+  $tasks = R::find('tasks', 'userid = ?', array($request['userid']));
+  foreach( $tasks as $task ) {
+    if ($task->categoryid === $request['id']) {
+	  $task->categoryid = NULL;
+	  R::store($task);
+    };
+  };
+  
   //Формирование ответа
   $categoryResponse = array(
     'id' => $request['id'],

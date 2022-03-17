@@ -47,7 +47,7 @@ if ( isset($request) ) {
 	      'user' => $user
         ); 
       };
-	  $_SESSION['auth_user'] = $userDB->id;
+	  $_SESSION['auth_user_id'] = $userDB->id;
     };
   };
 

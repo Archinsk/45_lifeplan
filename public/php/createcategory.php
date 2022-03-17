@@ -1,4 +1,4 @@
-<?php //Добавление задания в список заданий
+<?php //Добавление категории с список категорий пользователя
 
 //Сначала разрешим принимать и отправлять запросы на сервер А
 header('Access-Control-Allow-Origin: *');
@@ -30,6 +30,18 @@ if ( isset($request) ) {
     $category->color = $request['color'];
   $categoryId = R::store($category);
   
+  // Поиск (по началу строки) и присвоение категории в ранее созданных заданиях пользователя
+  if ( isset( $request['search']) ) {
+	$tasks = R::find('tasks', 'userid = ?', array($request['userid']));
+    foreach( $tasks as $task ) {
+      $hasCategory = strpos($task->task, $request['name']);
+      if ($hasCategory === 0) {
+	    $task->categoryid = $categoryId;
+		R::store($task);
+      };
+    };
+  };
+    
   //Формирование ответа
   $categoryResponse = array(
     'id' => $categoryId,

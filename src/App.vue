@@ -3,10 +3,12 @@
     <router-view
       :url="url"
       :is-app-loaded="isAppLoaded"
+      :theme="theme"
       :tasks-db="tasks"
       :categories-db="categories"
       :icons-db="icons"
       :colors-db="colors"
+      :is-auth-user="isAuthUser"
       @add-new-task="addNewTask($event)"
       @toggle-task-status="toggleTaskStatus($event)"
       @delete-task="deleteTask($event)"
@@ -14,6 +16,7 @@
       @edit-category="editCategory($event)"
       @delete-category="deleteCategory($event)"
       @auth-user="authUser($event)"
+      @sign-out="signOut"
     />
   </div>
 </template>
@@ -29,31 +32,224 @@ export default {
         id: null,
         name: "",
       },
+      // loggedUser: {
+      //   id: 79,
+      //   name: "Гость",
+      // },
       tasks: [],
-      categories: [],
-      icons: [],
-      colors: [],
       defaultTasks: [
         {
-          id: 1,
-          task: "Построить дом",
-          done: false,
-          category: { color: "red", icon: "settings" },
+          id: "1534",
+          task: "Бытовые. Заменить выключатель в детской комнате",
+          done: "0",
+          creationDate: 1642636460,
+          completionDate: null,
+          categoryid: "121",
         },
         {
-          id: 2,
-          task: "Посадить дерево",
-          done: false,
-          category: { color: "orange", icon: "stars" },
+          id: "1533",
+          task: "Саморазвитие. Поучаствовать в соревнованиях по настольному теннису",
+          done: "0",
+          creationDate: 1642636430,
+          completionDate: null,
+          categoryid: "123",
+          category: {
+            id: "123",
+            name: "Саморазвитие",
+            iconid: "13",
+            icon: "self_improvement",
+            colorid: "6",
+            color: "#9060C0",
+          },
         },
         {
-          id: 3,
-          task: "Вырастить сына",
-          done: false,
-          category: { color: "yellow", icon: "verified" },
+          id: "1532",
+          task: "Саморазвитие. Разучить на гитаре песню Depeche Mode «Personal Jesus»",
+          done: "0",
+          creationDate: 1642636400,
+          completionDate: null,
+          categoryid: "123",
+          category: {
+            id: "123",
+            name: "Саморазвитие",
+            iconid: "13",
+            icon: "self_improvement",
+            colorid: "6",
+            color: "#9060C0",
+          },
+        },
+        {
+          id: "1531",
+          task: "Саморазвитие. Прочитать книгу Экзюпери «Цитадель»",
+          done: "0",
+          creationDate: 1642241690,
+          completionDate: null,
+          categoryid: "123",
+          category: {
+            id: "123",
+            name: "Саморазвитие",
+            iconid: "13",
+            icon: "self_improvement",
+            colorid: "6",
+            color: "#9060C0",
+          },
+        },
+        {
+          id: "1530",
+          task: "Саморазвитие. Пройти интерактивный курс htmlacademy.ru",
+          done: "1",
+          creationDate: 1642241660,
+          completionDate: 1645600075,
+          categoryid: "123",
+          category: {
+            id: "123",
+            name: "Саморазвитие",
+            iconid: "13",
+            icon: "self_improvement",
+            colorid: "6",
+            color: "#9060C0",
+          },
+        },
+        {
+          id: "1529",
+          task: "Бытовые. Заменить светильник в кухне",
+          done: "0",
+          creationDate: 1642241630,
+          completionDate: null,
+          categoryid: "121",
+        },
+        {
+          id: "1528",
+          task: "Бытовые. Собрать компьютерный стол",
+          done: "1",
+          creationDate: 1642241600,
+          completionDate: 1642670000,
+          categoryid: "121",
+        },
+        {
+          id: "1527",
+          task: "Жизненный план. Закупить строительные материалы",
+          done: "0",
+          creationDate: 1641550460,
+          completionDate: null,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
+        },
+        {
+          id: "1525",
+          task: "Жизненный план. Выполнить проект дома",
+          done: "1",
+          creationDate: 1641550430,
+          completionDate: 1645600045,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
+        },
+        {
+          id: "1526",
+          task: "Жизненный план. Приобрести участок под строительство",
+          done: "1",
+          creationDate: 1641550400,
+          completionDate: 1644559611,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
+        },
+        {
+          id: "1524",
+          task: "Жизненный план. Вырастить сына",
+          done: "0",
+          creationDate: 1641032060,
+          completionDate: null,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
+        },
+        {
+          id: "1523",
+          task: "Жизненный план. Построить дом",
+          done: "0",
+          creationDate: 1641032030,
+          completionDate: null,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
+        },
+        {
+          id: "1522",
+          task: "Жизненный план. Посадить дерево",
+          done: "1",
+          creationDate: 1641032000,
+          completionDate: 1641550400,
+          categoryid: "122",
+          category: {
+            id: "122",
+            name: "Жизненный план",
+            iconid: "7",
+            icon: "stars",
+            colorid: "1",
+            color: "#60C060",
+          },
         },
       ],
+      categories: [],
+      defaultCategories: [
+        {
+          id: "122",
+          name: "Жизненный план",
+          iconid: "7",
+          icon: "stars",
+          colorid: "1",
+          color: "#60C060",
+        },
+        {
+          id: "123",
+          name: "Саморазвитие",
+          iconid: "13",
+          icon: "self_improvement",
+          colorid: "6",
+          color: "#9060C0",
+        },
+      ],
+      icons: [],
+      colors: [],
       isAppLoaded: false,
+      theme: {
+        primary: "light-steel-primary",
+        secondary: "light-steel-secondary",
+        info: "light-steel-info",
+      },
     };
   },
 
@@ -62,32 +258,17 @@ export default {
       const startDate = new Date();
       const user = JSON.stringify(this.loggedUser);
 
-      const tasksDB = axios
-        .post("https://www.d-skills.ru/45_lifeplan/php/gettasks.php", user)
-        .then((response) => {
-          this.logGroup(
-            "Список заданий получен через " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            response.data.tasks
-          );
-          this.tasks = response.data.tasks;
+      const checkAuth = new Promise((resolve) => {
+        axios.post(this.url + "checkauth.php", {}).then((response) => {
+          if (response.data.user) {
+            this.loggedUser = response.data.user;
+          }
+          resolve();
         });
-
-      const categoriesDB = axios
-        .post("https://www.d-skills.ru/45_lifeplan/php/getcategories.php", user)
-        .then((response) => {
-          this.logGroup(
-            "Список категорий получен за " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            response.data.categories
-          );
-          this.categories = response.data.categories;
-        });
+      });
 
       const iconsDB = axios
-        .post("https://www.d-skills.ru/45_lifeplan/php/geticons.php", user)
+        .post(this.url + "geticons.php", user)
         .then((response) => {
           this.logGroup(
             "Список иконок получен за " +
@@ -99,7 +280,7 @@ export default {
         });
 
       const colorsDB = axios
-        .post("https://www.d-skills.ru/45_lifeplan/php/getcolors.php", user)
+        .post(this.url + "getcolors.php", user)
         .then((response) => {
           this.logGroup(
             "Список цветов получен за " +
@@ -109,50 +290,93 @@ export default {
           this.colors = response.data.colors;
         });
 
-      const categoriesWithIcons = Promise.all([categoriesDB, iconsDB]).then(
-        () => {
-          this.assignIconsToCategories();
-          this.logGroup(
-            "Категориям присвоены иконки через " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            this.categories
-          );
-        }
-      );
+      if (this.loggedUser.id) {
+        const tasksDB = new Promise((resolve) => {
+          checkAuth.then(() => {
+            axios
+              .post(this.url + "gettasks.php", this.loggedUser)
+              .then((response) => {
+                this.logGroup(
+                  "Список заданий получен через " +
+                    (new Date() - startDate) +
+                    "мс со старта программы",
+                  response.data.tasks
+                );
+                this.tasks = response.data.tasks;
+                resolve();
+              });
+          });
+        });
 
-      const categoriesWithColors = Promise.all([categoriesDB, colorsDB]).then(
-        () => {
-          this.assignColorsToCategories();
-          this.logGroup(
-            "Категориям присвоены цвета через " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            this.categories
-          );
-        }
-      );
+        const categoriesDB = new Promise((resolve) => {
+          checkAuth.then(() => {
+            axios
+              .post(this.url + "getcategories.php", this.loggedUser)
+              .then((response) => {
+                this.logGroup(
+                  "Список категорий получен за " +
+                    (new Date() - startDate) +
+                    "мс со старта программы",
+                  response.data.categories
+                );
+                this.categories = response.data.categories;
+                resolve();
+              });
+          });
+        });
 
-      const categoriesWithIconsAndColors = Promise.all([
-        tasksDB,
-        categoriesWithIcons,
-        categoriesWithColors,
-      ]).then(() => {
-        this.assignCategoriesToTasks();
-        this.logGroup(
-          "Заданиям присвоены категории с иконками и цветами через " +
-            (new Date() - startDate) +
-            "мс со старта программы",
-          this.categories
+        const categoriesWithIcons = Promise.all([categoriesDB, iconsDB]).then(
+          () => {
+            this.assignIconsToCategories();
+            this.logGroup(
+              "Категориям присвоены иконки через " +
+                (new Date() - startDate) +
+                "мс со старта программы",
+              this.categories
+            );
+          }
         );
-      });
 
-      categoriesWithIconsAndColors.then(() => {
+        const categoriesWithColors = Promise.all([categoriesDB, colorsDB]).then(
+          () => {
+            this.assignColorsToCategories();
+            this.logGroup(
+              "Категориям присвоены цвета через " +
+                (new Date() - startDate) +
+                "мс со старта программы",
+              this.categories
+            );
+          }
+        );
+
+        const categoriesWithIconsAndColors = Promise.all([
+          tasksDB,
+          categoriesWithIcons,
+          categoriesWithColors,
+        ]).then(() => {
+          this.assignCategoriesToTasks();
+          this.logGroup(
+            "Заданиям присвоены категории с иконками и цветами через " +
+              (new Date() - startDate) +
+              "мс со старта программы",
+            this.tasks
+          );
+        });
+
+        categoriesWithIconsAndColors.then(() => {
+          this.isAppLoaded = true;
+          console.log(
+            "Програма инициализирована за " + (new Date() - startDate) + "мс"
+          );
+        });
+      } else {
+        this.tasks = this.defaultTasks;
+        this.categories = this.defaultCategories;
         this.isAppLoaded = true;
         console.log(
           "Програма инициализирована за " + (new Date() - startDate) + "мс"
         );
-      });
+      }
     },
 
     assignIconsToCategories() {
@@ -188,6 +412,15 @@ export default {
             task.category = category;
           }
         });
+      });
+    },
+
+    assignCategoryToTasksByName(category) {
+      let tasks = this.tasks;
+      tasks.forEach(function (task) {
+        if (task.task.startsWith(category.name)) {
+          task.category = category;
+        }
       });
     },
 
@@ -239,6 +472,9 @@ export default {
         .post(this.url + "createcategory.php", newCategory)
         .then((response) => {
           this.categories.push(response.data.category);
+          if (newCategory.search) {
+            this.assignCategoryToTasksByName(response.data.category);
+          }
           this.logGroup("Новая категория", response.data);
         });
     },
@@ -278,6 +514,14 @@ export default {
             (category) => category.id === response.data.category.id
           );
           this.categories.splice(deletedCategoryIndex, 1);
+          this.tasks.forEach(function (task) {
+            if (
+              task.category &&
+              task.category.id === response.data.category.id
+            ) {
+              delete task.category;
+            }
+          });
           this.logGroup("Удаленная категория", response.data);
         });
     },
@@ -285,6 +529,19 @@ export default {
     authUser(user) {
       this.loggedUser = user;
       this.initApp();
+      this.$router.push("/");
+    },
+
+    signOut() {
+      console.log("Выход");
+      axios.post(this.url + "signout.php").then(() => {
+        this.loggedUser = {
+          id: null,
+          name: "",
+        };
+        this.initApp();
+        this.$router.push("/");
+      });
     },
 
     logGroup(logHeader, ...logs) {
@@ -320,8 +577,15 @@ export default {
     // },
   },
 
+  computed: {
+    isAuthUser: function () {
+      return !!this.loggedUser.id;
+    },
+  },
+
   mounted() {
     this.initApp();
+    document.body.className = "bg-" + this.theme.secondary;
     console.log("Компонент App смонтирован");
   },
 };

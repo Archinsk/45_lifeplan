@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="listItems[0].id" class="taskList">
+  <ul v-if="listItems[0].id" class="colorsList">
     <ColorsListItem
       v-for="item of listItems"
       :key="item.id"
@@ -9,7 +9,9 @@
         backgroundColor: item.hex_color,
         borderColor: item.hex_color,
       }"
-      @change-color-selected-category="$emit('change-color-selected-category', item)"
+      @change-color-selected-category="
+        $emit('change-color-selected-category', item)
+      "
     />
   </ul>
 </template>

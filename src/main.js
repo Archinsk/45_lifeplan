@@ -1,7 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import "./custom.scss";
+import store from "./store";
+
 import "./lifeplan.scss";
 import "bootstrap";
 import dateFilter from "./filters/date.filter";
@@ -11,5 +12,6 @@ Vue.filter("date", dateFilter);
 
 new Vue({
   router,
+  store,
   render: (h) => h(App),
 }).$mount("#app");
