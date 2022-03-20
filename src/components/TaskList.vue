@@ -33,6 +33,7 @@
         "
         :task-item="item"
         :theme="theme"
+        :lightness-mode="lightnessMode"
         @toggle-task-status="$emit('toggle-task-status', $event)"
         @filter-category="$emit('filter-category', item.category.id)"
         @delete-task="$emit('delete-task', item.id)"
@@ -46,7 +47,7 @@ import TaskListItem from "@/components/TaskListItem";
 
 export default {
   name: "TaskList",
-  props: ["listItems", "id", "theme"],
+  props: ["listItems", "id", "theme", "lightnessMode"],
   components: {
     TaskListItem,
   },

@@ -8,6 +8,8 @@
       :categories-db="categories"
       :icons-db="icons"
       :colors-db="colors"
+      :themes="basicThemes"
+      :lightness-mode="darkMode"
       :is-auth-user="isAuthUser"
       @add-new-task="addNewTask($event)"
       @toggle-task-status="toggleTaskStatus($event)"
@@ -15,6 +17,8 @@
       @create-category="createCategory($event)"
       @edit-category="editCategory($event)"
       @delete-category="deleteCategory($event)"
+      @change-color-theme="changeColorTheme($event)"
+      @change-dark-mode="changeDarkMode($event)"
       @auth-user="authUser($event)"
       @sign-out="signOut"
     />
@@ -29,9 +33,13 @@ export default {
     return {
       url: "https://www.d-skills.ru/45_lifeplan/php/",
       loggedUser: {
-        id: null,
-        name: "",
+        id: "1",
+        name: "mihail",
       },
+      // loggedUser: {
+      //   id: null,
+      //   name: "",
+      // },
       // loggedUser: {
       //   id: 79,
       //   name: "Гость",
@@ -245,12 +253,84 @@ export default {
       icons: [],
       colors: [],
       isAppLoaded: false,
-      theme: {
-        primary: "light-steel-primary",
-        secondary: "light-steel-secondary",
-        info: "light-steel-info",
-      },
+      themeColor: "steel",
+      darkMode: "light",
+      basicThemes: [
+        {
+          id: 1,
+          value: "emerald",
+          name: "Изумруд",
+        },
+        {
+          id: 2,
+          value: "jade",
+          name: "Нефрит",
+        },
+        {
+          id: 3,
+          value: "turquoise",
+          name: "Бирюза",
+        },
+        {
+          id: 4,
+          value: "steel",
+          name: "Сталь",
+        },
+        {
+          id: 5,
+          value: "azure",
+          name: "Лазурь",
+        },
+        {
+          id: 6,
+          value: "amethyst",
+          name: "Аметист",
+        },
+        {
+          id: 7,
+          value: "fuchsia",
+          name: "Фуксия",
+        },
+        {
+          id: 8,
+          value: "honeysuckle",
+          name: "Жимолость",
+        },
+        {
+          id: 9,
+          value: "chestnut",
+          name: "Каштан",
+        },
+        {
+          id: 10,
+          value: "copper",
+          name: "Медь",
+        },
+        {
+          id: 11,
+          value: "khaki",
+          name: "Хаки",
+        },
+        {
+          id: 12,
+          value: "asparagus",
+          name: "Спаржа",
+        },
+      ],
     };
+  },
+
+  computed: {
+    isAuthUser: function () {
+      return !!this.loggedUser.id;
+    },
+    theme: function () {
+      return {
+        primary: this.darkMode + "-" + this.themeColor + "-primary",
+        secondary: this.darkMode + "-" + this.themeColor + "-secondary",
+        info: this.darkMode + "-" + this.themeColor + "-info",
+      };
+    },
   },
 
   methods: {
@@ -464,6 +544,18 @@ export default {
       });
     },
 
+    changeColorTheme(basicThemeId) {
+      console.log("Смена темы");
+      const colorTheme = this.basicThemes[basicThemeId - 1];
+      this.themeColor = colorTheme.value;
+      document.body.className = "bg-" + this.theme.secondary;
+    },
+
+    changeDarkMode(isDarkMode) {
+      this.darkMode = isDarkMode ? "dark" : "light";
+      document.body.className = "bg-" + this.theme.secondary;
+    },
+
     createCategory(createdCategory) {
       const newCategory = Object.assign({}, createdCategory);
       newCategory.userid = this.loggedUser.id;
@@ -575,12 +667,6 @@ export default {
     //           this.logGroup("Присвоение категорий существующим заданиям", this.tasks)
     //   );
     // },
-  },
-
-  computed: {
-    isAuthUser: function () {
-      return !!this.loggedUser.id;
-    },
   },
 
   mounted() {

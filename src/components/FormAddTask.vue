@@ -7,7 +7,7 @@
     <div class="input-group">
       <input
         type="text"
-        class="form-control"
+        :class="'form-control bg-' + lightnessMode + '-neutral-900'"
         placeholder="Введите текст задачи..."
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
@@ -36,7 +36,7 @@ export default {
       addTaskInputValue: "",
     };
   },
-  props: ["theme"],
+  props: ["theme", "lightnessMode"],
   components: {
     FormAddTaskButton,
   },

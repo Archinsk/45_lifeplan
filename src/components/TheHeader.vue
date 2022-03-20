@@ -4,14 +4,14 @@
       <div class="container">
         <img
           id="logo"
-          class="navbar-brand"
+          :class="'navbar-brand text-' + lightnessMode + '-neutral-900'"
           src="@/assets/lifeplan_logo.svg"
           alt="Life Plan Logo"
           @click="$emit('lists-toggle')"
         />
         <TheHeaderButton
           icon="menu"
-          class="d-xl-none"
+          :class="'d-xl-none text-' + lightnessMode + '-neutral-900'"
           data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasNavbar"
           aria-controls="offcanvasNavbar"
@@ -104,7 +104,7 @@ export default {
     TheHeaderButton,
   },
 
-  props: ["theme"],
+  props: ["theme", "lightnessMode"],
 
   data() {
     return {

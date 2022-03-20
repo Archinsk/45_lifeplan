@@ -22,7 +22,7 @@ import TaskListItemButtonDeleteTask from "./TaskListItemButtonDeleteTask";
 
 export default {
   name: "TaskListItem",
-  props: ["taskItem", "theme"],
+  props: ["taskItem", "theme", "lightnessMode"],
   components: {
     TaskListItemButtonDeleteTask,
     TaskListItemButtonCategory,
@@ -44,11 +44,22 @@ export default {
 
   computed: {
     taskClass: function () {
-      let taskClass = "task mb-1";
+      let taskClass = "task mb-1 border";
       if (+this.taskItem.done) {
-        taskClass += " taskCompleted";
+        taskClass +=
+          " border-" +
+          this.lightnessMode +
+          "-neutral-700 text-" +
+          this.lightnessMode +
+          "-neutral-500 taskCompleted";
       } else {
-        taskClass += " bg-" + this.theme.info;
+        taskClass +=
+          " border-" +
+          this.lightnessMode +
+          "-neutral-600 text-" +
+          this.lightnessMode +
+          "-neutral-300 bg-" +
+          this.theme.info;
       }
       return taskClass;
     },

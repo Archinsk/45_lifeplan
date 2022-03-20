@@ -44,16 +44,6 @@ body {
     }
   }
 
-  //
-  //#logo {
-  //  height: 4.5rem;
-  //}
-  //
-  //ul {
-  //  list-style: none;
-  //  padding-left: 0;
-  //}
-
   #tasks {
     width: 100%;
     position: relative;
@@ -83,25 +73,15 @@ body {
       border-radius: 0.3125rem;
       min-height: 2.5rem;
 
-      border: 1px solid #808080;
-      color: #505050;
-
       .delete-button {
         color: #808080;
       }
 
-      //  display: flex;
-      //  align-items: center;
-      //  padding: 0;
-      //
       &.taskCompleted {
         //    background-color: transparent;
         //    color: RGB(160, 160, 160);
         //    border-color: RGB(192, 192, 192);
         text-decoration: line-through;
-
-        border: 1px solid #c0c0c0;
-        color: #a0a0a0;
 
         .delete-button {
           color: #c0c0c0;

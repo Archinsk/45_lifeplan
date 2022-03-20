@@ -1,9 +1,14 @@
 <template>
   <div>
-    <TheHeader :theme="theme" @lists-toggle="listsToggle" />
+    <TheHeader
+      :theme="theme"
+      :lightness-mode="lightnessMode"
+      @lists-toggle="listsToggle"
+    />
     <div class="container">
       <FormAddTask
         :theme="theme"
+        :lightness-mode="lightnessMode"
         @add-new-task="$emit('add-new-task', $event)"
       />
       <div
@@ -17,6 +22,7 @@
         <TaskList
           :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @toggle-task-status="$emit('toggle-task-status', $event)"
           @delete-task="$emit('delete-task', $event)"
           @filter-category="filterCategory($event)"
@@ -26,6 +32,7 @@
         <TaskList
           :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @toggle-task-status="$emit('toggle-task-status', $event)"
           @delete-task="$emit('delete-task', $event)"
           @filter-category="filterCategory($event)"
@@ -49,7 +56,7 @@ export default {
     FormAddTask,
     TaskList,
   },
-  props: ["isAppLoaded", "theme", "tasksDb", "categoriesDb"],
+  props: ["isAppLoaded", "theme", "lightnessMode", "tasksDb", "categoriesDb"],
   data() {
     return {
       isFiltered: false,
