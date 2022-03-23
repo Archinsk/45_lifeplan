@@ -86,13 +86,16 @@ export default {
       });
       if (!this.doneListVisibility) {
         this.todoListClass = "position-absolute";
-        this.doneListClass = "bg-secondary position-relative active";
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative active";
         this.doneListVisibility = true;
       } else {
-        this.doneListClass = "bg-secondary position-relative";
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative";
         delay.then(() => {
           this.todoListClass = "position-relative";
-          this.doneListClass = "bg-secondary position-absolute";
+          this.doneListClass =
+            "bg-" + this.theme.secondary + " position-absolute";
           this.doneListVisibility = false;
         });
       }

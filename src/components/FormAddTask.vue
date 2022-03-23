@@ -7,7 +7,15 @@
     <div class="input-group">
       <input
         type="text"
-        :class="'form-control bg-' + lightnessMode + '-neutral-900'"
+        :class="
+          'form-control bg-' +
+          lightnessMode +
+          '-neutral-900 text-' +
+          lightnessMode +
+          '-neutral-300 border-' +
+          lightnessMode +
+          '-neutral-500'
+        "
         placeholder="Введите текст задачи..."
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
@@ -18,6 +26,7 @@
         :icon="iconName"
         :class="buttonSemantics"
         :theme="theme"
+        :lightness-mode="lightnessMode"
         @add-new-task="addNewTask"
       />
     </div>

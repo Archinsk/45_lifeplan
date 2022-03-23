@@ -38,7 +38,7 @@ $neutral-lightness: (
         );
         $_map: map-merge(
           $_map,
-          (dark-#{$key}-#{$semantic}: hsl($value, 43%, 44%))
+          (dark-#{$key}-#{$semantic}: hsl($value, 43%, 46%))
         );
       }
       @if $semantic == "secondary" {
@@ -58,7 +58,7 @@ $neutral-lightness: (
         );
         $_map: map-merge(
           $_map,
-          (dark-#{$key}-#{$semantic}: hsl(($value + 31), 100%, 6%))
+          (dark-#{$key}-#{$semantic}: hsl(($value + 31), 100%, 10%))
         );
       }
     }

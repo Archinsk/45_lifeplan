@@ -28,17 +28,11 @@ body {
         }
 
         .navbar-nav {
-          //flex-direction: row;
 
           .nav-link {
             padding-right: 0.5rem;
             padding-left: 0.5rem;
           }
-        }
-
-        .header-button {
-          background-color: transparent;
-          color: white;
         }
       }
     }
@@ -73,28 +67,9 @@ body {
       border-radius: 0.3125rem;
       min-height: 2.5rem;
 
-      .delete-button {
-        color: #808080;
-      }
-
       &.taskCompleted {
-        //    background-color: transparent;
-        //    color: RGB(160, 160, 160);
-        //    border-color: RGB(192, 192, 192);
         text-decoration: line-through;
-
-        .delete-button {
-          color: #c0c0c0;
-        }
       }
-      //}
-      //
-      //.btn-close {
-      //  padding: 0.9375rem;
-      //}
-      //
-      //.btn-close:focus {
-      //  box-shadow: none;
     }
   }
 
@@ -120,8 +95,6 @@ body {
   }
 
   .buttonIconSquare {
-    //padding: 0;
-    //border: none;
     line-height: 0.75;
     padding-left: 0.375rem;
     padding-right: 0.375rem;

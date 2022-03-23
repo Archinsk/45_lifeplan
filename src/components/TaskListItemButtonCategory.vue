@@ -1,7 +1,7 @@
 <template>
   <ButtonIconSquare
     :icon="icon"
-    class="category-button text-light"
+    class="category-button"
     @click-handler="$emit('filter-category')"
   />
 </template>

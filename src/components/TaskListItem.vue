@@ -3,11 +3,14 @@
     <TaskListItemButtonCategory
       v-if="taskItem.category && taskItem.category.id"
       :icon="taskItem.category.icon"
-      :style="categoryButtonStyles"
+      :theme="theme"
+      :lightness-mode="lightnessMode"
+      :class="categoryButtonClass"
       @filter-category="$emit('filter-category')"
     />
     <TaskListItemButtonDeleteTask
       icon="close"
+      :class="deleteButtonClass"
       @delete-task="$emit('delete-task')"
     />
     <div class="task-text">
@@ -27,6 +30,7 @@ export default {
     TaskListItemButtonDeleteTask,
     TaskListItemButtonCategory,
   },
+
   data() {
     return {
       category: {
@@ -51,12 +55,12 @@ export default {
           this.lightnessMode +
           "-neutral-700 text-" +
           this.lightnessMode +
-          "-neutral-500 taskCompleted";
+          "-neutral-600 taskCompleted";
       } else {
         taskClass +=
           " border-" +
           this.lightnessMode +
-          "-neutral-600 text-" +
+          "-neutral-500 text-" +
           this.lightnessMode +
           "-neutral-300 bg-" +
           this.theme.info;
@@ -64,14 +68,34 @@ export default {
       return taskClass;
     },
 
-    categoryButtonStyles: function () {
-      const color =
-        this.taskItem.category &&
-        this.taskItem.category.color &&
-        !+this.taskItem.done
-          ? this.taskItem.category.color
-          : "#c0c0c0";
-      return { backgroundColor: color, borderColor: color };
+    categoryButtonClass: function () {
+      let categoryClass = "";
+      if (+this.taskItem.done) {
+        categoryClass =
+          "bg-" +
+          this.lightnessMode +
+          "-neutral-700 text-" +
+          this.theme.secondary;
+      } else {
+        categoryClass =
+          "bg-" +
+          this.lightnessMode +
+          "-" +
+          this.taskItem.category.name +
+          "-primary text-" +
+          this.theme.info;
+      }
+      return categoryClass;
+    },
+
+    deleteButtonClass: function () {
+      let deleteClass = "";
+      if (+this.taskItem.done) {
+        deleteClass = "text-" + this.lightnessMode + "-neutral-700";
+      } else {
+        deleteClass = "text-" + this.lightnessMode + "-neutral-500";
+      }
+      return deleteClass;
     },
   },
 
