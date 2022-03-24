@@ -19,6 +19,14 @@ $basic-hues: (
   "asparagus": 90,
 );
 
+$neutral-lightness: (
+  "neutral-300": 31%,
+  "neutral-500": 50%,
+  "neutral-600": 63%,
+  "neutral-700": 75%,
+  "neutral-900": 100%,
+);
+
 @function theme-from-hues($hues, $semantics) {
   $_map: ();
   @each $key, $value in $hues {
@@ -30,7 +38,7 @@ $basic-hues: (
         );
         $_map: map-merge(
           $_map,
-          (dark-#{$key}-#{$semantic}: hsl($value, 43%, 44%))
+          (dark-#{$key}-#{$semantic}: hsl($value, 43%, 46%))
         );
       }
       @if $semantic == "secondary" {
@@ -50,7 +58,7 @@ $basic-hues: (
         );
         $_map: map-merge(
           $_map,
-          (dark-#{$key}-#{$semantic}: hsl(($value + 31), 100%, 6%))
+          (dark-#{$key}-#{$semantic}: hsl(($value + 31), 100%, 10%))
         );
       }
     }
@@ -58,8 +66,20 @@ $basic-hues: (
   @return $_map;
 }
 
+@function colors-from-lightness($lightnesses) {
+  $_map: ();
+  @each $key, $value in $lightnesses {
+    $_map: map-merge($_map, (light-#{$key}: hsl(0, 0%, $value)));
+    $_map: map-merge($_map, (dark-#{$key}: hsl(0, 0%, (100% - $value))));
+  }
+  @return $_map;
+}
+
 $custom-theme-colors: theme-from-hues($basic-hues, $basic-semantics);
+$custom-neutral-colors: colors-from-lightness($neutral-lightness);
+$custom-theme-colors: map-merge($custom-theme-colors, $custom-neutral-colors);
 $custom-theme-colors-rgb: map-loop($custom-theme-colors, to-rgb, "$value");
+$custom-neutral-colors-rgb: map-loop($custom-neutral-colors, to-rgb, "$value");
 
 $min-contrast-ratio: 3;
 
@@ -70,10 +90,26 @@ $min-contrast-ratio: 3;
 $theme-colors: map-merge($theme-colors, $custom-theme-colors);
 $theme-colors-rgb: map-merge($theme-colors-rgb, $custom-theme-colors-rgb);
 $utilities-colors: map-merge($utilities-colors, $custom-theme-colors-rgb);
-$custom-utilities-text-colors: map-loop($custom-theme-colors, rgba-css-var, "$key", "text");
-$custom-utilities-bg-colors: map-loop($custom-theme-colors, rgba-css-var, "$key", "bg");
-$utilities-text-colors: map-merge($utilities-text-colors, $custom-utilities-text-colors);
-$utilities-bg-colors: map-merge($utilities-bg-colors, $custom-utilities-bg-colors);
+$custom-utilities-text-colors: map-loop(
+  $custom-theme-colors,
+  rgba-css-var,
+  "$key",
+  "text"
+);
+$custom-utilities-bg-colors: map-loop(
+  $custom-theme-colors,
+  rgba-css-var,
+  "$key",
+  "bg"
+);
+$utilities-text-colors: map-merge(
+  $utilities-text-colors,
+  $custom-utilities-text-colors
+);
+$utilities-bg-colors: map-merge(
+  $utilities-bg-colors,
+  $custom-utilities-bg-colors
+);
 
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/root";

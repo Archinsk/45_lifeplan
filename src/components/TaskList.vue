@@ -9,7 +9,13 @@
               startOfDayLocalinMs(listItems[index - 1].creationDate * 1000))
         "
         :key="item.id + '-todo'"
-        class="badge bg-warning"
+        :class="
+          'badge bg-' +
+          lightnessMode +
+          '-neutral-600 text-' +
+          lightnessMode +
+          '-neutral-900'
+        "
       >
         {{ (item.creationDate * 1000) | date("date") }}
       </div>
@@ -21,7 +27,13 @@
               startOfDayLocalinMs(listItems[index - 1].completionDate * 1000))
         "
         :key="item.id + '-done'"
-        class="badge bg-warning"
+        :class="
+          'badge bg-' +
+          lightnessMode +
+          '-neutral-600 text-' +
+          lightnessMode +
+          '-neutral-900'
+        "
       >
         {{ (item.completionDate * 1000) | date("date") }}
       </div>
@@ -33,6 +45,7 @@
         "
         :task-item="item"
         :theme="theme"
+        :lightness-mode="lightnessMode"
         @toggle-task-status="$emit('toggle-task-status', $event)"
         @filter-category="$emit('filter-category', item.category.id)"
         @delete-task="$emit('delete-task', item.id)"
@@ -46,7 +59,7 @@ import TaskListItem from "@/components/TaskListItem";
 
 export default {
   name: "TaskList",
-  props: ["listItems", "id", "theme"],
+  props: ["listItems", "id", "theme", "lightnessMode"],
   components: {
     TaskListItem,
   },
