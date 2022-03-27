@@ -1,14 +1,17 @@
 <template>
-  <ul v-if="listItems[0].id" class="colorsList">
-    <ColorsListItem
+  <ul class="colorsList">
+    <ButtonIconSquare
       v-for="item of listItems"
       :key="item.id"
-      :color="item"
-      :selected-category-icon="selectedCategoryIcon"
-      :style="{
-        backgroundColor: item.hex_color,
-        borderColor: item.hex_color,
-      }"
+      :icon="selectedCategoryIcon"
+      :class="
+        'color-button me-2 mb-2 btn-' +
+        lightnessMode +
+        '-' +
+        item.name +
+        '-primary text-' +
+        theme.info
+      "
       @change-color-selected-category="
         $emit('change-color-selected-category', item)
       "
@@ -17,13 +20,13 @@
 </template>
 
 <script>
-import ColorsListItem from "./ColorsListItem";
+import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
   name: "ColorsList",
-  props: ["listItems", "selectedCategoryIcon"],
+  props: ["listItems", "selectedCategoryIcon", "theme", "lightnessMode"],
   components: {
-    ColorsListItem,
+    ButtonIconSquare,
   },
   mounted() {
     console.log("Компонент ColorsList смонтирован");

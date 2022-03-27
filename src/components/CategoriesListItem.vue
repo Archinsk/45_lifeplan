@@ -1,9 +1,9 @@
 <template>
   <li :class="'task border mb-1 border-secondary bg-' + theme.info">
-    <TaskListItemButtonCategory
-      v-if="category.icon"
+    <ButtonIconSquare
+      v-if="category.iconid"
       :icon="category.icon"
-      :style="{ backgroundColor: category.color, borderColor: category.color }"
+      :class="categoryButtonClass"
     />
     <ContextMenuButton
       icon="more_horiz"
@@ -23,27 +23,39 @@
       data-bs-toggle="modal"
       data-bs-target="#editCategoryModal"
     />
-    <div class="task-text">
-      {{ category.name }}
-    </div>
+    <div class="task-text">{{ category.name }}</div>
   </li>
 </template>
 
 <script>
-import TaskListItemButtonCategory from "@/components/TaskListItemButtonCategory";
+import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 import ContextMenuButton from "./ContextMenuButton";
 
 export default {
   name: "CategoriesListItem",
-  props: ["category", "theme"],
+  props: ["category", "theme", "lightnessMode"],
   components: {
-    TaskListItemButtonCategory,
+    ButtonIconSquare,
     ContextMenuButton,
   },
   data() {
     return {
       contextMenuVisibility: false,
     };
+  },
+
+  computed: {
+    categoryButtonClass: function () {
+      let categoryClass = "";
+      categoryClass =
+        "category-button bg-" +
+        this.lightnessMode +
+        "-" +
+        this.category.color +
+        "-primary text-" +
+        this.theme.info;
+      return categoryClass;
+    },
   },
 
   methods: {

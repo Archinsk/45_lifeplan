@@ -81,7 +81,7 @@ export default {
           "bg-" +
           this.lightnessMode +
           "-" +
-          this.taskItem.category.name +
+          this.taskItem.category.color +
           "-primary text-" +
           this.theme.info;
       }
