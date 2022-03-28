@@ -22,19 +22,23 @@
         @keyup.enter="addNewTask"
         v-model="addTaskInputValue"
       />
-      <FormAddTaskButton
-        :icon="iconName"
-        :class="buttonSemantics"
-        :theme="theme"
-        :lightness-mode="lightnessMode"
-        @add-new-task="addNewTask"
+      <ButtonIconSquare
+        icon="add"
+        :class="
+          'inputGroupButton btn btn-' +
+          theme.primary +
+          ' border-' +
+          lightnessMode +
+          '-neutral-500'
+        "
+        @click-handler="addNewTask"
       />
     </div>
   </form>
 </template>
 
 <script>
-import FormAddTaskButton from "@/components/FormAddTaskButton";
+import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
   name: "FormAddTask",
@@ -47,7 +51,7 @@ export default {
   },
   props: ["theme", "lightnessMode"],
   components: {
-    FormAddTaskButton,
+    ButtonIconSquare,
   },
   methods: {
     addNewTask() {

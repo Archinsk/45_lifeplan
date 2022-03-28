@@ -10,7 +10,7 @@
         "
         :key="item.id + '-todo'"
         :class="
-          'badge bg-' +
+          'badge mb-1 bg-' +
           lightnessMode +
           '-neutral-600 text-' +
           lightnessMode +
@@ -28,7 +28,7 @@
         "
         :key="item.id + '-done'"
         :class="
-          'badge bg-' +
+          'badge mb-1 bg-' +
           lightnessMode +
           '-neutral-600 text-' +
           lightnessMode +

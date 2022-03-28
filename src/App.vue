@@ -477,7 +477,7 @@ export default {
       categories.forEach(function (category) {
         colors.forEach(function (color) {
           if (category.colorid === color.id) {
-            category.name = color.name;
+            category.color = color.name;
           }
         });
       });

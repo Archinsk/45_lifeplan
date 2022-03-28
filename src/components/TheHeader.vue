@@ -9,9 +9,9 @@
           alt="Life Plan Logo"
           @click="$emit('lists-toggle')"
         />
-        <TheHeaderButton
+        <ButtonIconSquare
           icon="menu"
-          :class="'d-xl-none text-' + lightnessMode + '-neutral-900'"
+          :class="'burger-button d-xl-none btn-' + theme.primary"
           data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasNavbar"
           aria-controls="offcanvasNavbar"
@@ -94,14 +94,14 @@
 </template>
 
 <script>
-import TheHeaderButton from "@/components/TheHeaderButton";
+import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 import { Offcanvas } from "bootstrap";
 
 export default {
   name: "TheHeader",
 
   components: {
-    TheHeaderButton,
+    ButtonIconSquare,
   },
 
   props: ["theme", "lightnessMode"],

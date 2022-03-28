@@ -14,6 +14,7 @@
         <CategoriesList
           :list-items="categoriesDb"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @open-modal-edit-category="openModalEditCategory($event)"
           @open-modal-delete-category="openModalDeleteCategory($event)"
         />
@@ -21,6 +22,7 @@
           :class="'btn btn-' + theme.primary"
           data-bs-toggle="modal"
           data-bs-target="#createCategoryModal"
+          @click="openModalCreateCategory"
         >
           Создать категорию
         </button>
@@ -32,10 +34,15 @@
           ok-button-title="Создать"
           :ok-disabled="!isValidNewCategory"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @ok-action="createCategory"
         >
           Пример
-          <CategoriesListItem :category="newCategory" />
+          <CategoriesListItem
+            :category="newCategory"
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+          />
           <div class="mb-3">
             <label for="selectedCategoryName" class="form-label"
               >Название</label
@@ -92,7 +99,8 @@
               <h4>Иконки</h4>
               <IconsList
                 :list-items="iconsDb"
-                :selected-category-color="newCategory.color"
+                :theme="theme"
+                :lightness-mode="lightnessMode"
                 @change-icon-selected-category="changeIconNewCategory($event)"
               />
             </div>
@@ -106,6 +114,8 @@
               <ColorsList
                 :list-items="colorsDb"
                 :selected-category-icon="newCategory.icon"
+                :theme="theme"
+                :lightness-mode="lightnessMode"
                 @change-color-selected-category="changeColorNewCategory($event)"
               />
             </div>
@@ -132,12 +142,15 @@
           ok-button-title="Изменить"
           :ok-disabled="!isValidEditableCategory"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @ok-action="editCategory"
         >
           <p>Пример</p>
           <CategoriesListItem
             :category="selectedCategory"
             :key="selectedCategory.id ? selectedCategory.id : 'default'"
+            :theme="theme"
+            :lightness-mode="lightnessMode"
           />
           <div class="mb-3">
             <label for="newCategoryName" class="form-label">Название</label>
@@ -189,6 +202,8 @@
             >
               <h4>Иконки</h4>
               <IconsList
+                :theme="theme"
+                :lightness-mode="lightnessMode"
                 :list-items="iconsDb"
                 :selected-category-color="selectedCategory.color"
                 @change-icon-selected-category="
@@ -204,6 +219,8 @@
             >
               <h4>Цвета</h4>
               <ColorsList
+                :theme="theme"
+                :lightness-mode="lightnessMode"
                 :list-items="colorsDb"
                 :selected-category-icon="selectedCategory.icon"
                 @change-color-selected-category="
@@ -220,6 +237,7 @@
           title="Удаление категории"
           ok-button-title="Удалить"
           :theme="theme"
+          :lightness-mode="lightnessMode"
           @ok-action="deleteCategory"
         >
           <p>
@@ -229,7 +247,11 @@
               '" ?'
             }}
           </p>
-          <CategoriesListItem :category="selectedCategory" />
+          <CategoriesListItem
+            :category="selectedCategory"
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+          />
         </CategoriesModal>
       </template>
     </div>
@@ -258,12 +280,19 @@ export default {
     CategoriesModal,
   },
 
-  props: ["isAppLoaded", "theme", "categoriesDb", "iconsDb", "colorsDb"],
+  props: [
+    "isAppLoaded",
+    "theme",
+    "lightnessMode",
+    "categoriesDb",
+    "iconsDb",
+    "colorsDb",
+  ],
 
   data() {
     return {
       defaultCategory: {
-        color: "grey",
+        color: "",
         colorid: "",
         icon: "help",
         iconid: "",
@@ -271,7 +300,7 @@ export default {
         name: "",
       },
       newCategory: {
-        color: "grey",
+        color: "",
         colorid: "",
         icon: "help",
         iconid: "",
@@ -296,6 +325,10 @@ export default {
   },
 
   methods: {
+    openModalCreateCategory() {
+      this.newCategory = Object.assign({}, this.defaultCategory);
+    },
+
     openModalEditCategory(category) {
       this.selectedCategory = Object.assign({}, category);
     },
