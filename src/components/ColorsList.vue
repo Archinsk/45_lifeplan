@@ -12,9 +12,7 @@
         '-primary text-' +
         theme.info
       "
-      @change-color-selected-category="
-        $emit('change-color-selected-category', item)
-      "
+      @click-handler="$emit('change-color-selected-category', item)"
     />
   </ul>
 </template>

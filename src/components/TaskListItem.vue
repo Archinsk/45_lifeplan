@@ -1,17 +1,15 @@
 <template>
   <li :class="taskClass" @click="$emit('toggle-task-status', taskItem)">
-    <TaskListItemButtonCategory
+    <ButtonIconSquare
       v-if="taskItem.category && taskItem.category.id"
       :icon="taskItem.category.icon"
-      :theme="theme"
-      :lightness-mode="lightnessMode"
-      :class="categoryButtonClass"
-      @filter-category="$emit('filter-category')"
+      :class="'category-button ' + categoryButtonClass"
+      @click-handler="$emit('filter-category')"
     />
-    <TaskListItemButtonDeleteTask
+    <ButtonIconSquare
       icon="close"
-      :class="deleteButtonClass"
-      @delete-task="$emit('delete-task')"
+      :class="'delete-button ' + deleteButtonClass"
+      @click-handler="$emit('delete-task')"
     />
     <div class="task-text">
       {{ taskItem.task }}
@@ -20,30 +18,17 @@
 </template>
 
 <script>
-import TaskListItemButtonCategory from "@/components/TaskListItemButtonCategory";
-import TaskListItemButtonDeleteTask from "./TaskListItemButtonDeleteTask";
+import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
 
 export default {
   name: "TaskListItem",
   props: ["taskItem", "theme", "lightnessMode"],
   components: {
-    TaskListItemButtonDeleteTask,
-    TaskListItemButtonCategory,
+    ButtonIconSquare,
   },
 
   data() {
-    return {
-      category: {
-        color:
-          this.taskItem.category && this.taskItem.category.color
-            ? this.taskItem.category.color
-            : "black",
-        icon:
-          this.taskItem.category && this.taskItem.category.icon
-            ? this.taskItem.category.icon
-            : "home",
-      },
-    };
+    return {};
   },
 
   computed: {

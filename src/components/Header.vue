@@ -40,31 +40,46 @@
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/categories_settings" class="nav-link d-flex align-items-center">
+                <router-link
+                  to="/categories_settings"
+                  class="nav-link d-flex align-items-center"
+                >
                   <span class="material-icons"> category </span>
                   Категории
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/themes_settings" class="nav-link d-flex align-items-center">
+                <router-link
+                  to="/themes_settings"
+                  class="nav-link d-flex align-items-center"
+                >
                   <span class="material-icons"> brush </span>
                   Темы
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/statistics" class="nav-link d-flex align-items-center">
+                <router-link
+                  to="/statistics"
+                  class="nav-link d-flex align-items-center"
+                >
                   <span class="material-icons"> leaderboard </span>
                   Статистика
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/settings" class="nav-link d-flex align-items-center">
+                <router-link
+                  to="/settings"
+                  class="nav-link d-flex align-items-center"
+                >
                   <span class="material-icons"> settings </span>
                   Настройки
                 </router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/help" class="nav-link d-flex align-items-center">
+                <router-link
+                  to="/help"
+                  class="nav-link d-flex align-items-center"
+                >
                   <span class="material-icons"> help </span>
                   Помощь
                 </router-link>

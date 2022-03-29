@@ -292,7 +292,7 @@ export default {
   data() {
     return {
       defaultCategory: {
-        color: "",
+        color: "neutral-600",
         colorid: "",
         icon: "help",
         iconid: "",
@@ -300,7 +300,7 @@ export default {
         name: "",
       },
       newCategory: {
-        color: "",
+        color: "neutral-600",
         colorid: "",
         icon: "help",
         iconid: "",
@@ -344,7 +344,7 @@ export default {
     },
 
     changeColorSelectedCategory(color) {
-      this.selectedCategory.color = color.hex_color;
+      this.selectedCategory.color = color.name;
       this.selectedCategory.colorid = color.id;
       console.log(color);
     },
@@ -356,7 +356,7 @@ export default {
     },
 
     changeColorNewCategory(color) {
-      this.newCategory.color = color.hex_color;
+      this.newCategory.color = color.name;
       this.newCategory.colorid = color.id;
       console.log(color);
     },

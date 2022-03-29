@@ -1,13 +1,14 @@
 <template>
-  <li :class="'task border mb-1 border-secondary bg-' + theme.info">
+  <li :class="categoryClass">
     <ButtonIconSquare
       v-if="category.iconid"
       :icon="category.icon"
       :class="categoryButtonClass"
     />
-    <ContextMenuButton
+    <ButtonIconSquare
       icon="more_horiz"
-      @toggle-context-menu="toggleContextMenu"
+      :class="contextMenuButtonClass"
+      @click-handler="toggleContextMenu"
     />
     <ContextMenuButton
       v-show="contextMenuVisibility"
@@ -45,16 +46,27 @@ export default {
   },
 
   computed: {
-    categoryButtonClass: function () {
-      let categoryClass = "";
-      categoryClass =
-        "category-button bg-" +
+    categoryClass: function () {
+      let categoryClass =
+        "mb-1 border border-" +
         this.lightnessMode +
-        "-" +
-        this.category.color +
-        "-primary text-" +
-        this.theme.info;
+        "-neutral-500 text-" +
+        this.lightnessMode +
+        "-neutral-300";
       return categoryClass;
+    },
+    categoryButtonClass: function () {
+      let categoryClass =
+        "category-button btn-" + this.lightnessMode + "-" + this.category.color;
+      if (this.category.colorid) {
+        categoryClass += "-primary";
+      }
+      categoryClass += " text-" + this.theme.info;
+      return categoryClass;
+    },
+    contextMenuButtonClass: function () {
+      let buttonClass = "context-menu-button text-dark-neutral-500 ";
+      return buttonClass;
     },
   },
 

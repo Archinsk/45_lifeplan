@@ -253,7 +253,7 @@ export default {
       icons: [],
       colors: [],
       isAppLoaded: false,
-      themeColor: "steel",
+      themeColor: "amethyst",
       darkMode: "light",
       basicThemes: [
         {
@@ -512,6 +512,8 @@ export default {
       };
       axios.post(this.url + "createtask.php", newTask).then((response) => {
         let task = response.data.task;
+        // Разобраться с типами данных
+        task.id = "" + task.id;
         if (task.categoryid) {
           task.category = this.categories.find(
             (category) => category.id === task.categoryid

@@ -325,7 +325,7 @@ export default {
 
     editCategory() {
       this.editCategoryModal.hide();
-      this.$emit('edit-category', this.selectedCategory)
+      this.$emit("edit-category", this.selectedCategory);
     },
 
     deleteCategory() {
