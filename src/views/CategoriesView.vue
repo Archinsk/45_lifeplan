@@ -49,54 +49,80 @@
             >
             <input
               type="text"
-              class="form-control"
+              :class="
+                'form-control bg-' +
+                lightnessMode +
+                '-neutral-900 text-' +
+                lightnessMode +
+                '-neutral-300 border-' +
+                lightnessMode +
+                '-neutral-500'
+              "
               id="selectedCategoryName"
               placeholder="Введите название категории"
               v-model.trim="newCategory.name"
             />
           </div>
-          <ul
-            class="nav nav-pills mb-3"
+          <nav
+            :class="
+              'nav nav-tabs border-' +
+              lightnessMode +
+              '-neutral-500 border-bottom'
+            "
             id="create-category-tab"
             role="tablist"
           >
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="pills-home-tab-2"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-create-category-icons"
-                type="button"
-                role="tab"
-                aria-controls="pills-home"
-                aria-selected="true"
-              >
-                Иконка
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="pills-profile-tab-2"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-create-category-colors"
-                type="button"
-                role="tab"
-                aria-controls="pills-profile"
-                aria-selected="false"
-              >
-                Цвет
-              </button>
-            </li>
-          </ul>
-          <div class="tab-content" id="pills-tabContent-2">
+            <button
+              :class="
+                'nav-link active bg-' +
+                theme.secondary +
+                ' border-' +
+                lightnessMode +
+                '-neutral-500 border-bottom-0'
+              "
+              id="pills-home-tab-2"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-create-category-icons"
+              type="button"
+              role="tab"
+              aria-controls="pills-home"
+              aria-selected="true"
+            >
+              Иконка
+            </button>
+            <button
+              :class="
+                'nav-link bg-' +
+                theme.secondary +
+                ' border-' +
+                lightnessMode +
+                '-neutral-500 border-bottom-0'
+              "
+              id="pills-profile-tab-2"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-create-category-colors"
+              type="button"
+              role="tab"
+              aria-controls="pills-profile"
+              aria-selected="false"
+            >
+              Цвет
+            </button>
+          </nav>
+          <div
+            :class="
+              'tab-content border border-' +
+              lightnessMode +
+              '-neutral-500 border-top-0 p-2 mb-3'
+            "
+            id="pills-tabContent-2"
+          >
             <div
               class="tab-pane fade show active"
               id="pills-create-category-icons"
               role="tabpanel"
               aria-labelledby="pills-create-category-icons-tab"
             >
-              <h4>Иконки</h4>
               <IconsList
                 :list-items="iconsDb"
                 :theme="theme"
@@ -110,7 +136,6 @@
               role="tabpanel"
               aria-labelledby="pills-create-category-colors-tab"
             >
-              <h4>Цвета</h4>
               <ColorsList
                 :list-items="colorsDb"
                 :selected-category-icon="newCategory.icon"
@@ -156,51 +181,81 @@
             <label for="newCategoryName" class="form-label">Название</label>
             <input
               type="text"
-              class="form-control"
+              :class="
+                'form-control bg-' +
+                lightnessMode +
+                '-neutral-900 text-' +
+                lightnessMode +
+                '-neutral-300 border-' +
+                lightnessMode +
+                '-neutral-500'
+              "
               id="newCategoryName"
               placeholder="Введите название категории"
               v-model.trim="selectedCategory.name"
             />
           </div>
 
-          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="pills-home-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-home"
-                type="button"
-                role="tab"
-                aria-controls="pills-home"
-                aria-selected="true"
-              >
-                Иконка
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="pills-profile-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-profile"
-                type="button"
-                role="tab"
-                aria-controls="pills-profile"
-                aria-selected="false"
-              >
-                Цвет
-              </button>
-            </li>
-          </ul>
-          <div class="tab-content" id="pills-tabContent">
+          <nav
+            :class="
+              'nav nav-tabs border-' +
+              lightnessMode +
+              '-neutral-500 border-bottom'
+            "
+            id="pills-tab"
+            role="tablist"
+          >
+            <button
+              :class="
+                'nav-link active bg-' +
+                theme.secondary +
+                ' border-' +
+                lightnessMode +
+                '-neutral-500 border-bottom-0'
+              "
+              id="pills-home-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-home"
+              type="button"
+              role="tab"
+              aria-controls="pills-home"
+              aria-selected="true"
+            >
+              Иконка
+            </button>
+            <button
+              :class="
+                'nav-link bg-' +
+                theme.secondary +
+                ' border-' +
+                lightnessMode +
+                '-neutral-500 border-bottom-0'
+              "
+              id="pills-profile-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-profile"
+              type="button"
+              role="tab"
+              aria-controls="pills-profile"
+              aria-selected="false"
+            >
+              Цвет
+            </button>
+          </nav>
+          <div
+            :class="
+              'tab-content border border-' +
+              lightnessMode +
+              '-neutral-500 border-top-0 p-2'
+            "
+            id="pills-tabContent"
+          >
             <div
               class="tab-pane fade show active"
               id="pills-home"
               role="tabpanel"
               aria-labelledby="pills-home-tab"
             >
-              <h4>Иконки</h4>
               <IconsList
                 :theme="theme"
                 :lightness-mode="lightnessMode"
@@ -217,7 +272,6 @@
               role="tabpanel"
               aria-labelledby="pills-profile-tab"
             >
-              <h4>Цвета</h4>
               <ColorsList
                 :theme="theme"
                 :lightness-mode="lightnessMode"

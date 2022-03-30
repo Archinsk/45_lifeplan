@@ -1,11 +1,11 @@
 <template>
-  <ul class="colorsList">
+  <ul class="colorsList d-flex flex-wrap gap-2 mb-0">
     <ButtonIconSquare
       v-for="item of listItems"
       :key="item.id"
       :icon="selectedCategoryIcon"
       :class="
-        'color-button me-2 mb-2 btn-' +
+        'color-button btn-' +
         lightnessMode +
         '-' +
         item.name +

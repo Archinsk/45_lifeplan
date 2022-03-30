@@ -1,5 +1,5 @@
 <template>
-  <ul class="iconsList">
+  <ul class="iconsList d-flex flex-wrap gap-2 mb-0">
     <ButtonIconSquare
       v-for="item of listItems"
       :key="item.id"
@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     categoryButtonClass: function () {
-      let categoryClass = "me-2 mb-2 bg-" + this.lightnessMode;
+      let categoryClass = "bg-" + this.lightnessMode;
       if (this.selectedCategoryColor) {
         categoryClass +=
           "-" + this.selectedCategoryColor + "-primary text-" + this.theme.info;

@@ -8,8 +8,22 @@
     tabindex="-1"
   >
     <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
+      <div
+        :class="
+          'modal-content bg-' +
+          theme.secondary +
+          ' text-' +
+          lightnessMode +
+          '-neutral-300'
+        "
+      >
+        <div
+          :class="
+            'modal-header border-bottom border-' +
+            lightnessMode +
+            '-neutral-700'
+          "
+        >
           <h5 class="modal-title" :id="id + 'Label'">{{ title }}</h5>
           <button
             type="button"
@@ -21,7 +35,11 @@
         <div class="modal-body">
           <slot></slot>
         </div>
-        <div class="modal-footer">
+        <div
+          :class="
+            'modal-footer border-top border-' + lightnessMode + '-neutral-700'
+          "
+        >
           <button
             type="button"
             :class="'btn btn-outline-' + theme.primary"
@@ -46,7 +64,15 @@
 export default {
   name: "CategoriesModal",
 
-  props: ["id", "theme", "title", "okButtonTitle", "okDisabled", "refModal"],
+  props: [
+    "id",
+    "theme",
+    "lightnessMode",
+    "title",
+    "okButtonTitle",
+    "okDisabled",
+    "refModal",
+  ],
 
   data() {
     return {

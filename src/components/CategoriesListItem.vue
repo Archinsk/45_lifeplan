@@ -10,19 +10,21 @@
       :class="contextMenuButtonClass"
       @click-handler="toggleContextMenu"
     />
-    <ContextMenuButton
+    <ButtonIconSquare
       v-show="contextMenuVisibility"
-      icon="close"
-      @toggle-context-menu="$emit('open-modal-delete-category')"
       data-bs-toggle="modal"
       data-bs-target="#deleteCategoryModal"
+      icon="close"
+      :class="contextMenuButtonClass"
+      @click-handler="$emit('open-modal-delete-category')"
     />
-    <ContextMenuButton
+    <ButtonIconSquare
       v-show="contextMenuVisibility"
-      icon="mode"
-      @toggle-context-menu="$emit('open-modal-edit-category')"
       data-bs-toggle="modal"
       data-bs-target="#editCategoryModal"
+      icon="mode"
+      :class="contextMenuButtonClass"
+      @click-handler="$emit('open-modal-edit-category')"
     />
     <div class="task-text">{{ category.name }}</div>
   </li>
@@ -30,14 +32,12 @@
 
 <script>
 import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
-import ContextMenuButton from "./ContextMenuButton";
 
 export default {
   name: "CategoriesListItem",
   props: ["category", "theme", "lightnessMode"],
   components: {
     ButtonIconSquare,
-    ContextMenuButton,
   },
   data() {
     return {
@@ -47,13 +47,14 @@ export default {
 
   computed: {
     categoryClass: function () {
-      let categoryClass =
+      return (
         "mb-1 border border-" +
         this.lightnessMode +
         "-neutral-500 text-" +
         this.lightnessMode +
-        "-neutral-300";
-      return categoryClass;
+        "-neutral-300 bg-" +
+        this.theme.info
+      );
     },
     categoryButtonClass: function () {
       let categoryClass =
@@ -65,8 +66,7 @@ export default {
       return categoryClass;
     },
     contextMenuButtonClass: function () {
-      let buttonClass = "context-menu-button text-dark-neutral-500 ";
-      return buttonClass;
+      return "context-menu-button text-" + this.lightnessMode + "-neutral-500 ";
     },
   },
 
