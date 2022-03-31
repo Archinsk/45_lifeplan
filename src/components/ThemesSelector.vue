@@ -7,9 +7,8 @@
         type="checkbox"
         role="switch"
         id="DarkModeSwitch"
-        :checked="darkMode"
-        v-model="darkMode"
-        @change="$emit('change-dark-mode', darkMode)"
+        :checked="lightnessMode === 'dark'"
+        @change="$emit('change-dark-mode', lightnessMode)"
       />
       <label class="form-check-label" for="DarkModeSwitch">Темная тема</label>
     </div>
@@ -35,9 +34,7 @@ export default {
   },
   props: ["themes", "lightnessMode"],
   data() {
-    return {
-      darkMode: false,
-    };
+    return {};
   },
 };
 </script>

@@ -553,8 +553,8 @@ export default {
       document.body.className = "bg-" + this.theme.secondary;
     },
 
-    changeDarkMode(isDarkMode) {
-      this.darkMode = isDarkMode ? "dark" : "light";
+    changeDarkMode(darkMode) {
+      this.darkMode = darkMode === "light" ? "dark" : "light";
       document.body.className = "bg-" + this.theme.secondary;
     },
 
