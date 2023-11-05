@@ -1,6 +1,5 @@
 <template>
   <div>
-    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Помощь</h4>
     </div>
@@ -8,13 +7,9 @@
 </template>
 
 <script>
-import TheHeader from "../components/TheHeader";
-
 export default {
   name: "HelpView",
-  components: {
-    TheHeader,
-  },
+  components: {},
   props: ["theme"],
 };
 </script>

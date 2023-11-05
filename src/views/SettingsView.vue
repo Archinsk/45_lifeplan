@@ -1,6 +1,5 @@
 <template>
   <div>
-    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Настройки</h4>
       <button
@@ -46,7 +45,6 @@
 </template>
 
 <script>
-import TheHeader from "../components/TheHeader";
 import SignInFormModal from "../components/SignInFormModal";
 import SignUpFormModal from "../components/SignUpFormModal";
 import axios from "axios";
@@ -56,7 +54,6 @@ export default {
   name: "SettingsView",
 
   components: {
-    TheHeader,
     SignInFormModal,
     SignUpFormModal,
   },

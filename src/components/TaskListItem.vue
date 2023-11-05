@@ -1,15 +1,17 @@
 <template>
   <li :class="taskClass" @click="$emit('toggle-task-status', taskItem)">
-    <ButtonIconSquare
+    <vb-button
       v-if="taskItem.category && taskItem.category.id"
       :icon="taskItem.category.icon"
+      square
       :class="'category-button ' + categoryButtonClass"
-      @click-handler="$emit('filter-category')"
+      @click="$emit('filter-category')"
     />
-    <ButtonIconSquare
+    <vb-button
       icon="close"
+      square
       :class="'delete-button ' + deleteButtonClass"
-      @click-handler="$emit('delete-task')"
+      @click="$emit('delete-task')"
     />
     <div class="task-text">
       {{ taskItem.task }}
@@ -18,13 +20,13 @@
 </template>
 
 <script>
-import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
+import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
 
 export default {
   name: "TaskListItem",
   props: ["taskItem", "theme", "lightnessMode"],
   components: {
-    ButtonIconSquare,
+    VbButton,
   },
 
   data() {
@@ -55,7 +57,7 @@ export default {
 
     categoryButtonClass: function () {
       let categoryClass = "";
-      if (+this.taskItem.done) {
+      if (this.taskItem.done) {
         categoryClass =
           "bg-" +
           this.lightnessMode +
@@ -75,7 +77,7 @@ export default {
 
     deleteButtonClass: function () {
       let deleteClass = "";
-      if (+this.taskItem.done) {
+      if (this.taskItem.done) {
         deleteClass = "text-" + this.lightnessMode + "-neutral-700";
       } else {
         deleteClass = "text-" + this.lightnessMode + "-neutral-500";

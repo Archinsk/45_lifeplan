@@ -1,43 +1,47 @@
 <template>
   <li :class="categoryClass">
-    <ButtonIconSquare
+    <vb-button
       v-if="category.iconid"
       :icon="category.icon"
+      square
       :class="categoryButtonClass"
     />
-    <ButtonIconSquare
+    <vb-button
       icon="more_horiz"
+      square
       :class="contextMenuButtonClass"
-      @click-handler="toggleContextMenu"
+      @click="toggleContextMenu"
     />
-    <ButtonIconSquare
+    <vb-modal-button
       v-show="contextMenuVisibility"
-      data-bs-toggle="modal"
-      data-bs-target="#deleteCategoryModal"
+      target-id="modal-category-delete"
       icon="close"
+      square
       :class="contextMenuButtonClass"
-      @click-handler="$emit('open-modal-delete-category')"
+      @click="$emit('open-modal-delete-category')"
     />
-    <ButtonIconSquare
+    <vb-modal-button
       v-show="contextMenuVisibility"
-      data-bs-toggle="modal"
-      data-bs-target="#editCategoryModal"
+      target-id="modal-category-edit"
       icon="mode"
+      square
       :class="contextMenuButtonClass"
-      @click-handler="$emit('open-modal-edit-category')"
+      @click="$emit('open-modal-edit-category')"
     />
     <div class="task-text">{{ category.name }}</div>
   </li>
 </template>
 
 <script>
-import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
+import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
+import VbModalButton from "./universal/Bootstrap_4.6.2/BS46ModalButton";
 
 export default {
   name: "CategoriesListItem",
   props: ["category", "theme", "lightnessMode"],
   components: {
-    ButtonIconSquare,
+    VbModalButton,
+    VbButton,
   },
   data() {
     return {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <TheHeader :theme="theme" />
     <div class="container">
       <h4>Категории</h4>
       <div
@@ -314,7 +313,6 @@
 
 <script>
 // import axios from "axios";
-import TheHeader from "../components/TheHeader";
 import CategoriesList from "../components/CategoriesList";
 import ColorsList from "../components/ColorsList";
 import CategoriesModal from "../components/CategoriesModal";
@@ -330,7 +328,6 @@ export default {
     IconsList,
     CategoriesList,
     ColorsList,
-    TheHeader,
     CategoriesModal,
   },
 

@@ -1,10 +1,97 @@
 <template>
   <div id="app">
+    <vb-modal id="modal-sign-in" header footer size="sm">
+      <template v-slot:modal-header>Авторизация</template>
+      <vb-form
+        :form-items-list="forms.signIn.formItemsList"
+        @change-form="changeForm($event)"
+      />
+      <p>
+        Ещё нет учетной записи?
+        <vb-modal-button target-id="modal-sign-up" tag="a"
+          >Зарегистрироваться</vb-modal-button
+        >
+      </p>
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary" @click="signIn">Вход</vb-button>
+      </template>
+    </vb-modal>
+    <vb-modal id="modal-sign-out-confirm" size="sm">
+      <div class="mb-3">Вы действительно хотите выйти из системы?</div>
+      <div class="row row-cols-2">
+        <div class="col">
+          <vb-button block theme="outline-primary" data-dismiss="modal"
+            >Отмена</vb-button
+          >
+        </div>
+        <div class="col">
+          <vb-button block theme="primary" @click="signOut"
+            >Подтвердить</vb-button
+          >
+        </div>
+      </div>
+    </vb-modal>
+    <vb-modal id="modal-sign-up" header footer size="sm">
+      <template v-slot:modal-header>Регистрация</template>
+      <vb-form
+        :form-items-list="forms.signUp.formItemsList"
+        @change-form="changeForm($event)"
+      />
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary" @click="signUp">Регистрация</vb-button>
+      </template>
+    </vb-modal>
+    <vb-modal id="modal-categories" header footer scrollable>
+      <template v-slot:modal-header>Категории</template>
+      <CategoriesList
+        :list-items="categories"
+        :theme="theme"
+        :lightness-mode="darkMode"
+      />
+      <!--      @open-modal-edit-category="openModalEditCategory($event)"-->
+      <!--      @open-modal-delete-category="openModalDeleteCategory($event)"-->
+      <button
+        :class="'btn btn-' + theme.primary"
+        data-bs-toggle="modal"
+        data-bs-target="#createCategoryModal"
+      >
+        Создать категорию
+      </button>
+      <!--      @click="openModalCreateCategory"-->
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary">Добавить</vb-button>
+      </template>
+    </vb-modal>
+    <vb-header
+      :brand="brand"
+      :nav="systemNav"
+      :theme="theme.primary"
+      dark
+      expand
+      expand-size="sm"
+      container
+      offcanvas
+      justify-content="between"
+    />
+    <!--<TheHeader
+      :theme="theme"
+      :lightness-mode="lightnessMode"
+      @lists-toggle="listsToggle"
+    />-->
     <router-view
+      :tasks="tasksWithCategories"
       :url="url"
       :is-app-loaded="isAppLoaded"
       :theme="theme"
-      :tasks-db="tasks"
       :categories-db="categories"
       :icons-db="icons"
       :colors-db="colors"
@@ -19,6 +106,7 @@
       @delete-category="deleteCategory($event)"
       @change-color-theme="changeColorTheme($event)"
       @change-dark-mode="changeDarkMode($event)"
+      @save-color-themes="saveColorThemes"
       @auth-user="authUser($event)"
       @sign-out="signOut"
     />
@@ -27,8 +115,24 @@
 
 <script>
 import axios from "axios";
+// import TheHeader from "./components/TheHeader";
+import VbHeader from "./components/universal/Bootstrap_4.6.2/BS46Header";
+import VbModal from "./components/universal/Bootstrap_4.6.2/BS46Modal";
+import VbButton from "./components/universal/Bootstrap_4.6.2/BS46Button";
+import VbForm from "./components/universal/Bootstrap_4.6.2/BS46Form";
+import CategoriesList from "./components/CategoriesList";
+import VbModalButton from "./components/universal/Bootstrap_4.6.2/BS46ModalButton";
 
 export default {
+  components: {
+    VbModalButton,
+    CategoriesList,
+    VbForm,
+    VbButton,
+    VbModal,
+    VbHeader,
+    // TheHeader
+  },
   data() {
     return {
       url: "https://www.d-skills.ru/45_lifeplan/php/",
@@ -44,7 +148,6 @@ export default {
       //   id: 79,
       //   name: "Гость",
       // },
-      tasks: [],
       defaultTasks: [
         {
           id: "1534",
@@ -231,7 +334,6 @@ export default {
           },
         },
       ],
-      categories: [],
       defaultCategories: [
         {
           id: "122",
@@ -250,11 +352,7 @@ export default {
           color: "#9060C0",
         },
       ],
-      icons: [],
-      colors: [],
       isAppLoaded: false,
-      themeColor: "amethyst",
-      darkMode: "light",
       basicThemes: [
         {
           id: 1,
@@ -317,6 +415,234 @@ export default {
           name: "Спаржа",
         },
       ],
+
+      brand: {
+        href: "/",
+        name: "",
+        imageSrc: "images/lifeplan_logo.svg",
+      },
+      systemNav: {
+        itemsList: [
+          {
+            id: "nav-link-tasks",
+            name: "Задания",
+            type: "router-link",
+            href: "/",
+            active: false,
+            disabled: false,
+            icon: "check_circle",
+          },
+          {
+            id: "nav-link-categories",
+            name: "Категории",
+            type: "modal-link",
+            href: "modal-categories",
+            active: false,
+            disabled: false,
+            icon: "category",
+          },
+          {
+            id: "nav-link-themes",
+            name: "Темы",
+            type: "router-link",
+            href: "/themes",
+            active: false,
+            disabled: false,
+            icon: "brush",
+          },
+          /*{
+            id: "nav-link-statistics",
+            name: "Статистика",
+            type: "router-link",
+            href: "/statistics",
+            active: false,
+            disabled: false,
+            icon: "leaderboard",
+          },
+          {
+            id: "nav-link-settings",
+            name: "Настройки",
+            type: "router-link",
+            href: "/settings",
+            active: false,
+            disabled: false,
+            icon: "settings",
+          },
+          {
+            id: "nav-link-help",
+            name: "Помощь",
+            type: "router-link",
+            href: "/icon",
+            active: false,
+            disabled: false,
+            icon: "help",
+          },*/
+          {
+            id: "nav-link-sign-in",
+            name: "Вход",
+            type: "modal-link",
+            href: "modal-sign-in",
+            active: false,
+            disabled: false,
+            icon: "login",
+          },
+          {
+            id: "nav-link-sign-out",
+            name: "Выход",
+            type: "modal-link",
+            href: "modal-sign-out-confirm",
+            active: false,
+            disabled: false,
+            icon: "logout",
+          },
+        ],
+      },
+      icons: [],
+      colors: [],
+      categories: [],
+      tasks: [],
+      forms: {
+        signIn: {
+          id: "sign-in-form",
+          formItemsList: [
+            {
+              id: "sign-in-user-login",
+              label: "Логин",
+              type: "input",
+              subtype: "text",
+              required: false,
+              additionalClasses: {
+                group: "col-12",
+                label: "",
+                field: "",
+              },
+              errorText: "",
+              value: "",
+            },
+            {
+              id: "sign-in-user-password",
+              label: "Пароль",
+              type: "input",
+              subtype: "text",
+              required: false,
+              additionalClasses: {
+                group: "col-12",
+                label: "",
+                field: "",
+              },
+              errorText: "",
+              value: "",
+            },
+          ],
+          validity: false,
+        },
+        signUp: {
+          id: "sign-in-form",
+          formItemsList: [
+            {
+              id: "sign-up-user-login",
+              label: "Логин",
+              type: "input",
+              subtype: "text",
+              required: false,
+              additionalClasses: {
+                group: "col-12",
+                label: "",
+                field: "",
+              },
+              errorText: "",
+              value: "",
+            },
+            {
+              id: "sign-up-user-password",
+              label: "Пароль",
+              type: "input",
+              subtype: "text",
+              required: false,
+              additionalClasses: {
+                group: "col-12",
+                label: "",
+                field: "",
+              },
+              errorText: "",
+              value: "",
+            },
+            {
+              id: "sign-up-user-password-repeat",
+              label: "Повтор пароля",
+              type: "input",
+              subtype: "text",
+              required: false,
+              additionalClasses: {
+                group: "col-12",
+                label: "",
+                field: "",
+              },
+              errorText: "",
+              value: "",
+            },
+          ],
+          validity: false,
+        },
+      },
+      user: {
+        id: null,
+        name: "",
+        isAuth: false,
+      },
+      themeColor: "amethyst",
+      darkMode: "light",
+
+      appLoadingStart: null,
+
+      // Данные модального окна авторизации
+      errors: {
+        signIn: {
+          login: {
+            id: "",
+            type: "",
+            errorText: "",
+          },
+          password: {
+            id: "",
+            type: "",
+            errorText: "",
+          },
+        },
+        signUp: {
+          login: {
+            id: "",
+            type: "",
+            errorText: "",
+          },
+          password: {
+            id: "",
+            type: "",
+            errorText: "",
+          },
+          passwordRepeat: {
+            id: "",
+            type: "",
+            errorText: "",
+          },
+        },
+      },
+      serverErrors: {
+        signIn: {
+          login: [],
+          password: [],
+        },
+        signUp: {
+          login: [],
+        },
+      },
+      emptyError: {
+        id: "",
+        type: "",
+        errorText: "",
+      },
+      signInModal: null,
+      signUpModal: null,
     };
   },
 
@@ -331,170 +657,44 @@ export default {
         info: this.darkMode + "-" + this.themeColor + "-info",
       };
     },
+
+    categoriesWithIconsAndColors() {
+      let categoriesWithIconsAndColors = [];
+      if (this.categories.length && (this.icons.length || this.colors.length)) {
+        categoriesWithIconsAndColors = this.categories.map((category) => {
+          this.icons.forEach((icon) => {
+            if (category.iconid === icon.id) {
+              category.icon = icon.icon;
+            }
+          });
+          this.colors.forEach((color) => {
+            if (category.colorid === color.id) {
+              category.color = color.name;
+            }
+          });
+          return category;
+        });
+      }
+      return categoriesWithIconsAndColors;
+    },
+    tasksWithCategories() {
+      let tasksWithCategories = [];
+      if (this.tasks.length && this.categoriesWithIconsAndColors.length) {
+        tasksWithCategories = this.tasks.map((task) => {
+          this.categories.forEach((category) => {
+            if (task.categoryid === category.id) {
+              task.category = category;
+            }
+          });
+          task.done = !!+task.done;
+          return task;
+        });
+      }
+      return tasksWithCategories;
+    },
   },
 
   methods: {
-    initApp() {
-      const startDate = new Date();
-      const user = JSON.stringify(this.loggedUser);
-
-      const checkAuth = new Promise((resolve) => {
-        axios.post(this.url + "checkauth.php", {}).then((response) => {
-          if (response.data.user) {
-            this.loggedUser = response.data.user;
-          }
-          resolve();
-        });
-      });
-
-      const iconsDB = axios
-        .post(this.url + "geticons.php", user)
-        .then((response) => {
-          this.logGroup(
-            "Список иконок получен за " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            response.data.icons
-          );
-          this.icons = response.data.icons;
-        });
-
-      const colorsDB = axios
-        .post(this.url + "getcolors.php", user)
-        .then((response) => {
-          this.logGroup(
-            "Список цветов получен за " +
-              (new Date() - startDate) +
-              "мс со старта программы"
-          );
-          this.colors = response.data.colors;
-        });
-
-      if (this.loggedUser.id) {
-        const tasksDB = new Promise((resolve) => {
-          checkAuth.then(() => {
-            axios
-              .post(this.url + "gettasks.php", this.loggedUser)
-              .then((response) => {
-                this.logGroup(
-                  "Список заданий получен через " +
-                    (new Date() - startDate) +
-                    "мс со старта программы",
-                  response.data.tasks
-                );
-                this.tasks = response.data.tasks;
-                resolve();
-              });
-          });
-        });
-
-        const categoriesDB = new Promise((resolve) => {
-          checkAuth.then(() => {
-            axios
-              .post(this.url + "getcategories.php", this.loggedUser)
-              .then((response) => {
-                this.logGroup(
-                  "Список категорий получен за " +
-                    (new Date() - startDate) +
-                    "мс со старта программы",
-                  response.data.categories
-                );
-                this.categories = response.data.categories;
-                resolve();
-              });
-          });
-        });
-
-        const categoriesWithIcons = Promise.all([categoriesDB, iconsDB]).then(
-          () => {
-            this.assignIconsToCategories();
-            this.logGroup(
-              "Категориям присвоены иконки через " +
-                (new Date() - startDate) +
-                "мс со старта программы",
-              this.categories
-            );
-          }
-        );
-
-        const categoriesWithColors = Promise.all([categoriesDB, colorsDB]).then(
-          () => {
-            this.assignColorsToCategories();
-            this.logGroup(
-              "Категориям присвоены цвета через " +
-                (new Date() - startDate) +
-                "мс со старта программы",
-              this.categories
-            );
-          }
-        );
-
-        const categoriesWithIconsAndColors = Promise.all([
-          tasksDB,
-          categoriesWithIcons,
-          categoriesWithColors,
-        ]).then(() => {
-          this.assignCategoriesToTasks();
-          this.logGroup(
-            "Заданиям присвоены категории с иконками и цветами через " +
-              (new Date() - startDate) +
-              "мс со старта программы",
-            this.tasks
-          );
-        });
-
-        categoriesWithIconsAndColors.then(() => {
-          this.isAppLoaded = true;
-          console.log(
-            "Програма инициализирована за " + (new Date() - startDate) + "мс"
-          );
-        });
-      } else {
-        this.tasks = this.defaultTasks;
-        this.categories = this.defaultCategories;
-        this.isAppLoaded = true;
-        console.log(
-          "Програма инициализирована за " + (new Date() - startDate) + "мс"
-        );
-      }
-    },
-
-    assignIconsToCategories() {
-      let categories = this.categories;
-      let icons = this.icons;
-      categories.forEach(function (category) {
-        icons.forEach(function (icon) {
-          if (category.iconid === icon.id) {
-            category.icon = icon.icon;
-          }
-        });
-      });
-    },
-
-    assignColorsToCategories() {
-      let categories = this.categories;
-      let colors = this.colors;
-      categories.forEach(function (category) {
-        colors.forEach(function (color) {
-          if (category.colorid === color.id) {
-            category.color = color.name;
-          }
-        });
-      });
-    },
-
-    assignCategoriesToTasks() {
-      let tasks = this.tasks;
-      let categories = this.categories;
-      tasks.forEach(function (task) {
-        categories.forEach(function (category) {
-          if (task.categoryid === category.id) {
-            task.category = category;
-          }
-        });
-      });
-    },
-
     assignCategoryToTasksByName(category) {
       let tasks = this.tasks;
       tasks.forEach(function (task) {
@@ -620,31 +820,21 @@ export default {
         });
     },
 
+    saveColorThemes() {
+      const request = {
+        userid: this.loggedUser.id,
+        themecolors: this.themeColor,
+        lightnessmodes: this.darkMode,
+        starttimes: "14:30",
+      };
+      axios.post(this.url + "savethemes.php", request);
+    },
+
     authUser(user) {
       this.loggedUser = user;
       this.initApp();
       this.$router.push("/");
     },
-
-    signOut() {
-      console.log("Выход");
-      axios.post(this.url + "signout.php").then(() => {
-        this.loggedUser = {
-          id: null,
-          name: "",
-        };
-        this.initApp();
-        this.$router.push("/");
-      });
-    },
-
-    logGroup(logHeader, ...logs) {
-      console.groupCollapsed(logHeader);
-      for (let log of logs) console.log(log);
-      console.groupEnd(logHeader);
-    },
-
-    doNothing() {},
 
     // addNewIcons() {
     //   this.postAjaxRequest(
@@ -669,12 +859,425 @@ export default {
     //           this.logGroup("Присвоение категорий существующим заданиям", this.tasks)
     //   );
     // },
+
+    listsToggle() {
+      let delay = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+      if (!this.doneListVisibility) {
+        this.todoListClass = "position-absolute";
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative active";
+        this.doneListVisibility = true;
+      } else {
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative";
+        delay.then(() => {
+          this.todoListClass = "position-relative";
+          this.doneListClass =
+            "bg-" + this.theme.secondary + " position-absolute";
+          this.doneListVisibility = false;
+        });
+      }
+    },
+
+    //------------------------------
+    // Общие методы
+    doNothing() {},
+    logGroup(logHeader, ...logs) {
+      console.groupCollapsed(logHeader);
+      for (let log of logs) console.log(log);
+      console.groupEnd(logHeader);
+    },
+
+    // Инициализация
+    async initApp() {
+      this.appLoadingStart = new Date();
+
+      // Общедоступные сведения
+      await Promise.all([
+        this.checkAuth(),
+        this.getIcons(),
+        this.getColors(),
+      ]).then(() => {
+        console.log("--- Загружены общедоступные сведения ---");
+      });
+      // Cведения авторизованного пользователя
+      await Promise.all([this.getTasks(), this.getCategories()]).then(() => {
+        console.log("--- Загружены сведения авторизованного пользователя ---");
+      });
+
+      this.isAppLoaded = true;
+      console.log(
+        "Програма инициализирована за " +
+          (new Date() - this.appLoadingStart) +
+          "мс"
+      );
+      // } else {
+      //   this.tasks = this.defaultTasks;
+      //   this.categories = this.defaultCategories;
+      //   this.isAppLoaded = true;
+      //   console.log(
+      //     "Програма инициализирована за " + (new Date() - startDate) + "мс"
+      //   );
+      // }
+    },
+
+    // Авторизация
+    async checkAuth() {
+      await axios.post(this.url + "checkauth.php", {}).then((response) => {
+        if (response.data.user) {
+          if (response.data.user) {
+            this.user.id = +response.data.user.id;
+            this.user.name = response.data.user.name;
+            this.user.isAuth = true;
+          }
+          console.log("Пользователь является авторизованным");
+        } else {
+          console.log("Пользователь не является авторизованным");
+        }
+      });
+    },
+    async signIn() {
+      let requestBody = {
+        login: this.forms.signIn.formItemsList[0].value,
+        password: this.forms.signIn.formItemsList[1].value,
+      };
+      await axios
+        .post(this.url + "signin.php", requestBody)
+        .then((response) => {
+          this.logGroup("Ответ на проверку авторизации", response.data);
+          // this.signInResponseParsing(response.data, user);
+          if (response.data.user) {
+            this.user.id = +response.data.user.id;
+            this.user.name = response.data.user.name;
+            this.user.isAuth = true;
+          }
+          if (response.data.error) {
+            if (response.data.error.type === "login") {
+              this.forms.signIn.formItemsList[0].errorText =
+                response.data.error.errorText;
+              this.forms.signIn.formItemsList[1].errorText = "";
+            }
+            if (response.data.error.type === "password") {
+              this.forms.signIn.formItemsList[0].errorText = "";
+              this.forms.signIn.formItemsList[1].errorText =
+                response.data.error.errorText;
+            }
+          }
+        });
+    },
+    async signUp() {
+      let requestBody = {
+        login: this.forms.signUp.formItemsList[0].value,
+        password: this.forms.signUp.formItemsList[1].value,
+      };
+      axios.post(this.url + "signup.php", requestBody).then((response) => {
+        // this.signUpResponseParsing(response.data, user);
+        this.logGroup("Ответ на проверку регистрации", response.data);
+        if (response.data.user) {
+          this.user.id = +response.data.user.id;
+          this.user.name = response.data.user.name;
+          this.user.isAuth = true;
+        }
+        if (response.data.error) {
+          this.forms.signUp.formItemsList[0].errorText =
+            response.data.error.errorText;
+          this.forms.signUp.formItemsList[1].errorText = "";
+        }
+      });
+    },
+    signOut() {
+      console.log("Выход");
+      axios.post(this.url + "signout.php").then(() => {
+        location.reload();
+      });
+    },
+
+    // Общие сведения
+    async getIcons() {
+      await axios.post(this.url + "geticons.php").then((response) => {
+        this.logGroup(
+          "Список иконок получен за " +
+            (new Date() - this.appLoadingStart) +
+            "мс со старта программы",
+          response.data.icons
+        );
+        this.icons = response.data.icons;
+      });
+    },
+    async getColors() {
+      await axios.post(this.url + "getcolors.php").then((response) => {
+        this.logGroup(
+          "Список цветов получен за " +
+            (new Date() - this.appLoadingStart) +
+            "мс со старта программы",
+          response.data.colors
+        );
+        this.colors = response.data.colors;
+      });
+    },
+
+    // Сведения авторизованного пользователя
+    async getTasks() {
+      await axios
+        .post(this.url + "gettasks.php", this.loggedUser)
+        .then((response) => {
+          this.logGroup(
+            "Список заданий получен через " +
+              (new Date() - this.appLoadingStart) +
+              "мс со старта программы",
+            response.data.tasks
+          );
+          this.tasks = response.data.tasks;
+        });
+    },
+    async getCategories() {
+      await axios
+        .post(this.url + "getcategories.php", this.loggedUser)
+        .then((response) => {
+          this.logGroup(
+            "Список категорий получен за " +
+              (new Date() - this.appLoadingStart) +
+              "мс со старта программы",
+            response.data.categories
+          );
+          this.categories = response.data.categories;
+        });
+    },
+
+    // Формы и фильтры
+    changeForm({ formItem, newValue }) {
+      if ("value" in formItem) {
+        formItem.value = newValue;
+      }
+      if ("values" in formItem) {
+        formItem.values = newValue.slice();
+      }
+    },
+
+    // Методы формы авторизации
+    signInLoginValidation([login, password]) {
+      if (!login) {
+        this.errors.signIn.login = {
+          id: "4",
+          type: "login",
+          errorText: "Введите логин",
+        };
+      } else {
+        if (this.serverErrors.signIn.login.length > 0) {
+          if (this.serverErrors.signIn.login.indexOf(login) >= 0) {
+            console.log("Совпадение найдено");
+            this.errors.signIn.login = {
+              id: "1",
+              type: "login",
+              errorText: "Пользователь не зарегистрирован!",
+            };
+          } else {
+            this.errors.signIn.login = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signIn.login.errorText) {
+          this.errors.signIn.login = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+        if (this.errors.signIn.password.errorText || password) {
+          this.signInPasswordValidation([login, password]);
+        }
+      }
+    },
+    signInPasswordValidation([login, password]) {
+      if (!password) {
+        this.errors.signIn.password = {
+          id: "5",
+          type: "password",
+          errorText: "Введите пароль",
+        };
+      } else {
+        if (this.serverErrors.signIn.password.length > 0) {
+          if (
+            this.serverErrors.signIn.password.find(
+              (user) => user.login === login && user.password === password
+            )
+          ) {
+            console.log("Совпадение найдено");
+            this.errors.signIn.password = {
+              id: "2",
+              type: "password",
+              errorText: "Неверно введен пароль!",
+            };
+          } else {
+            this.errors.signIn.password = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signIn.password.errorText) {
+          this.errors.signIn.password = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+      }
+    },
+    signUpLoginValidation(login) {
+      if (!login) {
+        this.errors.signUp.login = {
+          id: "6",
+          type: "login",
+          errorText: "Введите логин",
+        };
+      } else {
+        if (this.serverErrors.signUp.login.length > 0) {
+          if (this.serverErrors.signUp.login.indexOf(login) >= 0) {
+            console.log("Совпадение найдено");
+            this.errors.signUp.login = {
+              id: "3",
+              type: "login",
+              errorText: "Логин уже занят",
+            };
+          } else {
+            this.errors.signUp.login = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        } else if (this.errors.signUp.login.errorText) {
+          this.errors.signUp.login = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+      }
+    },
+    signUpPasswordValidation([password, passwordRepeat]) {
+      if (!password) {
+        this.errors.signUp.password = {
+          id: "7",
+          type: "password",
+          errorText: "Введите пароль",
+        };
+      } else {
+        if (this.errors.signUp.password.errorText) {
+          this.errors.signUp.password = {
+            id: "",
+            type: "",
+            errorText: "",
+          };
+        }
+        if (this.errors.signUp.passwordRepeat.errorText || passwordRepeat) {
+          this.signUpPasswordRepeatValidation([password, passwordRepeat]);
+        }
+      }
+    },
+    signUpPasswordRepeatValidation([password, passwordRepeat]) {
+      if (!passwordRepeat) {
+        this.errors.signUp.passwordRepeat = {
+          id: "8",
+          type: "passwordRepeat",
+          errorText: "Введите пароль ещё раз",
+        };
+      } else {
+        if (!password) {
+          this.signUpPasswordValidation([password, passwordRepeat]);
+        } else {
+          if (passwordRepeat !== password) {
+            this.errors.signUp.passwordRepeat = {
+              id: "9",
+              type: "passwordRepeat",
+              errorText: "Повтор не совпадает с паролем",
+            };
+          } else if (this.errors.signUp.passwordRepeat.errorText) {
+            this.errors.signUp.passwordRepeat = {
+              id: "",
+              type: "",
+              errorText: "",
+            };
+          }
+        }
+      }
+    },
+    signInResponseParsing(response, user) {
+      if (response.error) {
+        this.signInErrorRecord(response.error, user);
+      }
+      if (response.user) {
+        this.authUser(response.user);
+      }
+    },
+    signInErrorRecord(error, user) {
+      if (error.type === "login") {
+        this.errors.signIn.login = error;
+        this.errors.signIn.password = {};
+        this.serverErrors.signIn.login.push(user.login);
+      }
+      if (error.type === "password") {
+        this.errors.signIn.password = error;
+        this.errors.signIn.login = {};
+        let errorPasswordUser = {
+          login: user.login,
+          password: user.password,
+        };
+        this.serverErrors.signIn.password.push(errorPasswordUser);
+      }
+      this.logGroup("Записана ошибка", error);
+    },
+    authUserFromModal(user) {
+      this.errorsReset();
+      this.loggedUser = user;
+      this.logGroup(
+        "Пользователь авторизован",
+        "user.id = " + user.id,
+        "user.name = " + user.name
+      );
+      this.signInModal.hide();
+      this.signUpModal.hide();
+      this.$emit("auth-user", user);
+    },
+    signUpResponseParsing(response, user) {
+      if (response.error) {
+        this.signUpErrorRecord(response.error);
+        this.serverErrors.signUp.login.push(user.login);
+      }
+      if (response.user) {
+        this.authUser(response.user);
+      }
+    },
+    signUpErrorRecord(error) {
+      if (error.type === "login") {
+        this.errors.signUp.login = error;
+      }
+      this.logGroup("Записана ошибка", error);
+    },
+    errorsReset() {
+      this.errors.signIn.login = this.emptyError;
+      this.errors.signIn.password = this.emptyError;
+      this.errors.signUp.login = this.emptyError;
+      this.errors.signUp.password = this.emptyError;
+      this.errors.signUp.passwordRepeat = this.emptyError;
+      this.serverErrors.signIn.login = [];
+      this.serverErrors.signIn.password = [];
+      this.serverErrors.signUp.login = [];
+    },
   },
 
-  mounted() {
-    this.initApp();
+  created() {
     document.body.className = "bg-" + this.theme.secondary;
-    console.log("Компонент App смонтирован");
+    this.initApp();
   },
+
+  mounted() {},
 };
 </script>

@@ -1,10 +1,5 @@
 <template>
   <div>
-    <TheHeader
-      :theme="theme"
-      :lightness-mode="lightnessMode"
-      @lists-toggle="listsToggle"
-    />
     <div class="container">
       <FormAddTask
         :theme="theme"
@@ -45,18 +40,16 @@
 </template>
 
 <script>
-import TheHeader from "../components/TheHeader";
 import FormAddTask from "../components/FormAddTask";
 import TaskList from "../components/TaskList";
 
 export default {
   name: "HomeView",
   components: {
-    TheHeader,
     FormAddTask,
     TaskList,
   },
-  props: ["isAppLoaded", "theme", "lightnessMode", "tasksDb", "categoriesDb"],
+  props: ["isAppLoaded", "theme", "lightnessMode", "tasks", "categoriesDb"],
   data() {
     return {
       isFiltered: false,
@@ -76,29 +69,6 @@ export default {
         this.filteredCategoryId = "";
       }
       this.isFiltered = !this.isFiltered;
-    },
-
-    listsToggle() {
-      let delay = new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 500);
-      });
-      if (!this.doneListVisibility) {
-        this.todoListClass = "position-absolute";
-        this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative active";
-        this.doneListVisibility = true;
-      } else {
-        this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative";
-        delay.then(() => {
-          this.todoListClass = "position-relative";
-          this.doneListClass =
-            "bg-" + this.theme.secondary + " position-absolute";
-          this.doneListVisibility = false;
-        });
-      }
     },
   },
 
@@ -125,7 +95,7 @@ export default {
 
     tasksTodo: function () {
       const startOfDayLocalinMs = this.startOfDayLocalinMs;
-      let todo = this.tasksDb.filter(function (task) {
+      let todo = this.tasks.filter(function (task) {
         if (!+task.done) {
           return true;
         } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
@@ -137,7 +107,7 @@ export default {
 
     tasksDone: function () {
       const startOfDayLocalinMs = this.startOfDayLocalinMs;
-      let done = this.tasksDb.filter(function (task) {
+      let done = this.tasks.filter(function (task) {
         if (!!+task.done && task.completionDate * 1000 <= startOfDayLocalinMs) {
           return true;
         }
@@ -179,8 +149,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log("Home смонтирован");
-  },
+  mounted() {},
 };
 </script>

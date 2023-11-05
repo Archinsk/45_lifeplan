@@ -32,7 +32,7 @@ export default {
   components: {
     ThemesSelectorButton,
   },
-  props: ["themes", "lightnessMode"],
+  props: ["themes", "theme", "lightnessMode"],
   data() {
     return {};
   },
