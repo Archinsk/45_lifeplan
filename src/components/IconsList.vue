@@ -1,23 +1,24 @@
 <template>
   <ul class="iconsList d-flex flex-wrap gap-2 mb-0">
-    <ButtonIconSquare
+    <vb-button
       v-for="item of listItems"
       :key="item.id"
       :icon="item.icon"
+      square
       :class="categoryButtonClass"
-      @click-handler="$emit('change-icon-selected-category', item)"
+      @click="$emit('change-icon-selected-category', item)"
     />
   </ul>
 </template>
 
 <script>
-import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
+import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
 
 export default {
   name: "IconsList",
   props: ["listItems", "selectedCategoryColor", "theme", "lightnessMode"],
   components: {
-    ButtonIconSquare,
+    VbButton,
   },
   computed: {
     categoryButtonClass: function () {

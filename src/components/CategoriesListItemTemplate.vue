@@ -6,26 +6,7 @@
       square
       :class="categoryButtonClass"
     />
-    <vb-button
-      icon="more_horiz"
-      square
-      :class="contextMenuButtonClass"
-      @click="toggleContextMenu"
-    />
-    <vb-button
-      v-show="contextMenuVisibility"
-      icon="close"
-      square
-      :class="contextMenuButtonClass"
-      @click="$emit('open-modal-delete-category')"
-    />
-    <vb-button
-      v-show="contextMenuVisibility"
-      icon="mode"
-      square
-      :class="contextMenuButtonClass"
-      @click="$emit('open-modal-edit-category')"
-    />
+    <vb-button icon="more_horiz" square :class="contextMenuButtonClass" />
     <div class="task-text">{{ category.name }}</div>
   </li>
 </template>
@@ -34,15 +15,10 @@
 import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
 
 export default {
-  name: "CategoriesListItem",
+  name: "CategoriesListItemTemplate",
   props: ["category", "theme", "lightnessMode"],
   components: {
     VbButton,
-  },
-  data() {
-    return {
-      contextMenuVisibility: false,
-    };
   },
 
   computed: {
@@ -67,12 +43,6 @@ export default {
     },
     contextMenuButtonClass: function () {
       return "context-menu-button text-" + this.lightnessMode + "-neutral-500 ";
-    },
-  },
-
-  methods: {
-    toggleContextMenu() {
-      this.contextMenuVisibility = !this.contextMenuVisibility;
     },
   },
 };

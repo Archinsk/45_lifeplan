@@ -49,26 +49,173 @@
     </vb-modal>
     <vb-modal id="modal-categories" header footer scrollable>
       <template v-slot:modal-header>Категории</template>
+      <vb-button
+        target-id="modal-category-create"
+        :theme="theme.primary"
+        @click="openModalCreateCategory"
+        >Добавить категорию</vb-button
+      >
       <CategoriesList
         :list-items="categories"
         :theme="theme"
-        :lightness-mode="darkMode"
+        :lightness-mode="lightnessMode"
+        @open-modal-edit-category="openModalEditCategory($event)"
+        @open-modal-delete-category="openModalDeleteCategory($event)"
       />
-      <!--      @open-modal-edit-category="openModalEditCategory($event)"-->
-      <!--      @open-modal-delete-category="openModalDeleteCategory($event)"-->
-      <button
-        :class="'btn btn-' + theme.primary"
-        data-bs-toggle="modal"
-        data-bs-target="#createCategoryModal"
-      >
-        Создать категорию
-      </button>
-      <!--      @click="openModalCreateCategory"-->
       <template v-slot:modal-footer>
         <vb-button theme="outline-primary" data-dismiss="modal"
           >Отмена</vb-button
         >
         <vb-button theme="primary">Добавить</vb-button>
+      </template>
+    </vb-modal>
+    <vb-modal id="modal-category-create" header footer>
+      <template v-slot:modal-header>Создание категории</template>
+      Пример
+      <categories-list-item-template
+        :category="newCategory"
+        :theme="theme"
+        :lightness-mode="lightnessMode"
+      />
+      <div class="mb-3">
+        <label for="selectedCategoryName" class="form-label">Название</label>
+        <input
+          type="text"
+          :class="
+            'form-control bg-' +
+            lightnessMode +
+            '-neutral-900 text-' +
+            lightnessMode +
+            '-neutral-300 border-' +
+            lightnessMode +
+            '-neutral-500'
+          "
+          id="selectedCategoryName"
+          placeholder="Введите название категории"
+          v-model.trim="newCategory.name"
+        />
+      </div>
+      <vb-tabs
+        id="create-category-tabs"
+        :items-list="tabs.iconsButtonsTabs.itemsList"
+        pills
+        position="center"
+      >
+        <template v-slot:tab-pane-icons
+          ><icons-list
+            :list-items="icons"
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+            @change-icon-selected-category="changeIconNewCategory($event)"
+        /></template>
+        <template v-slot:tab-pane-colors
+          ><colors-list
+            :list-items="colors"
+            :selected-category-icon="newCategory.icon"
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+            @change-color-selected-category="changeColorNewCategory($event)"
+        /></template>
+      </vb-tabs>
+      <div class="form-check">
+        <input
+          v-model="searchCategoryInExistingTasks"
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="searchCategoryInExistingTasks"
+        />
+        <label class="form-check-label" for="searchCategoryInExistingTasks">
+          Искать и присваивать создаваемую категорию ранее созданным заданиям
+          (поиск по началу строки)
+        </label>
+      </div>
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary" @click="createCategory">Создать</vb-button>
+      </template>
+    </vb-modal>
+    <vb-modal id="modal-category-edit" header footer>
+      <template v-slot:modal-header>Редактирование категории</template>
+      <p>Пример</p>
+      <CategoriesListItem
+        :category="selectedCategory"
+        :key="selectedCategory.id ? selectedCategory.id : 'default'"
+        :theme="theme"
+        :lightness-mode="lightnessMode"
+      />
+      <div class="mb-3">
+        <label for="newCategoryName" class="form-label">Название</label>
+        <input
+          type="text"
+          :class="
+            'form-control bg-' +
+            lightnessMode +
+            '-neutral-900 text-' +
+            lightnessMode +
+            '-neutral-300 border-' +
+            lightnessMode +
+            '-neutral-500'
+          "
+          id="newCategoryName"
+          placeholder="Введите название категории"
+          v-model.trim="selectedCategory.name"
+        />
+      </div>
+
+      <vb-tabs
+        id="edit-category-tabs"
+        :items-list="tabs.iconsButtonsTabs.itemsList"
+        pills
+        position="center"
+      >
+        <template v-slot:tab-pane-icons
+          ><icons-list
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+            :list-items="icons"
+            :selected-category-color="selectedCategory.color"
+            @change-icon-selected-category="changeIconSelectedCategory($event)"
+        /></template>
+        <template v-slot:tab-pane-colors
+          ><colors-list
+            :theme="theme"
+            :lightness-mode="lightnessMode"
+            :list-items="colors"
+            :selected-category-icon="selectedCategory.icon"
+            @change-color-selected-category="
+              changeColorSelectedCategory($event)
+            "
+        /></template>
+      </vb-tabs>
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary" @click="editCategory">Сохранение</vb-button>
+      </template>
+    </vb-modal>
+    <vb-modal id="modal-category-delete" header footer size="sm">
+      <template v-slot:modal-header>Удаление категории</template>
+      <p>
+        {{
+          'Вы действительно хотите удалить категорию "' +
+          selectedCategory.name +
+          '" ?'
+        }}
+      </p>
+      <categories-list-item-template
+        :category="selectedCategory"
+        :theme="theme"
+        :lightness-mode="lightnessMode"
+      />
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary" @click="deleteCategory">Удалить</vb-button>
       </template>
     </vb-modal>
     <vb-header
@@ -96,7 +243,7 @@
       :icons-db="icons"
       :colors-db="colors"
       :themes="basicThemes"
-      :lightness-mode="darkMode"
+      :lightness-mode="lightnessMode"
       :is-auth-user="isAuthUser"
       @add-new-task="addNewTask($event)"
       @toggle-task-status="toggleTaskStatus($event)"
@@ -105,7 +252,7 @@
       @edit-category="editCategory($event)"
       @delete-category="deleteCategory($event)"
       @change-color-theme="changeColorTheme($event)"
-      @change-dark-mode="changeDarkMode($event)"
+      @change-dark-mode="changeLightnessMode($event)"
       @save-color-themes="saveColorThemes"
       @auth-user="authUser($event)"
       @sign-out="signOut"
@@ -114,6 +261,7 @@
 </template>
 
 <script>
+import $ from "jquery";
 import axios from "axios";
 // import TheHeader from "./components/TheHeader";
 import VbHeader from "./components/universal/Bootstrap_4.6.2/BS46Header";
@@ -122,9 +270,19 @@ import VbButton from "./components/universal/Bootstrap_4.6.2/BS46Button";
 import VbForm from "./components/universal/Bootstrap_4.6.2/BS46Form";
 import CategoriesList from "./components/CategoriesList";
 import VbModalButton from "./components/universal/Bootstrap_4.6.2/BS46ModalButton";
+import CategoriesListItem from "./components/CategoriesListItem";
+import CategoriesListItemTemplate from "./components/CategoriesListItemTemplate";
+import IconsList from "./components/IconsList";
+import ColorsList from "./components/ColorsList";
+import VbTabs from "./components/universal/Bootstrap_4.6.2/BS46Tabs";
 
 export default {
   components: {
+    VbTabs,
+    ColorsList,
+    IconsList,
+    CategoriesListItemTemplate,
+    CategoriesListItem,
     VbModalButton,
     CategoriesList,
     VbForm,
@@ -591,7 +749,42 @@ export default {
         isAuth: false,
       },
       themeColor: "amethyst",
-      darkMode: "light",
+      lightnessMode: "light",
+
+      defaultCategory: {
+        color: "neutral-600",
+        colorid: "",
+        icon: "",
+        iconid: "",
+        id: "",
+        name: "",
+      },
+      newCategory: {
+        color: "neutral-600",
+        colorid: "",
+        icon: "help",
+        iconid: "",
+        id: "",
+        name: "",
+      },
+      searchCategoryInExistingTasks: false,
+      selectedCategory: {
+        color: "",
+        colorid: "",
+        icon: "home",
+        iconid: "",
+        id: "",
+        name: "",
+      },
+
+      tabs: {
+        iconsButtonsTabs: {
+          itemsList: [
+            { id: "tab-pane-icons", active: true, name: "Иконка" },
+            { id: "tab-pane-colors", active: false, name: "Цвет" },
+          ],
+        },
+      },
 
       appLoadingStart: null,
 
@@ -652,9 +845,9 @@ export default {
     },
     theme: function () {
       return {
-        primary: this.darkMode + "-" + this.themeColor + "-primary",
-        secondary: this.darkMode + "-" + this.themeColor + "-secondary",
-        info: this.darkMode + "-" + this.themeColor + "-info",
+        primary: this.lightnessMode + "-" + this.themeColor + "-primary",
+        secondary: this.lightnessMode + "-" + this.themeColor + "-secondary",
+        info: this.lightnessMode + "-" + this.themeColor + "-info",
       };
     },
 
@@ -753,78 +946,16 @@ export default {
       document.body.className = "bg-" + this.theme.secondary;
     },
 
-    changeDarkMode(darkMode) {
-      this.darkMode = darkMode === "light" ? "dark" : "light";
+    changeLightnessMode(lightnessMode) {
+      this.lightnessMode = lightnessMode === "light" ? "dark" : "light";
       document.body.className = "bg-" + this.theme.secondary;
-    },
-
-    createCategory(createdCategory) {
-      const newCategory = Object.assign({}, createdCategory);
-      newCategory.userid = this.loggedUser.id;
-      newCategory.user_name = this.loggedUser.name;
-      axios
-        .post(this.url + "createcategory.php", newCategory)
-        .then((response) => {
-          this.categories.push(response.data.category);
-          if (newCategory.search) {
-            this.assignCategoryToTasksByName(response.data.category);
-          }
-          this.logGroup("Новая категория", response.data);
-        });
-    },
-
-    editCategory(updatedCategory) {
-      updatedCategory.userid = this.loggedUser.id;
-      updatedCategory.user_name = this.loggedUser.name;
-      axios
-        .post(this.url + "editcategory.php", updatedCategory)
-        .then((response) => {
-          let editableCategoryIndex = this.categories.findIndex(
-            (category) => category.id === response.data.category.id.toString()
-          );
-          // При присвоении объекта категории не срабатывает реактивность
-          // this.categories[editableCategoryIndex] = response.category;
-          this.categories[editableCategoryIndex].name =
-            response.data.category.name;
-          this.categories[editableCategoryIndex].iconid =
-            response.data.category.iconid;
-          this.categories[editableCategoryIndex].icon =
-            response.data.category.icon;
-          this.categories[editableCategoryIndex].colorid =
-            response.data.category.colorid;
-          this.categories[editableCategoryIndex].color =
-            response.data.category.color;
-          this.logGroup("Измененная категория", response.data);
-        });
-    },
-
-    deleteCategory(deletedCategory) {
-      deletedCategory.userid = this.loggedUser.id;
-      deletedCategory.user_name = this.loggedUser.name;
-      axios
-        .post(this.url + "deletecategory.php", deletedCategory)
-        .then((response) => {
-          const deletedCategoryIndex = this.categories.findIndex(
-            (category) => category.id === response.data.category.id
-          );
-          this.categories.splice(deletedCategoryIndex, 1);
-          this.tasks.forEach(function (task) {
-            if (
-              task.category &&
-              task.category.id === response.data.category.id
-            ) {
-              delete task.category;
-            }
-          });
-          this.logGroup("Удаленная категория", response.data);
-        });
     },
 
     saveColorThemes() {
       const request = {
         userid: this.loggedUser.id,
         themecolors: this.themeColor,
-        lightnessmodes: this.darkMode,
+        lightnessmodes: this.lightnessMode,
         starttimes: "14:30",
       };
       axios.post(this.url + "savethemes.php", request);
@@ -1048,6 +1179,81 @@ export default {
         });
     },
 
+    // Работа с категориями
+    openModalCreateCategory() {
+      this.newCategory = Object.assign({}, this.defaultCategory);
+      this.showModal("modal-category-create");
+    },
+    openModalEditCategory(category) {
+      this.selectedCategory = Object.assign({}, category);
+      this.showModal("modal-category-edit");
+    },
+    openModalDeleteCategory(category) {
+      this.selectedCategory = Object.assign({}, category);
+      this.showModal("modal-category-delete");
+    },
+    changeIconNewCategory(icon) {
+      this.newCategory.icon = icon.icon;
+      this.newCategory.iconid = icon.id;
+    },
+    changeColorNewCategory(color) {
+      this.newCategory.color = color.name;
+      this.newCategory.colorid = color.id;
+    },
+    changeIconSelectedCategory(icon) {
+      this.selectedCategory.icon = icon.icon;
+      this.selectedCategory.iconid = icon.id;
+    },
+    changeColorSelectedCategory(color) {
+      this.selectedCategory.color = color.name;
+      this.selectedCategory.colorid = color.id;
+    },
+    async createCategory() {
+      const newCategory = Object.assign({}, this.newCategory);
+      newCategory.userid = this.loggedUser.id;
+      newCategory.user_name = this.loggedUser.name;
+      if (this.searchCategoryInExistingTasks) {
+        newCategory.search = true;
+      }
+      await axios
+        .post(this.url + "createcategory.php", newCategory)
+        .then((response) => {
+          this.hideModal("modal-category-create");
+          this.logGroup("Добавлена категория", response.data);
+        });
+      await Promise.all([this.getTasks(), this.getCategories()]).then(() => {
+        console.log("--- Обновлены задания и категории ---");
+      });
+    },
+    async editCategory() {
+      const updatedCategory = Object.assign({}, this.selectedCategory);
+      updatedCategory.userid = this.loggedUser.id;
+      updatedCategory.user_name = this.loggedUser.name;
+      await axios
+        .post(this.url + "editcategory.php", updatedCategory)
+        .then((response) => {
+          this.hideModal("modal-category-edit");
+          this.logGroup("Измененна категория", response.data);
+        });
+      await Promise.all([this.getTasks(), this.getCategories()]).then(() => {
+        console.log("--- Обновлены задания и категории ---");
+      });
+    },
+    async deleteCategory() {
+      let deletedCategory = Object.assign({}, this.selectedCategory);
+      deletedCategory.userid = this.loggedUser.id;
+      deletedCategory.user_name = this.loggedUser.name;
+      await axios
+        .post(this.url + "deletecategory.php", deletedCategory)
+        .then((response) => {
+          this.hideModal("modal-category-delete");
+          this.logGroup("Удалена категория", response.data);
+        });
+      await Promise.all([this.getTasks(), this.getCategories()]).then(() => {
+        console.log("--- Обновлены задания и категории ---");
+      });
+    },
+
     // Формы и фильтры
     changeForm({ formItem, newValue }) {
       if ("value" in formItem) {
@@ -1056,6 +1262,17 @@ export default {
       if ("values" in formItem) {
         formItem.values = newValue.slice();
       }
+    },
+
+    // Модальные окна
+    showModal(modalId) {
+      $(`#${modalId}`).modal({
+        backdrop: true,
+      });
+      $(`#${modalId}`).modal("show");
+    },
+    hideModal(modalId) {
+      $(`#${modalId}`).modal("hide");
     },
 
     // Методы формы авторизации

@@ -1,9 +1,10 @@
 <template>
   <ul class="colorsList d-flex flex-wrap gap-2 mb-0">
-    <ButtonIconSquare
+    <vb-button
       v-for="item of listItems"
       :key="item.id"
       :icon="selectedCategoryIcon"
+      square
       :class="
         'color-button btn-' +
         lightnessMode +
@@ -12,19 +13,19 @@
         '-primary text-' +
         theme.info
       "
-      @click-handler="$emit('change-color-selected-category', item)"
+      @click="$emit('change-color-selected-category', item)"
     />
   </ul>
 </template>
 
 <script>
-import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
+import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
 
 export default {
   name: "ColorsList",
   props: ["listItems", "selectedCategoryIcon", "theme", "lightnessMode"],
   components: {
-    ButtonIconSquare,
+    VbButton,
   },
   mounted() {
     console.log("Компонент ColorsList смонтирован");
