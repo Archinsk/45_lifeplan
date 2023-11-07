@@ -1,7 +1,15 @@
+<!-- Версия 1.02 от 07.11.2023 -->
+<!--Добавлены пропы type и action. Если type === "action-link", то при клике
+срабатывает @click(action)-->
 <!-- Версия 1.01 от 02.11.2023 -->
 
 <template>
-  <router-link :to="href || '/'" class="navbar-brand" @click="$emit('click')">
+  <router-link
+    v-if="type === 'router-link'"
+    :to="href || '/'"
+    class="navbar-brand"
+    @click.native.prevent="$emit('click')"
+  >
     <img
       v-if="imageSrc"
       :src="imageSrc"
@@ -10,17 +18,33 @@
     />
     <div v-if="name">{{ name }}</div>
   </router-link>
+  <a
+    v-else-if="type === 'action-link'"
+    href="#"
+    class="navbar-brand"
+    @click.prevent="handlerClick"
+  >
+    <img
+      v-if="imageSrc"
+      :src="imageSrc"
+      :class="navbarBrandImageClass"
+      alt="brand-logo"
+    />
+    <div v-if="name">{{ name }}</div>
+  </a>
 </template>
 
 <script>
 export default {
   name: "VbNavBarBrand",
   props: {
+    type: String,
     href: String,
     name: String,
     imageSrc: String,
     monochrome: Boolean,
     light: Boolean,
+    action: Object,
   },
   computed: {
     navbarBrandImageClass() {
@@ -33,6 +57,13 @@ export default {
         }
       }
       return navbarBrandImageClass;
+    },
+  },
+  methods: {
+    handlerClick() {
+      if (this.type === "action-link") {
+        this.$emit("click", this.action);
+      }
     },
   },
 };

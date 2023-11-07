@@ -1,14 +1,19 @@
+<!-- Версия 1.02 от 07.11.2023 -->
+<!--Добавлено событие @nav-bar-brand-click(action)-->
 <!-- Версия 1.01 от 03.11.2023 -->
 
 <template>
   <nav :class="navbarClass" :id="id">
     <vb-nav-bar-brand
       v-if="brand"
+      :type="brand.type"
       :href="brand.href"
       :name="brand.name"
       :image-src="brand.imageSrc"
       :monochrome="monochromeBrandImage"
       :light="dark"
+      :action="brand.action"
+      @click="$emit('nav-bar-brand-click', $event)"
     />
     <vb-collapse-button
       v-if="!withoutToggler"

@@ -228,13 +228,38 @@
       container
       offcanvas
       justify-content="between"
+      @nav-bar-brand-click="headerAction($event)"
     />
+    <div class="container">
+      <div id="tasks">
+        <task-list
+          :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
+          :theme="theme"
+          :lightness-mode="lightnessMode"
+          id="tasksTodo"
+          :class="todoListClass"
+        />
+        <!--@toggle-task-status="$emit('toggle-task-status', $event)"
+    @delete-task="$emit('delete-task', $event)"
+    @filter-category="filterCategory($event)"-->
+        <task-list
+          :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
+          :theme="theme"
+          :lightness-mode="lightnessMode"
+          id="tasksDone"
+          :class="doneListClass"
+        />
+      </div>
+    </div>
+    <!--@toggle-task-status="$emit('toggle-task-status', $event)"
+    @delete-task="$emit('delete-task', $event)"
+    @filter-category="filterCategory($event)"-->
     <!--<TheHeader
       :theme="theme"
       :lightness-mode="lightnessMode"
       @lists-toggle="listsToggle"
     />-->
-    <router-view
+    <!--<router-view
       :tasks="tasksWithCategories"
       :url="url"
       :is-app-loaded="isAppLoaded"
@@ -256,7 +281,7 @@
       @save-color-themes="saveColorThemes"
       @auth-user="authUser($event)"
       @sign-out="signOut"
-    />
+    />-->
   </div>
 </template>
 
@@ -275,9 +300,11 @@ import CategoriesListItemTemplate from "./components/CategoriesListItemTemplate"
 import IconsList from "./components/IconsList";
 import ColorsList from "./components/ColorsList";
 import VbTabs from "./components/universal/Bootstrap_4.6.2/BS46Tabs";
+import TaskList from "./components/TaskList";
 
 export default {
   components: {
+    TaskList,
     VbTabs,
     ColorsList,
     IconsList,
@@ -573,11 +600,13 @@ export default {
           name: "Спаржа",
         },
       ],
-
+      //------------------------------
       brand: {
+        type: "action-link",
         href: "/",
         name: "",
         imageSrc: "images/lifeplan_logo.svg",
+        action: { methodName: "listsToggle", argument: "" },
       },
       systemNav: {
         itemsList: [
@@ -786,6 +815,13 @@ export default {
         },
       },
 
+      isFiltered: false,
+      filteredCategoryId: "",
+      doneListVisibility: false,
+      todoListClass: "position-relative",
+      doneListClass: "bg-secondary position-absolute",
+      timeStamp: +new Date(),
+
       appLoadingStart: null,
 
       // Данные модального окна авторизации
@@ -843,6 +879,8 @@ export default {
     isAuthUser: function () {
       return !!this.loggedUser.id;
     },
+
+    //------------------------------
     theme: function () {
       return {
         primary: this.lightnessMode + "-" + this.themeColor + "-primary",
@@ -850,7 +888,6 @@ export default {
         info: this.lightnessMode + "-" + this.themeColor + "-info",
       };
     },
-
     categoriesWithIconsAndColors() {
       let categoriesWithIconsAndColors = [];
       if (this.categories.length && (this.icons.length || this.colors.length)) {
@@ -884,6 +921,75 @@ export default {
         });
       }
       return tasksWithCategories;
+    },
+
+    timeStampWithTimezoneOffset: function () {
+      return (
+        this.timeStamp - new Date(this.timeStamp).getTimezoneOffset() * 60000
+      );
+    },
+    startOfDayGMTinMs: function () {
+      return (
+        this.timeStampWithTimezoneOffset -
+        (this.timeStampWithTimezoneOffset % 86400000)
+      );
+    },
+    startOfDayLocalinMs: function () {
+      return (
+        this.startOfDayGMTinMs +
+        new Date(this.timeStamp).getTimezoneOffset() * 60000
+      );
+    },
+    tasksTodo: function () {
+      const startOfDayLocalinMs = this.startOfDayLocalinMs;
+      let todo = this.tasks.filter(function (task) {
+        if (!+task.done) {
+          return true;
+        } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
+          return true;
+        }
+      });
+      return todo;
+    },
+    tasksDone: function () {
+      const startOfDayLocalinMs = this.startOfDayLocalinMs;
+      let done = this.tasks.filter(function (task) {
+        if (!!+task.done && task.completionDate * 1000 <= startOfDayLocalinMs) {
+          return true;
+        }
+      });
+      done = done.sort(function (a, b) {
+        if (a.completionDate > b.completionDate) {
+          return -1;
+        }
+        if (a.completionDate === b.completionDate) {
+          return 0;
+        }
+        if (a.completionDate < b.completionDate) {
+          return 1;
+        }
+      });
+      return done;
+    },
+    tasksTodoFiltered: function () {
+      if (this.isFiltered) {
+        let todoFiltered = this.tasksTodo.filter(
+          (task) =>
+            task.category && task.category.id === this.filteredCategoryId
+        );
+        return todoFiltered;
+      }
+      return false;
+    },
+    tasksDoneFiltered: function () {
+      if (this.isFiltered) {
+        let doneFiltered = this.tasksDone.filter(
+          (task) =>
+            task.category && task.category.id === this.filteredCategoryId
+        );
+        return doneFiltered;
+      }
+      return false;
     },
   },
 
@@ -990,29 +1096,6 @@ export default {
     //           this.logGroup("Присвоение категорий существующим заданиям", this.tasks)
     //   );
     // },
-
-    listsToggle() {
-      let delay = new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 500);
-      });
-      if (!this.doneListVisibility) {
-        this.todoListClass = "position-absolute";
-        this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative active";
-        this.doneListVisibility = true;
-      } else {
-        this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative";
-        delay.then(() => {
-          this.todoListClass = "position-relative";
-          this.doneListClass =
-            "bg-" + this.theme.secondary + " position-absolute";
-          this.doneListVisibility = false;
-        });
-      }
-    },
 
     //------------------------------
     // Общие методы
@@ -1273,6 +1356,34 @@ export default {
     },
     hideModal(modalId) {
       $(`#${modalId}`).modal("hide");
+    },
+
+    // Методы хедера
+    headerAction(action) {
+      this[action.methodName](action.argument);
+    },
+    listsToggle() {
+      console.log("Сработал переключатель листов");
+      let delay = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+      if (!this.doneListVisibility) {
+        this.todoListClass = "position-absolute";
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative active";
+        this.doneListVisibility = true;
+      } else {
+        this.doneListClass =
+          "bg-" + this.theme.secondary + " position-relative";
+        delay.then(() => {
+          this.todoListClass = "position-relative";
+          this.doneListClass =
+            "bg-" + this.theme.secondary + " position-absolute";
+          this.doneListVisibility = false;
+        });
+      }
     },
 
     // Методы формы авторизации

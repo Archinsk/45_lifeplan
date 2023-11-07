@@ -1,3 +1,5 @@
+<!-- Версия 1.02 от 07.11.2023 -->
+<!--Добавлено событие @nav-bar-brand-click(action)-->
 <!-- Версия 1.01 от 04.11.2023 -->
 
 <template>
@@ -14,6 +16,7 @@
         :without-toggler="!isCollapseButton"
         :justify-content="justifyContent"
         :class="container ? 'px-0' : ''"
+        @nav-bar-brand-click="$emit('nav-bar-brand-click', $event)"
       >
         <!-- Вариант с выезжающей панелью-->
         <vb-offcanvas
