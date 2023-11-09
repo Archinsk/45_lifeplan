@@ -231,6 +231,11 @@
       @nav-bar-brand-click="headerAction($event)"
     />
     <div class="container">
+      <form-add-task
+        :theme="theme"
+        :lightness-mode="lightnessMode"
+        @add-new-task="addNewTask($event)"
+      />
       <div id="tasks">
         <task-list
           :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
@@ -238,16 +243,19 @@
           :lightness-mode="lightnessMode"
           id="tasksTodo"
           :class="todoListClass"
+          @toggle-task-status="toggleTaskStatus($event)"
+          @delete-task="deleteTask($event)"
+          @filter-category="filterCategory($event)"
         />
-        <!--@toggle-task-status="$emit('toggle-task-status', $event)"
-    @delete-task="$emit('delete-task', $event)"
-    @filter-category="filterCategory($event)"-->
         <task-list
           :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
           :theme="theme"
           :lightness-mode="lightnessMode"
           id="tasksDone"
           :class="doneListClass"
+          @toggle-task-status="toggleTaskStatus($event)"
+          @delete-task="deleteTask($event)"
+          @filter-category="filterCategory($event)"
         />
       </div>
     </div>
@@ -301,9 +309,11 @@ import IconsList from "./components/IconsList";
 import ColorsList from "./components/ColorsList";
 import VbTabs from "./components/universal/Bootstrap_4.6.2/BS46Tabs";
 import TaskList from "./components/TaskList";
+import FormAddTask from "./components/FormAddTask";
 
 export default {
   components: {
+    FormAddTask,
     TaskList,
     VbTabs,
     ColorsList,
@@ -942,7 +952,7 @@ export default {
     },
     tasksTodo: function () {
       const startOfDayLocalinMs = this.startOfDayLocalinMs;
-      let todo = this.tasks.filter(function (task) {
+      let todo = this.tasksWithCategories.filter(function (task) {
         if (!+task.done) {
           return true;
         } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
@@ -953,7 +963,7 @@ export default {
     },
     tasksDone: function () {
       const startOfDayLocalinMs = this.startOfDayLocalinMs;
-      let done = this.tasks.filter(function (task) {
+      let done = this.tasksWithCategories.filter(function (task) {
         if (!!+task.done && task.completionDate * 1000 <= startOfDayLocalinMs) {
           return true;
         }
@@ -1043,6 +1053,15 @@ export default {
         let taskIndex = this.tasks.findIndex((task) => task.id === taskId);
         this.tasks.splice(taskIndex, 1);
       });
+    },
+
+    filterCategory(categoryId) {
+      if (!this.isFiltered) {
+        this.filteredCategoryId = categoryId;
+      } else {
+        this.filteredCategoryId = "";
+      }
+      this.isFiltered = !this.isFiltered;
     },
 
     changeColorTheme(basicThemeId) {

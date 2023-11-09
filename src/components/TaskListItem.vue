@@ -1,5 +1,5 @@
 <template>
-  <li :class="taskClass" @click="$emit('toggle-task-status', taskItem)">
+  <li :class="taskClass" @click.self="$emit('toggle-task-status', taskItem)">
     <vb-button
       v-if="taskItem.category && taskItem.category.id"
       :icon="taskItem.category.icon"
@@ -8,11 +8,31 @@
       @click="$emit('filter-category')"
     />
     <vb-button
+      icon="more_horiz"
+      square
+      :class="contextMenuButtonClass"
+      @click="toggleContextMenu"
+    />
+    <vb-button
+      v-show="contextMenuVisibility"
       icon="close"
       square
-      :class="'delete-button ' + deleteButtonClass"
+      :class="contextMenuButtonClass"
       @click="$emit('delete-task')"
     />
+    <vb-button
+      v-show="contextMenuVisibility"
+      icon="mode"
+      square
+      :class="contextMenuButtonClass"
+    />
+    <vb-button
+      v-show="contextMenuVisibility"
+      icon="info"
+      square
+      :class="contextMenuButtonClass"
+    />
+    <!--    :class="'delete-button ' + deleteButtonClass"-->
     <div class="task-text">
       {{ taskItem.task }}
     </div>
@@ -30,7 +50,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      contextMenuVisibility: false,
+    };
   },
 
   computed: {
@@ -83,6 +105,16 @@ export default {
         deleteClass = "text-" + this.lightnessMode + "-neutral-500";
       }
       return deleteClass;
+    },
+
+    contextMenuButtonClass: function () {
+      return "context-menu-button text-" + this.lightnessMode + "-neutral-500 ";
+    },
+  },
+
+  methods: {
+    toggleContextMenu() {
+      this.contextMenuVisibility = !this.contextMenuVisibility;
     },
   },
 

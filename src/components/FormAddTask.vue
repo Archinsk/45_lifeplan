@@ -1,6 +1,7 @@
 <template>
   <form
     @submit.prevent
+    id="add-task-form"
     action="submit"
     :class="'sticky-top py-2 bg-' + theme.secondary"
   >
@@ -19,26 +20,31 @@
         placeholder="Введите текст задачи..."
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
+        required
         @keyup.enter="addNewTask"
-        v-model="addTaskInputValue"
+        v-model.trim="addTaskInputValue"
       />
-      <ButtonIconSquare
-        icon="add"
-        :class="
-          'inputGroupButton btn btn-' +
-          theme.primary +
-          ' border-' +
-          lightnessMode +
-          '-neutral-500'
-        "
-        @click-handler="addNewTask"
-      />
+      <div class="input-group-append">
+        <vb-button
+          type="submit"
+          icon="add"
+          square
+          :class="
+            'inputGroupButton btn btn-' +
+            theme.primary +
+            ' border-' +
+            lightnessMode +
+            '-neutral-500'
+          "
+          @click="addNewTask"
+        />
+      </div>
     </div>
   </form>
 </template>
 
 <script>
-import ButtonIconSquare from "@/components/universal/ButtonIconSquare";
+import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
 
 export default {
   name: "FormAddTask",
@@ -51,12 +57,17 @@ export default {
   },
   props: ["theme", "lightnessMode"],
   components: {
-    ButtonIconSquare,
+    VbButton,
   },
   methods: {
     addNewTask() {
-      this.$emit("add-new-task", this.addTaskInputValue);
-      this.addTaskInputValue = "";
+      if (this.addTaskInputValue) {
+        this.$emit("add-new-task", this.addTaskInputValue);
+        this.addTaskInputValue = "";
+      } else {
+        let addTaskForm = document.getElementById("add-task-form");
+        addTaskForm.submit();
+      }
     },
   },
 };
