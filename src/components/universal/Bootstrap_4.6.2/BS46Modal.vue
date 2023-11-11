@@ -80,6 +80,8 @@ export default {
         keyboard: !this.staticBackdrop && !this.noKeyboard,
       })
       .on("show.bs.modal", () => {
+        $(".modal.show").hide();
+        $(".modal-backdrop.show").remove();
         this.$emit("show-modal");
       })
       .on("shown.bs.modal", () => {

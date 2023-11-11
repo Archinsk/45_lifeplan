@@ -1,12 +1,13 @@
 <template>
   <form
-    @submit.prevent
     id="add-task-form"
-    action="submit"
     :class="'sticky-top py-2 bg-' + theme.secondary"
+    @submit.prevent
   >
     <div class="input-group">
       <input
+        id="add-task-input"
+        name="add-task-input"
         type="text"
         :class="
           'form-control bg-' +
@@ -21,12 +22,11 @@
         aria-label="Введите текст задачи..."
         aria-describedby="button-addon2"
         required
-        @keyup.enter="addNewTask"
+        @keyup.enter.prevent="addNewTask"
         v-model.trim="addTaskInputValue"
       />
       <div class="input-group-append">
         <vb-button
-          type="submit"
           icon="add"
           square
           :class="
@@ -61,12 +61,14 @@ export default {
   },
   methods: {
     addNewTask() {
+      let addTaskInput = document.getElementById("add-task-input");
       if (this.addTaskInputValue) {
         this.$emit("add-new-task", this.addTaskInputValue);
         this.addTaskInputValue = "";
+        addTaskInput.setCustomValidity("");
       } else {
-        let addTaskForm = document.getElementById("add-task-form");
-        addTaskForm.submit();
+        addTaskInput.setCustomValidity("Нужно ввести текст");
+        addTaskInput.reportValidity();
       }
     },
   },

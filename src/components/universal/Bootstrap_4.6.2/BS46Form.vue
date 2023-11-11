@@ -116,6 +116,7 @@
             :required="required || formItem.required"
             :disabled="disabled || formItem.disabled"
             :additional-classes="formItem.additionalClasses"
+            :button-mode="formItem.buttonMode"
             @change="$emit('change-form', { formItem, newValue: $event })"
           />
         </template>

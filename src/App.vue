@@ -218,6 +218,30 @@
         <vb-button theme="primary" @click="deleteCategory">Удалить</vb-button>
       </template>
     </vb-modal>
+    <vb-modal id="modal-themes" header footer scrollable>
+      <template v-slot:modal-header>Темы</template>
+      <vb-form :form-items-list="forms.themes.basicSettings.formItemsList" />
+      <vb-tabs
+        id="edit-them-tabs"
+        :items-list="tabs.themesTabs.itemsList"
+        pills
+        position="center"
+      >
+        <template v-slot:tab-pane-theme-primary
+          ><vb-form :form-items-list="forms.themes.themeSelector.formItemsList"
+        /></template>
+        <template v-slot:tab-pane-theme-secondary
+          ><vb-form :form-items-list="forms.themes.themeSelector.formItemsList"
+        /></template>
+      </vb-tabs>
+      <vb-form :form-items-list="forms.themes.timeSettings.formItemsList" />
+      <template v-slot:modal-footer>
+        <vb-button theme="outline-primary" data-dismiss="modal"
+          >Отмена</vb-button
+        >
+        <vb-button theme="primary">Применить</vb-button>
+      </template>
+    </vb-modal>
     <vb-header
       :brand="brand"
       :nav="systemNav"
@@ -232,12 +256,14 @@
     />
     <div class="container">
       <form-add-task
+        v-if="false"
         :theme="theme"
         :lightness-mode="lightnessMode"
         @add-new-task="addNewTask($event)"
       />
       <div id="tasks">
         <task-list
+          v-if="false"
           :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
           :theme="theme"
           :lightness-mode="lightnessMode"
@@ -641,8 +667,8 @@ export default {
           {
             id: "nav-link-themes",
             name: "Темы",
-            type: "router-link",
-            href: "/themes",
+            type: "modal-link",
+            href: "modal-themes",
             active: false,
             disabled: false,
             icon: "brush",
@@ -734,7 +760,7 @@ export default {
           validity: false,
         },
         signUp: {
-          id: "sign-in-form",
+          id: "sign-up-form",
           formItemsList: [
             {
               id: "sign-up-user-login",
@@ -781,6 +807,134 @@ export default {
           ],
           validity: false,
         },
+        themes: {
+          basicSettings: {
+            id: "theme-basic-settings-form",
+            formItemsList: [
+              {
+                id: "theme-additional-mode",
+                type: "input",
+                subtype: "checkbox",
+                label: "Переключение тем по расписанию",
+                switchMode: true,
+                value: false,
+              },
+            ],
+          },
+          themeSelector: {
+            id: "theme-selector",
+            formItemsList: [
+              {
+                id: "theme-color-radio",
+                type: "radioGroup",
+                buttonMode: true,
+                itemsList: [
+                  {
+                    id: "1",
+                    value: "1",
+                    label: "",
+                    additionalClasses: "btn-light-emerald-primary btn-square",
+                  },
+                  {
+                    id: "2",
+                    value: "2",
+                    label: "",
+                    additionalClasses: "btn-light-jade-primary btn-square",
+                  },
+                  {
+                    id: "3",
+                    value: "3",
+                    label: "",
+                    additionalClasses: "btn-light-turquoise-primary btn-square",
+                  },
+                  {
+                    id: "4",
+                    value: "4",
+                    label: "",
+                    additionalClasses: "btn-light-steel-primary btn-square",
+                  },
+                  {
+                    id: "5",
+                    value: "5",
+                    label: "",
+                    additionalClasses: "btn-light-azure-primary btn-square",
+                  },
+                  {
+                    id: "6",
+                    value: "6",
+                    label: "",
+                    additionalClasses: "btn-light-amethyst-primary btn-square",
+                  },
+                  {
+                    id: "7",
+                    value: "7",
+                    label: "",
+                    additionalClasses: "btn-light-fuchsia-primary btn-square",
+                  },
+                  {
+                    id: "8",
+                    value: "8",
+                    label: "",
+                    additionalClasses:
+                      "btn-light-honeysuckle-primary btn-square",
+                  },
+                  {
+                    id: "9",
+                    value: "9",
+                    label: "",
+                    additionalClasses: "btn-light-chestnut-primary btn-square",
+                  },
+                  {
+                    id: "10",
+                    value: "10",
+                    label: "",
+                    additionalClasses: "btn-light-copper-primary btn-square",
+                  },
+                  {
+                    id: "11",
+                    value: "11",
+                    label: "",
+                    additionalClasses: "btn-light-khaki-primary btn-square",
+                  },
+                  {
+                    id: "12",
+                    value: "12",
+                    label: "",
+                    additionalClasses: "btn-light-asparagus-primary btn-square",
+                  },
+                ],
+                value: "3",
+              },
+              {
+                id: "theme-lightness-mode",
+                type: "input",
+                subtype: "checkbox",
+                label: "Тёмный режим",
+                switchMode: true,
+                value: false,
+              },
+            ],
+          },
+          timeSettings: {
+            id: "theme-time-settings-form",
+            formItemsList: [
+              {
+                id: "theme-secondary-start-time",
+                type: "input",
+                subtype: "time",
+                label: "Начало дополнительной темы",
+                value: "",
+              },
+              {
+                id: "theme-secondary-start-time",
+                type: "input",
+                subtype: "time",
+                label: "Окончание дополнительной темы",
+                value: "",
+              },
+            ],
+          },
+        },
       },
       user: {
         id: null,
@@ -821,6 +975,16 @@ export default {
           itemsList: [
             { id: "tab-pane-icons", active: true, name: "Иконка" },
             { id: "tab-pane-colors", active: false, name: "Цвет" },
+          ],
+        },
+        themesTabs: {
+          itemsList: [
+            { id: "tab-pane-theme-primary", active: true, name: "Основная" },
+            {
+              id: "tab-pane-theme-secondary",
+              active: false,
+              name: "Дополнительная",
+            },
           ],
         },
       },
@@ -1255,7 +1419,7 @@ export default {
 
     // Сведения авторизованного пользователя
     async getTasks() {
-      await axios
+      /*await axios
         .post(this.url + "gettasks.php", this.loggedUser)
         .then((response) => {
           this.logGroup(
@@ -1265,7 +1429,7 @@ export default {
             response.data.tasks
           );
           this.tasks = response.data.tasks;
-        });
+        });*/
     },
     async getCategories() {
       await axios
