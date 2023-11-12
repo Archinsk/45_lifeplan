@@ -51,13 +51,13 @@
       <template v-slot:modal-header>Категории</template>
       <vb-button
         target-id="modal-category-create"
-        :theme="theme.primary"
+        :theme="themeColors.primary"
         @click="openModalCreateCategory"
         >Добавить категорию</vb-button
       >
       <CategoriesList
         :list-items="categories"
-        :theme="theme"
+        :theme="themeColors"
         :lightness-mode="lightnessMode"
         @open-modal-edit-category="openModalEditCategory($event)"
         @open-modal-delete-category="openModalDeleteCategory($event)"
@@ -74,7 +74,7 @@
       Пример
       <categories-list-item-template
         :category="newCategory"
-        :theme="theme"
+        :theme="themeColors"
         :lightness-mode="lightnessMode"
       />
       <div class="mb-3">
@@ -104,7 +104,7 @@
         <template v-slot:tab-pane-icons
           ><icons-list
             :list-items="icons"
-            :theme="theme"
+            :theme="themeColors"
             :lightness-mode="lightnessMode"
             @change-icon-selected-category="changeIconNewCategory($event)"
         /></template>
@@ -112,7 +112,7 @@
           ><colors-list
             :list-items="colors"
             :selected-category-icon="newCategory.icon"
-            :theme="theme"
+            :theme="themeColors"
             :lightness-mode="lightnessMode"
             @change-color-selected-category="changeColorNewCategory($event)"
         /></template>
@@ -143,7 +143,7 @@
       <CategoriesListItem
         :category="selectedCategory"
         :key="selectedCategory.id ? selectedCategory.id : 'default'"
-        :theme="theme"
+        :theme="themeColors"
         :lightness-mode="lightnessMode"
       />
       <div class="mb-3">
@@ -173,7 +173,7 @@
       >
         <template v-slot:tab-pane-icons
           ><icons-list
-            :theme="theme"
+            :theme="themeColors"
             :lightness-mode="lightnessMode"
             :list-items="icons"
             :selected-category-color="selectedCategory.color"
@@ -181,7 +181,7 @@
         /></template>
         <template v-slot:tab-pane-colors
           ><colors-list
-            :theme="theme"
+            :theme="themeColors"
             :lightness-mode="lightnessMode"
             :list-items="colors"
             :selected-category-icon="selectedCategory.icon"
@@ -208,7 +208,7 @@
       </p>
       <categories-list-item-template
         :category="selectedCategory"
-        :theme="theme"
+        :theme="themeColors"
         :lightness-mode="lightnessMode"
       />
       <template v-slot:modal-footer>
@@ -220,7 +220,10 @@
     </vb-modal>
     <vb-modal id="modal-themes" header footer scrollable>
       <template v-slot:modal-header>Темы</template>
-      <vb-form :form-items-list="forms.themes.basicSettings.formItemsList" />
+      <vb-form
+        :form-items-list="forms.themes.basicSettings.formItemsList"
+        @change-form="changeForm($event)"
+      />
       <vb-tabs
         id="edit-them-tabs"
         :items-list="tabs.themesTabs.itemsList"
@@ -228,24 +231,31 @@
         position="center"
       >
         <template v-slot:tab-pane-theme-primary
-          ><vb-form :form-items-list="forms.themes.themeSelector.formItemsList"
+          ><vb-form
+            :form-items-list="forms.themes.primaryTheme.formItemsList"
+            @change-form="changeForm($event)"
         /></template>
         <template v-slot:tab-pane-theme-secondary
-          ><vb-form :form-items-list="forms.themes.themeSelector.formItemsList"
+          ><vb-form
+            :form-items-list="forms.themes.secondaryTheme.formItemsList"
+            @change-form="changeForm($event)"
         /></template>
       </vb-tabs>
-      <vb-form :form-items-list="forms.themes.timeSettings.formItemsList" />
+      <vb-form
+        :form-items-list="forms.themes.timeSettings.formItemsList"
+        @change-form="changeForm($event)"
+      />
       <template v-slot:modal-footer>
         <vb-button theme="outline-primary" data-dismiss="modal"
           >Отмена</vb-button
         >
-        <vb-button theme="primary">Применить</vb-button>
+        <vb-button theme="primary" @click="setTheme">Применить</vb-button>
       </template>
     </vb-modal>
     <vb-header
       :brand="brand"
       :nav="systemNav"
-      :theme="theme.primary"
+      :theme="themeColors.primary"
       dark
       expand
       expand-size="sm"
@@ -257,15 +267,14 @@
     <div class="container">
       <form-add-task
         v-if="false"
-        :theme="theme"
+        :theme="themeColors"
         :lightness-mode="lightnessMode"
         @add-new-task="addNewTask($event)"
       />
       <div id="tasks">
         <task-list
-          v-if="false"
           :list-items="isFiltered ? tasksTodoFiltered : tasksTodo"
-          :theme="theme"
+          :theme="themeColors"
           :lightness-mode="lightnessMode"
           id="tasksTodo"
           :class="todoListClass"
@@ -275,7 +284,7 @@
         />
         <task-list
           :list-items="isFiltered ? tasksDoneFiltered : tasksDone"
-          :theme="theme"
+          :theme="themeColors"
           :lightness-mode="lightnessMode"
           id="tasksDone"
           :class="doneListClass"
@@ -821,92 +830,186 @@ export default {
               },
             ],
           },
-          themeSelector: {
-            id: "theme-selector",
+          primaryTheme: {
+            id: "primary-theme",
             formItemsList: [
               {
-                id: "theme-color-radio",
+                id: "primary-theme-color-radio",
                 type: "radioGroup",
                 buttonMode: true,
                 itemsList: [
                   {
                     id: "1",
-                    value: "1",
+                    value: "emerald",
                     label: "",
                     additionalClasses: "btn-light-emerald-primary btn-square",
                   },
                   {
                     id: "2",
-                    value: "2",
+                    value: "jade",
                     label: "",
                     additionalClasses: "btn-light-jade-primary btn-square",
                   },
                   {
                     id: "3",
-                    value: "3",
+                    value: "turquoise",
                     label: "",
                     additionalClasses: "btn-light-turquoise-primary btn-square",
                   },
                   {
                     id: "4",
-                    value: "4",
+                    value: "steel",
                     label: "",
                     additionalClasses: "btn-light-steel-primary btn-square",
                   },
                   {
                     id: "5",
-                    value: "5",
+                    value: "azure",
                     label: "",
                     additionalClasses: "btn-light-azure-primary btn-square",
                   },
                   {
                     id: "6",
-                    value: "6",
+                    value: "amethyst",
                     label: "",
                     additionalClasses: "btn-light-amethyst-primary btn-square",
                   },
                   {
                     id: "7",
-                    value: "7",
+                    value: "fuchsia",
                     label: "",
                     additionalClasses: "btn-light-fuchsia-primary btn-square",
                   },
                   {
                     id: "8",
-                    value: "8",
+                    value: "honeysuckle",
                     label: "",
                     additionalClasses:
                       "btn-light-honeysuckle-primary btn-square",
                   },
                   {
                     id: "9",
-                    value: "9",
+                    value: "chestnut",
                     label: "",
                     additionalClasses: "btn-light-chestnut-primary btn-square",
                   },
                   {
                     id: "10",
-                    value: "10",
+                    value: "copper",
                     label: "",
                     additionalClasses: "btn-light-copper-primary btn-square",
                   },
                   {
                     id: "11",
-                    value: "11",
+                    value: "khaki",
                     label: "",
                     additionalClasses: "btn-light-khaki-primary btn-square",
                   },
                   {
                     id: "12",
-                    value: "12",
+                    value: "asparagus",
                     label: "",
                     additionalClasses: "btn-light-asparagus-primary btn-square",
                   },
                 ],
-                value: "3",
+                value: "emerald",
               },
               {
-                id: "theme-lightness-mode",
+                id: "primary-theme-lightness-mode",
+                type: "input",
+                subtype: "checkbox",
+                label: "Тёмный режим",
+                switchMode: true,
+                value: false,
+              },
+            ],
+          },
+          secondaryTheme: {
+            id: "secondary-theme",
+            formItemsList: [
+              {
+                id: "secondary-theme-color-radio",
+                type: "radioGroup",
+                buttonMode: true,
+                itemsList: [
+                  {
+                    id: "1",
+                    value: "emerald",
+                    label: "",
+                    additionalClasses: "btn-light-emerald-primary btn-square",
+                  },
+                  {
+                    id: "2",
+                    value: "jade",
+                    label: "",
+                    additionalClasses: "btn-light-jade-primary btn-square",
+                  },
+                  {
+                    id: "3",
+                    value: "turquoise",
+                    label: "",
+                    additionalClasses: "btn-light-turquoise-primary btn-square",
+                  },
+                  {
+                    id: "4",
+                    value: "steel",
+                    label: "",
+                    additionalClasses: "btn-light-steel-primary btn-square",
+                  },
+                  {
+                    id: "5",
+                    value: "azure",
+                    label: "",
+                    additionalClasses: "btn-light-azure-primary btn-square",
+                  },
+                  {
+                    id: "6",
+                    value: "amethyst",
+                    label: "",
+                    additionalClasses: "btn-light-amethyst-primary btn-square",
+                  },
+                  {
+                    id: "7",
+                    value: "fuchsia",
+                    label: "",
+                    additionalClasses: "btn-light-fuchsia-primary btn-square",
+                  },
+                  {
+                    id: "8",
+                    value: "honeysuckle",
+                    label: "",
+                    additionalClasses:
+                      "btn-light-honeysuckle-primary btn-square",
+                  },
+                  {
+                    id: "9",
+                    value: "chestnut",
+                    label: "",
+                    additionalClasses: "btn-light-chestnut-primary btn-square",
+                  },
+                  {
+                    id: "10",
+                    value: "copper",
+                    label: "",
+                    additionalClasses: "btn-light-copper-primary btn-square",
+                  },
+                  {
+                    id: "11",
+                    value: "khaki",
+                    label: "",
+                    additionalClasses: "btn-light-khaki-primary btn-square",
+                  },
+                  {
+                    id: "12",
+                    value: "asparagus",
+                    label: "",
+                    additionalClasses: "btn-light-asparagus-primary btn-square",
+                  },
+                ],
+                value: "emerald",
+              },
+              {
+                id: "secondary-theme-lightness-mode",
                 type: "input",
                 subtype: "checkbox",
                 label: "Тёмный режим",
@@ -919,18 +1022,18 @@ export default {
             id: "theme-time-settings-form",
             formItemsList: [
               {
-                id: "theme-secondary-start-time",
+                id: "theme-secondary-time-start",
                 type: "input",
                 subtype: "time",
                 label: "Начало дополнительной темы",
-                value: "",
+                value: "17:00",
               },
               {
-                id: "theme-secondary-start-time",
+                id: "theme-secondary-time-end",
                 type: "input",
                 subtype: "time",
                 label: "Окончание дополнительной темы",
-                value: "",
+                value: "08:00",
               },
             ],
           },
@@ -998,6 +1101,22 @@ export default {
 
       appLoadingStart: null,
 
+      theme: {
+        id: null,
+        isToggleThemesByTime: false,
+        primary: {
+          color: "steel",
+          lightnessMode: "light",
+          timeStart: null,
+        },
+        secondary: {
+          color: "amethyst",
+          lightnessMode: "light",
+          timeStart: null,
+        },
+        currentTheme: "primary",
+      },
+
       // Данные модального окна авторизации
       errors: {
         signIn: {
@@ -1055,11 +1174,23 @@ export default {
     },
 
     //------------------------------
-    theme: function () {
+    themeColors: function () {
       return {
-        primary: this.lightnessMode + "-" + this.themeColor + "-primary",
-        secondary: this.lightnessMode + "-" + this.themeColor + "-secondary",
-        info: this.lightnessMode + "-" + this.themeColor + "-info",
+        primary:
+          this.theme[this.theme.currentTheme].lightnessMode +
+          "-" +
+          this.theme[this.theme.currentTheme].color +
+          "-primary",
+        secondary:
+          this.theme[this.theme.currentTheme].lightnessMode +
+          "-" +
+          this.theme[this.theme.currentTheme].color +
+          "-secondary",
+        info:
+          this.theme[this.theme.currentTheme].lightnessMode +
+          "-" +
+          this.theme[this.theme.currentTheme].color +
+          "-info",
       };
     },
     categoriesWithIconsAndColors() {
@@ -1232,12 +1363,12 @@ export default {
       console.log("Смена темы");
       const colorTheme = this.basicThemes[basicThemeId - 1];
       this.themeColor = colorTheme.value;
-      document.body.className = "bg-" + this.theme.secondary;
+      document.body.className = "bg-" + this.themeColors.secondary;
     },
 
     changeLightnessMode(lightnessMode) {
       this.lightnessMode = lightnessMode === "light" ? "dark" : "light";
-      document.body.className = "bg-" + this.theme.secondary;
+      document.body.className = "bg-" + this.themeColors.secondary;
     },
 
     saveColorThemes() {
@@ -1293,6 +1424,8 @@ export default {
     async initApp() {
       this.appLoadingStart = new Date();
 
+      this.initTheme();
+
       // Общедоступные сведения
       await Promise.all([
         this.checkAuth(),
@@ -1302,7 +1435,11 @@ export default {
         console.log("--- Загружены общедоступные сведения ---");
       });
       // Cведения авторизованного пользователя
-      await Promise.all([this.getTasks(), this.getCategories()]).then(() => {
+      await Promise.all([
+        this.getTheme(),
+        this.getTasks(),
+        this.getCategories(),
+      ]).then(() => {
         console.log("--- Загружены сведения авторизованного пользователя ---");
       });
 
@@ -1419,7 +1556,7 @@ export default {
 
     // Сведения авторизованного пользователя
     async getTasks() {
-      /*await axios
+      await axios
         .post(this.url + "gettasks.php", this.loggedUser)
         .then((response) => {
           this.logGroup(
@@ -1429,7 +1566,7 @@ export default {
             response.data.tasks
           );
           this.tasks = response.data.tasks;
-        });*/
+        });
     },
     async getCategories() {
       await axios
@@ -1520,6 +1657,75 @@ export default {
       });
     },
 
+    // Темы
+    initTheme() {
+      this.theme.currentTheme = "primary";
+      document.body.className = "bg-" + this.themeColors.secondary;
+    },
+    async getTheme() {
+      await axios
+        .post(this.url + "gettheme.php", { userid: this.loggedUser.id })
+        .then((response) => {
+          // this.hideModal("modal-category-create");
+          this.logGroup("Тема пользователя", response.data);
+          this.theme.id = response.data.theme.id;
+          this.theme.isToggleThemesByTime =
+            !!+response.data.theme.toggle_by_time;
+          this.theme.primary.color = response.data.theme.primary_color;
+          this.theme.primary.lightnessMode =
+            response.data.theme.primary_lightness;
+          this.theme.primary.timeStart = response.data.theme.primary_time_start;
+          this.theme.secondary.color = response.data.theme.secondary_color;
+          this.theme.secondary.lightnessMode =
+            response.data.theme.secondary_lightness;
+          this.theme.secondary.timeStart =
+            response.data.theme.secondary_time_start;
+          document.body.className =
+            "bg-" +
+            this.theme[this.theme.currentTheme].lightnessMode +
+            "-" +
+            this.theme[this.theme.currentTheme].color +
+            "-secondary";
+        });
+    },
+    async setTheme() {
+      const updatedTheme = {
+        toggle_by_time: this.forms.themes.basicSettings.formItemsList[0].value,
+        primary_color: this.forms.themes.primaryTheme.formItemsList[0].value,
+        primary_lightness: this.forms.themes.primaryTheme.formItemsList[1].value
+          ? "dark"
+          : "light",
+        primary_time_start:
+          this.forms.themes.timeSettings.formItemsList[1].value,
+        secondary_color:
+          this.forms.themes.secondaryTheme.formItemsList[0].value,
+        secondary_lightness: this.forms.themes.secondaryTheme.formItemsList[1]
+          .value
+          ? "dark"
+          : "light",
+        secondary_time_start:
+          this.forms.themes.timeSettings.formItemsList[0].value,
+      };
+      if (this.theme.id) {
+        updatedTheme.id = this.theme.id;
+      } else {
+        updatedTheme.userid = this.loggedUser.id;
+      }
+      // this.logGroup("Обновляемая тема", updatedTheme);
+      await axios
+        .post(this.url + "settheme.php", updatedTheme)
+        .then((response) => {
+          this.hideModal("modal-category-create");
+          if (this.theme.id) {
+            this.logGroup("Обновлена тема", response.data);
+          } else {
+            this.logGroup("Добавлена тема", response.data);
+          }
+        });
+
+      await this.getTheme();
+    },
+
     // Формы и фильтры
     changeForm({ formItem, newValue }) {
       if ("value" in formItem) {
@@ -1555,15 +1761,15 @@ export default {
       if (!this.doneListVisibility) {
         this.todoListClass = "position-absolute";
         this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative active";
+          "bg-" + this.themeColors.secondary + " position-relative active";
         this.doneListVisibility = true;
       } else {
         this.doneListClass =
-          "bg-" + this.theme.secondary + " position-relative";
+          "bg-" + this.themeColors.secondary + " position-relative";
         delay.then(() => {
           this.todoListClass = "position-relative";
           this.doneListClass =
-            "bg-" + this.theme.secondary + " position-absolute";
+            "bg-" + this.themeColors.secondary + " position-absolute";
           this.doneListVisibility = false;
         });
       }
@@ -1785,7 +1991,7 @@ export default {
   },
 
   created() {
-    document.body.className = "bg-" + this.theme.secondary;
+    document.body.className = "bg-" + this.themeColors.secondary;
     this.initApp();
   },
 
