@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!--Modals on top of page is Bootstrap recomendation-->
     <vb-modal id="modal-sign-in" header footer size="sm">
       <template v-slot:modal-header>Авторизация</template>
       <vb-form
@@ -252,6 +253,7 @@
         <vb-button theme="primary" @click="setTheme">Применить</vb-button>
       </template>
     </vb-modal>
+
     <vb-header
       :brand="brand"
       :nav="systemNav"
@@ -266,7 +268,6 @@
     />
     <div class="container">
       <form-add-task
-        v-if="false"
         :theme="themeColors"
         :lightness-mode="lightnessMode"
         @add-new-task="addNewTask($event)"
@@ -294,14 +295,10 @@
         />
       </div>
     </div>
+
     <!--@toggle-task-status="$emit('toggle-task-status', $event)"
     @delete-task="$emit('delete-task', $event)"
     @filter-category="filterCategory($event)"-->
-    <!--<TheHeader
-      :theme="theme"
-      :lightness-mode="lightnessMode"
-      @lists-toggle="listsToggle"
-    />-->
     <!--<router-view
       :tasks="tasksWithCategories"
       :url="url"
@@ -332,17 +329,19 @@
 import $ from "jquery";
 import axios from "axios";
 // import TheHeader from "./components/TheHeader";
-import VbHeader from "./components/universal/Bootstrap_4.6.2/BS46Header";
-import VbModal from "./components/universal/Bootstrap_4.6.2/BS46Modal";
-import VbButton from "./components/universal/Bootstrap_4.6.2/BS46Button";
-import VbForm from "./components/universal/Bootstrap_4.6.2/BS46Form";
+import VbHeader from "./components/universal/bs4-based/BS46Header";
+import VbModal from "./components/universal/bs4-based/BS46Modal";
+import VbButton from "./components/universal/bs4-based/BS46Button";
+import VbForm from "./components/universal/bs4-based/BS46Form";
+import VbModalButton from "./components/universal/bs4-based/BS46ModalButton";
+import VbTabs from "./components/universal/bs4-based/BS46Tabs";
+
 import CategoriesList from "./components/CategoriesList";
-import VbModalButton from "./components/universal/Bootstrap_4.6.2/BS46ModalButton";
 import CategoriesListItem from "./components/CategoriesListItem";
 import CategoriesListItemTemplate from "./components/CategoriesListItemTemplate";
 import IconsList from "./components/IconsList";
 import ColorsList from "./components/ColorsList";
-import VbTabs from "./components/universal/Bootstrap_4.6.2/BS46Tabs";
+
 import TaskList from "./components/TaskList";
 import FormAddTask from "./components/FormAddTask";
 
@@ -1107,14 +1106,13 @@ export default {
         primary: {
           color: "steel",
           lightnessMode: "light",
-          timeStart: null,
+          timeStart: "08:00",
         },
         secondary: {
           color: "amethyst",
           lightnessMode: "light",
-          timeStart: null,
+          timeStart: "17:00",
         },
-        currentTheme: "primary",
       },
 
       // Данные модального окна авторизации
@@ -1165,10 +1163,31 @@ export default {
       },
       signInModal: null,
       signUpModal: null,
+
+      timeoutIdReloadTasks: null,
+      intervalIdReloadTasksDaily: null,
     };
   },
 
   computed: {
+    a1TimeStampGlobal() {
+      return new Date(this.timeStamp);
+    },
+    a2timeZoneOffsetMs() {
+      return new Date(this.timeStamp).getTimezoneOffset() * 60000;
+    },
+    a3timeStampWithTimezoneOffset: function () {
+      return new Date(this.timeStamp - this.timeZoneOffsetMs);
+    },
+    a4startOfDayGMTinMs() {
+      return new Date(this.startOfDayGMTinMs);
+    },
+    a5startOfDayLocalinMs() {
+      return new Date(this.startOfDayLocalinMs);
+    },
+    a6finishOfDayLocalinMs() {
+      return new Date(this.finishOfDayLocalinMs);
+    },
     isAuthUser: function () {
       return !!this.loggedUser.id;
     },
@@ -1177,19 +1196,19 @@ export default {
     themeColors: function () {
       return {
         primary:
-          this.theme[this.theme.currentTheme].lightnessMode +
+          this.theme[this.currentTheme].lightnessMode +
           "-" +
-          this.theme[this.theme.currentTheme].color +
+          this.theme[this.currentTheme].color +
           "-primary",
         secondary:
-          this.theme[this.theme.currentTheme].lightnessMode +
+          this.theme[this.currentTheme].lightnessMode +
           "-" +
-          this.theme[this.theme.currentTheme].color +
+          this.theme[this.currentTheme].color +
           "-secondary",
         info:
-          this.theme[this.theme.currentTheme].lightnessMode +
+          this.theme[this.currentTheme].lightnessMode +
           "-" +
-          this.theme[this.theme.currentTheme].color +
+          this.theme[this.currentTheme].color +
           "-info",
       };
     },
@@ -1228,10 +1247,11 @@ export default {
       return tasksWithCategories;
     },
 
+    timeZoneOffsetMs() {
+      return new Date(this.timeStamp).getTimezoneOffset() * 60000;
+    },
     timeStampWithTimezoneOffset: function () {
-      return (
-        this.timeStamp - new Date(this.timeStamp).getTimezoneOffset() * 60000
-      );
+      return this.timeStamp + this.timeZoneOffsetMs;
     },
     startOfDayGMTinMs: function () {
       return (
@@ -1247,13 +1267,15 @@ export default {
     },
     tasksTodo: function () {
       const startOfDayLocalinMs = this.startOfDayLocalinMs;
-      let todo = this.tasksWithCategories.filter(function (task) {
-        if (!+task.done) {
-          return true;
-        } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
-          return true;
-        }
-      });
+      let todo = this.tasksWithCategories
+        .filter(function (task) {
+          if (!+task.done) {
+            return true;
+          } else if (task.completionDate * 1000 > startOfDayLocalinMs) {
+            return true;
+          }
+        })
+        .slice(0, 20);
       return todo;
     },
     tasksDone: function () {
@@ -1263,17 +1285,19 @@ export default {
           return true;
         }
       });
-      done = done.sort(function (a, b) {
-        if (a.completionDate > b.completionDate) {
-          return -1;
-        }
-        if (a.completionDate === b.completionDate) {
-          return 0;
-        }
-        if (a.completionDate < b.completionDate) {
-          return 1;
-        }
-      });
+      done = done
+        .sort(function (a, b) {
+          if (a.completionDate > b.completionDate) {
+            return -1;
+          }
+          if (a.completionDate === b.completionDate) {
+            return 0;
+          }
+          if (a.completionDate < b.completionDate) {
+            return 1;
+          }
+        })
+        .slice(0, 20);
       return done;
     },
     tasksTodoFiltered: function () {
@@ -1295,6 +1319,34 @@ export default {
         return doneFiltered;
       }
       return false;
+    },
+    finishOfDayLocalinMs() {
+      return this.startOfDayLocalinMs + 86400000;
+    },
+    timeToReloadTasks() {
+      return this.finishOfDayLocalinMs - this.timeStamp;
+    },
+    timePassedFromTodayStart() {
+      return (this.timeStamp - this.timeZoneOffsetMs) % 86400000;
+    },
+    timePrimaryThemeStart() {
+      let timeArray = this.theme.primary.timeStart.split(":");
+      return +timeArray[0] * 60 * 60 * 1000 + +timeArray[1] * 60 * 1000;
+    },
+    timeSecondaryThemeStart() {
+      let timeArray = this.theme.secondary.timeStart.split(":");
+      return +timeArray[0] * 60 * 60 * 1000 + +timeArray[1] * 60 * 1000;
+    },
+
+    currentTheme() {
+      if (
+        this.timePassedFromTodayStart > this.timeSecondaryThemeStart &&
+        this.timePassedFromTodayStart < this.timePrimaryThemeStart
+      ) {
+        return "secondary";
+      } else {
+        return "primary";
+      }
     },
   },
 
@@ -1424,6 +1476,10 @@ export default {
     async initApp() {
       this.appLoadingStart = new Date();
 
+      this.timeoutIdReloadTasks = setTimeout(
+        this.setTimerReloadTasks,
+        this.timeToReloadTasks
+      );
       this.initTheme();
 
       // Общедоступные сведения
@@ -1668,24 +1724,42 @@ export default {
         .then((response) => {
           // this.hideModal("modal-category-create");
           this.logGroup("Тема пользователя", response.data);
-          this.theme.id = response.data.theme.id;
-          this.theme.isToggleThemesByTime =
-            !!+response.data.theme.toggle_by_time;
-          this.theme.primary.color = response.data.theme.primary_color;
-          this.theme.primary.lightnessMode =
-            response.data.theme.primary_lightness;
-          this.theme.primary.timeStart = response.data.theme.primary_time_start;
-          this.theme.secondary.color = response.data.theme.secondary_color;
-          this.theme.secondary.lightnessMode =
-            response.data.theme.secondary_lightness;
-          this.theme.secondary.timeStart =
-            response.data.theme.secondary_time_start;
+          let loadedTheme = {
+            id: response.data.theme.id,
+            isToggleThemesByTime: !!+response.data.theme.toggle_by_time,
+            primary: {
+              color: response.data.theme.primary_color,
+              lightnessMode: response.data.theme.primary_lightness,
+              timeStart: response.data.theme.primary_time_start,
+            },
+            secondary: {
+              color: response.data.theme.secondary_color,
+              lightnessMode: response.data.theme.secondary_lightness,
+              timeStart: response.data.theme.secondary_time_start,
+            },
+          };
+          this.theme = Object.assign({}, loadedTheme);
           document.body.className =
             "bg-" +
-            this.theme[this.theme.currentTheme].lightnessMode +
+            this.theme[this.currentTheme].lightnessMode +
             "-" +
-            this.theme[this.theme.currentTheme].color +
+            this.theme[this.currentTheme].color +
             "-secondary";
+          this.forms.themes.basicSettings.formItemsList[0].value =
+            !!+response.data.theme.toggle_by_time;
+          this.forms.themes.primaryTheme.formItemsList[0].value =
+            response.data.theme.primary_color;
+          this.forms.themes.primaryTheme.formItemsList[1].value =
+            !!+response.data.theme.primary_lightness;
+          this.forms.themes.secondaryTheme.formItemsList[0].value =
+            response.data.theme.secondary_color;
+          this.forms.themes.secondaryTheme.formItemsList[1].value =
+            !!+response.data.theme.secondary_lightness;
+          this.forms.themes.timeSettings.formItemsList[0].value =
+            response.data.theme.primary_time_start;
+          this.forms.themes.timeSettings.formItemsList[1].value =
+            response.data.theme.secondary_time_start;
+          console.log(this.forms.themes);
         });
     },
     async setTheme() {
@@ -1773,6 +1847,15 @@ export default {
           this.doneListVisibility = false;
         });
       }
+    },
+
+    setTimerReloadTasks() {
+      this.reloadTasks();
+      this.intervalIdReloadTasksDaily = setInterval(this.reloadTasks, 86400000);
+    },
+    reloadTasks() {
+      this.timeStamp = +new Date();
+      this.tasks = this.tasks.slice();
     },
 
     // Методы формы авторизации

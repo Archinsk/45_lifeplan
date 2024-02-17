@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import VbButton from "./universal/Bootstrap_4.6.2/BS46Button";
+import VbButton from "./universal/bs4-based/BS46Button";
 
 export default {
   name: "IconsList",
